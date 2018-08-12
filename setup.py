@@ -10,6 +10,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        pkg=src.pkg:setup
+        pkg=src.pkg:cli
     ''',
 )
