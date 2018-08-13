@@ -5,7 +5,7 @@ import click
 def info():
     pass
 
-
-# @install.command()
-# def local():
-#     click.echo('This is the zone subcommand of the install command')
+@info.command()
+@click.argument('name')
+def info(name):
+  click.echo('%s' % name)
