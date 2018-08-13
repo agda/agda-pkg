@@ -55,4 +55,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
