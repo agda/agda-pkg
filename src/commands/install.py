@@ -1,5 +1,5 @@
 import click
-from gitapkg import GitApkg
+from ..service.gitapkg import *
 
 @click.group()
 def install():

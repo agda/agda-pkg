@@ -1,6 +1,6 @@
 import git
 
-URL = 'https://github.com/apkgbot/client.git'
+URL = 'https://github.com/apkgbot/agda-packages.git'
 g = git.cmd.Git('client')
 
 class GitApkg:
