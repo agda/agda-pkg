@@ -1,15 +1,59 @@
-from setuptools import setup, find_packages
+'''
+  agda_pkg
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  :license: MIT (see LICENSE.md)
+'''
+
+from __future__ import absolute_import, print_function
+
+
+import io
+import os
+import re
+
+from glob       import glob
+from os.path    import basename, dirname, join, relpath, splitext
+from setuptools import find_packages, setup
+
+def read(*names, **kwargs):
+  return io.open(
+      join(dirname(__file__), *names)
+    , encoding=kwargs.get('encoding', 'utf8')
+  ).read()
 
 setup(
-    name='pkgAgda',
-    version='0.1',
-    packages=find_packages(),
-    include_package_data=True,
-    install_requires=[
-        'click',
-    ],
-    entry_points='''
-        [console_scripts]
-        pkg=src.pkg:cli
-    ''',
+    name='agda-pkg'
+  , version="0.1"
+  , url='https://github.com/apkgbot/client'
+  , license='MIT'
+  , author='Jonathan Prieto-Cubides & Camilo Rodriguez'
+  , author_email='jcu043@uib.no'
+  , description='Package manager for Agda.'
+  , long_description='%s' % (read('README.md'))
+  , packages=find_packages()
+  , zip_safe=False
+  , include_package_data=True
+  , package_data = {'agda_pkg': ['README.md']}
+  , platforms='any'
+  , keywords=
+    [ 'agda'
+    , 'package-manager'
+    ]
+  , install_requires=
+    [ 'click'
+    , 'gitpython'
+    ]
+  , entry_points='''
+      [console_scripts]
+      pkg=src.pkg:cli
+      '''
+  , classifiers=
+    [ 'Intended Audience :: Developers'
+    , 'License :: OSI Approved :: MIT License'
+    , 'Operating System :: OS Independent'
+    , 'Programming Language :: Python'
+    , 'Topic :: Internet :: WWW/HTTP :: Dynamic Content'
+    , 'Topic :: Software Development :: Libraries :: Python Modules'
+    ]
 )
