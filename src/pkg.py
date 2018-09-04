@@ -1,11 +1,11 @@
 import click
 
 from .commands.download import download
-from .commands.info import info
-from .commands.install import install
-from .commands.search import search
-from .commands.update import update
-from .commands.upgrade import upgrade
+from .commands.info     import info
+from .commands.install  import install
+from .commands.search   import search
+from .commands.update   import update
+from .commands.upgrade  import upgrade
 
 
 @click.group()

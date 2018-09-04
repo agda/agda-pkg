@@ -12,8 +12,7 @@ import io
 import os
 import re
 
-from glob       import glob
-from os.path    import basename, dirname, join, relpath, splitext
+from os.path    import basename, dirname, join
 from setuptools import find_packages, setup
 
 def read(*names, **kwargs):
