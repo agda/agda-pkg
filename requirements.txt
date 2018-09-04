@@ -1,0 +1,5 @@
+click==6.7
+gitdb2==2.0.4
+GitPython==2.1.11
+-e git+https://github.com/apkgbot/client.git@74f5beeb5f45e6076bf81721e57c28f61e27d6bb#egg=pkgAgda&subdirectory=../../client
+smmap2==2.0.4
