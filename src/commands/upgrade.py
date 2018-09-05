@@ -5,7 +5,7 @@
 
 import click
 
-from git import *
+from git      import *
 from ..config import *
 
 @click.group()

@@ -3,8 +3,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
 
-
 from pathlib import Path
+
 import click
 import git
 
@@ -23,8 +23,8 @@ INDEX_REPOSITORY_BRANCH = "master"
 INDEX_REPOSITORY_PATH = AGDA_PKG_PATH.joinpath(INDEX_REPOSITORY_NAME)
 
 # We want to search fast queries using a database
-DATABASE_FILE_NAME   = INDEX_REPOSITORY_NAME + ".db"
-DATABASE_FILE_PATH   = AGDA_PKG_PATH.joinpath(DATABASE_FILE_NAME)
+DATABASE_FILE_NAME = INDEX_REPOSITORY_NAME + ".db"
+DATABASE_FILE_PATH = AGDA_PKG_PATH.joinpath(DATABASE_FILE_NAME)
 
 # -----------------------------------------------------------------------------
 
