@@ -1,0 +1,6 @@
+recursive-include src *
+
+include LICENSE.md
+include README.md
+
+global-exclude *.py[co] __pycache__ *.so *.pyd

@@ -1,8 +1,6 @@
 '''
-  agda_pkg
+  agda-pkg
   ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  :license: MIT (see LICENSE.md)
 '''
 
 from __future__ import absolute_import, print_function

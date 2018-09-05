@@ -1,5 +1,10 @@
+'''
+  agda-pkg
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+'''
+
 import click
-from ..service.gitapkg import *
+from ..service.git import *
 
 @click.group()
 def install():

@@ -1,3 +1,8 @@
+'''
+  agda-pkg
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+'''
+
 import click
 
 from .commands.download import download

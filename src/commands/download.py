@@ -1,5 +1,10 @@
+'''
+  agda-pkg
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+'''
+
 import click
-from ..service.gitapkg import *
+
 
 @click.group()
 def download():
