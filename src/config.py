@@ -42,7 +42,7 @@ REPO = None
 # -----------------------------------------------------------------------------
 
 def setup():
-  global REPO
+  global REPO, AGDA_LIBRARIES_PATH
 
   if not AGDA_PKG_PATH.exists():
     AGDA_PKG_PATH.mkdir()
@@ -64,6 +64,8 @@ def setup():
   try:
     result = subprocess.run(["agda", "--version"], stdout=subprocess.PIPE)
     AGDA_VERSION  = result.stdout.split()[2].decode()
+    AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries-"+AGDA_VERSION)
+
     print("Agda found! Version "+ AGDA_VERSION)
   except Exception(FileNotFoundError):
     print("Agda is not installed on this machine")
