@@ -7,7 +7,7 @@ import click
 
 from git      import *
 
-from ..config import init_files
+from ..config import setup
 
 @click.group()
 def init():
@@ -15,7 +15,4 @@ def init():
 
 @init.command()
 def init():
-  init_files()
-
-
-
+  setup()

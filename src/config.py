@@ -37,11 +37,13 @@ AGDA_DEFAULTS_PATH  = AGDA_DIR_PATH.joinpath("defaults")
 AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries")
 AGDA_VERSION  = ""
 
-
+REPO = None
 
 # -----------------------------------------------------------------------------
 
-def init_files():
+def setup():
+  global REPO
+
   if not AGDA_PKG_PATH.exists():
     AGDA_PKG_PATH.mkdir()
     print("AGDA_PKG created at ", AGDA_PKG_PATH.as_posix())
