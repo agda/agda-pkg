@@ -30,8 +30,6 @@ def readLibLegacyFile(fname):
       (not ":"  in content[i]) :
       pathinclude = content[i].strip()
       info["include"].append(content[i].strip())
-      if not Path(pathinclude).exists() :
-        print("Warning: the path (" + pathinclude + ") doesn't exist")
       i += 1
     info["include"] = list(set(info["include"]))
 
@@ -47,10 +45,10 @@ def readLibLegacyFile(fname):
           i += 1
         info["depend"] = list(set(info["depend"]))
       except Exception(e):
-        print("Error: malformed depend field")
+        pass
     except ValueError:
-      print("Error: malformed depend field")
-    pprint(info)
+      pass
+  return info
 
 def readLibYAMLFile(fname):
   libraryfile = Path(fname)
@@ -60,13 +58,7 @@ def readLibYAMLFile(fname):
   docs = yaml.load_all(stream)
   info = [ doc for doc in docs ][0]
   assert "name" in info.keys() and "include" in info.keys()
-
-  for pathinclude in info["include"]:
-    if not Path(pathinclude).exists() :
-      print("Warning: the path (" + pathinclude + ") doesn't exist")
-
-  pprint(info)
-  return docs
+  return info
 
 def readLibFile(fname):
   libraryfile = Path(fname)

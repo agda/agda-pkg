@@ -19,7 +19,7 @@ from .commands.upgrade  import upgrade
 @click.version_option()
 def cli():
   pass
-  
+
 
 cli.add_command(init)
 cli.add_command(install)

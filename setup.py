@@ -40,10 +40,14 @@ setup(
   , install_requires=
     [ 'click'
     , 'gitpython'
+    , 'pyyaml'
+    , 'pony'
+    , 'whoosh'
+    , 'ponywhoosh'
     ]
   , entry_points='''
       [console_scripts]
-      pkg=src.pkg:cli
+      apkg=src.apkg:cli
       '''
   , classifiers=
     [ 'Intended Audience :: Developers'

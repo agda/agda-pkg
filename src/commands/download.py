@@ -16,5 +16,5 @@ def download():
 def download(name, output_path):
   click.echo('%s' % name)
   click.echo('%s' % output_path)
-	tempdir = TemporaryDirectory()
+  tempdir = TemporaryDirectory()
   print(tempdir)
