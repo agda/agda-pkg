@@ -1,17 +1,17 @@
 
 from ..config import DATABASE_FILE_NAME, DATABASE_FILE_PATH
-from ..config import DATABASE_SERACHINDEXES_PATH
+from ..config import DATABASE_SEARCH_INDEXES_PATH
 from ..config import INDEX_REPOSITORY_PATH
 
-from pony.orm    import *
-from ponywhoosh  import PonyWhoosh
+from pony.orm   import *
+from ponywhoosh import PonyWhoosh
 
 # --------------------------------------------------------------------
 
 pw = PonyWhoosh()
 
 # configurations
-pw.indexes_path          = DATABASE_SERACHINDEXES_PATH
+pw.indexes_path          = DATABASE_SEARCH_INDEXES_PATH
 pw.search_string_min_len = 1
 pw.writer_timeout        = 3
 
@@ -20,24 +20,25 @@ db = Database()
 @pw.register_model('name', 'description', 'url')
 class Library(db.Entity):
     name = PrimaryKey(str)
+    localpath = Optional(str)
     description = Optional(str, nullable=True)
     url = Optional(str, nullable=True)
     versions = Set('LibraryVersion')
-    installed = Optional(bool, default=False)
     appearson = Set('Dependency')
-    localpath = Optional(str)
 
 @pw.register_model('version', 'gitURL', 'sha', 'description', 'license')
 class LibraryVersion(db.Entity):
     library = Required(Library)
-    version = Optional(str)
-    gitURL = Optional(str)
+    info_path = Optional(str, nullable=True, default=None)
+    name = Optional(str)
     sha = Optional(str)
+    valid = Optional(bool, default=False)
     description = Optional(str)
     license = Optional(str)
     testedWith = Set('TestedWith')
     keywords = Set('Keyword')
     requires = Set('Dependency')
+    installed = Optional(bool, default=False)
 
 @pw.register_model('word')
 class Keyword(db.Entity):
@@ -52,8 +53,8 @@ class TestedWith(db.Entity):
 class Dependency(db.Entity):
     id = PrimaryKey(int, auto=True)
     library = Required(Library)
-    minVersion = Optional(str)
-    maxVersion = Optional(str)
+    minVersion = Optional(str, nullable=True)
+    maxVersion = Optional(str, nullable=True)
     supporting = Set(LibraryVersion)
 
 db.bind('sqlite', DATABASE_FILE_PATH.as_posix(), create_db=True)

@@ -6,7 +6,7 @@
 import click
 import shutil
 from pathlib import Path
-from ..config import *
+from ..config import AGDA_PKG_PATH,AGDA_DIR_PATH
 
 @click.group()
 def clean():

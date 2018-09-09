@@ -13,9 +13,7 @@ __author__ = "Jonathan Prieto-Cubides & Camilo Rodriguez"
 
 # -----------------------------------------------------------------------------
 
-LEGACY_MODE = True
-
-AGDA_PKG_PATH = Path().home().joinpath('.apkg')
+AGDA_PKG_PATH = Path().home().joinpath('apkg')
 GITHUB_USER  = "apkgbot"
 
 # The github repository index of all agda packages
@@ -25,13 +23,17 @@ INDEX_REPOSITORY_URL = \
 INDEX_REPOSITORY_BRANCH = "master"
 INDEX_REPOSITORY_PATH  = AGDA_PKG_PATH.joinpath(INDEX_REPOSITORY_NAME)
 
+# this is folder where I keep all the source code for every library installed
+PACKAGE_SOURCES_NAME = "package-sources"
+PACKAGE_SOURCES_PATH  = AGDA_PKG_PATH.joinpath(PACKAGE_SOURCES_NAME)
+
 # We want to search fast queries using a database
 DATABASE_FILE_NAME = INDEX_REPOSITORY_NAME + ".db"
 DATABASE_FILE_PATH = AGDA_PKG_PATH.joinpath(DATABASE_FILE_NAME)
-DATABASE_SERACHINDEXES_PATH = AGDA_PKG_PATH.joinpath("search-indexes")
+DATABASE_SEARCH_INDEXES_PATH = AGDA_PKG_PATH.joinpath("search-indexes")
 
-# -- AGDA DIRECTORIES
 
+# -- AGDA DIRECTORIES:
 AGDA_DIR_PATH = Path().home().joinpath(".agda")
 AGDA_DEFAULTS_PATH = AGDA_DIR_PATH.joinpath("defaults")
 AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries")
@@ -49,6 +51,10 @@ if not INDEX_REPOSITORY_PATH.exists():
   INDEX_REPOSITORY_PATH.mkdir()
   # print("Package Index created at ", INDEX_REPOSITORY_PATH.as_posix())
 
+if not PACKAGE_SOURCES_PATH.exists():
+  PACKAGE_SOURCES_PATH.mkdir()
+  # print("Package Sources created at ", INDEX_REPOSITORY_PATH.as_posix())
+
 try:
   REPO = git.Repo.clone_from(INDEX_REPOSITORY_URL, INDEX_REPOSITORY_PATH)
 except:
@@ -57,8 +63,8 @@ except:
 if not DATABASE_FILE_PATH.exists():
   DATABASE_FILE_PATH.touch()
 
-if not DATABASE_SERACHINDEXES_PATH.exists():
-  DATABASE_SERACHINDEXES_PATH.mkdir()
+if not DATABASE_SEARCH_INDEXES_PATH.exists():
+  DATABASE_SEARCH_INDEXES_PATH.mkdir()
 
 try:
   result = subprocess.run(["agda", "--version"], stdout=subprocess.PIPE)

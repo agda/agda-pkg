@@ -6,7 +6,7 @@
 import click
 
 from git      import *
-from ..config import *
+from ..config import REPO
 
 @click.group()
 def upgrade():
@@ -19,7 +19,6 @@ class ProgressPrinter(RemoteProgress):
 # This update the index
 @upgrade.command()
 def upgrade():
-  REPO = setup()
   origin = REPO.remotes["origin"]
   click.echo("Updating index from " + [url for url in REPO.remote().urls][0])
   for pull_info in origin.pull(progress=ProgressPrinter()):
