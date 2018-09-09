@@ -1,0 +1,15 @@
+name:              agda-prop
+version:           0.1.1
+author:            Jonathan Prieto-Cubides
+homepage:          https://github.com/jonaprieto/agda-prop
+category:          [ classic, logic, theorems ]
+license:           MIT
+license-file:      LICENSE.md
+description:       Agda library to work with Classical Propositional Logic using a deep embedding.
+tested-with:       2.5.2
+source-repository: https://github.com/jonaprieto/agda-prop.git
+depend:
+  - standard-library
+include:
+  - src/
+  - test/

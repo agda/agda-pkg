@@ -1,0 +1,7 @@
+name: LIBRARY-NAME  -- Comment
+depend: LIB1 LIB2
+  LIB3
+  LIB4
+include: PATH1
+  PATH2
+  PATH3

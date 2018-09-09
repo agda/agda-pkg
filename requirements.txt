@@ -1,5 +1,6 @@
+-e git+https://github.com/apkgbot/client.git@fb142423e9e67449d3a390209e2a1a14ad448624#egg=agda_pkg&subdirectory=../../client
 click==6.7
 gitdb2==2.0.4
 GitPython==2.1.11
--e git+https://github.com/apkgbot/client.git@74f5beeb5f45e6076bf81721e57c28f61e27d6bb#egg=pkgAgda&subdirectory=../../client
+PyYAML==3.13
 smmap2==2.0.4
