@@ -82,6 +82,17 @@ def create_index():
       library = Library.get(name = lib.name)
       for version in library.versions:
         info = readLibFile(version.info_path)
+        keywords = info.get("keywords", [])
+        if keywords == []:
+          keywords = info.get("category", [])
+
+        for word in keywords:
+          keyword =  Keyword.get(word = word)
+          if keyword is None:
+            keyword = Keyword(word = word)
+          keyword.libraries.add(library)
+          keyword.libversions.add(version)
+
         for depend in info["depend"]:
           if type(depend) == list:
             print("no supported yet but the format is X.X <= name <= Y.Y")

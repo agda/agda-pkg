@@ -14,7 +14,7 @@ temporal or, la carpeta especificada outputdir, ajustar la version (tag) del
 commit. El nombre podria especificar la version del paquete con "@"
 
 Install:
-  - donwload to outputdir=package-sources
+  - download to outputdir=package-sources
   - check dependencies, check include
   - write defaults
   - write libraries
@@ -29,7 +29,6 @@ Uninstall:
       - database installed packages
 
 Info:
-  - check if the package is installed, if so,
   - read from the database the Info
   - pretty print the info
 

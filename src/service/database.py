@@ -25,6 +25,7 @@ class Library(db.Entity):
     url = Optional(str, nullable=True)
     versions = Set('LibraryVersion')
     appearson = Set('Dependency')
+    keywords = Set('Keyword')
 
 @pw.register_model('version', 'gitURL', 'sha', 'description', 'license')
 class LibraryVersion(db.Entity):
@@ -43,7 +44,8 @@ class LibraryVersion(db.Entity):
 @pw.register_model('word')
 class Keyword(db.Entity):
     word = PrimaryKey(str)
-    library_version = Optional(LibraryVersion)
+    libversions = Set(LibraryVersion)
+    libraries = Set(Library)
 
 @pw.register_model('agdaVersion')
 class TestedWith(db.Entity):
