@@ -53,15 +53,18 @@ def search(term, field):
       , include_entity = True
       , something = True
       )
-  libraries = results["results"]['Library']['items']
-  click.echo( str(len(libraries)) + " result" +("s" if len(libraries) > 1 else "") +  " in " + str(results['runtime']) + "seg")
-  click.echo( "matches: " + str(results['matched_terms']))
-  click.echo("")
+  libraries = results["results"].get('Library', {'items':[]})['items']
 
-  for result in libraries:
-    click.echo(result["entity"]["name"])
-    click.echo("="*len(result["entity"]["name"]))
-    del result["entity"]["name"]
-    for k, v in result["entity"].items():
-      click.echo("{0}: {1}".format(k,v))
+  click.echo( str(len(libraries)) + " result" +("s" if len(libraries) != 1 else "") +  " in " + str(results['runtime']) + "seg")
+  if len(libraries) > 0:
+    click.echo( "matches: " + str(results['matched_terms']))
     click.echo("")
+
+    for result in libraries:
+      click.echo(result["entity"]["name"])
+      click.echo("="*len(result["entity"]["name"]))
+      del result["entity"]["name"]
+      for k, v in result["entity"].items():
+        if  k != "installed" and v != None:
+          click.echo("{0}: {1}".format(k,v))
+      click.echo("")

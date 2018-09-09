@@ -35,38 +35,20 @@ from pprint   import pprint
 from pony.orm import *
 
 @click.group()
-def info():
-    pass
+def uninstall():
+  pass
 
-@info.command()
+@uninstall.command()
 @click.argument('libname')
-@click.option('--version', '-v', type=str, default="", help='show information of a specific version')
-@click.option('--field', '-f', type=str, default="", help='show information of a specific field')
 @db_session
-def info(libname, version, field):
-  """Working ..."""
-  if version == "":
-    lib = Library.get(name = libname)
-    if lib is None:
-      print("No available")
-      return
-    versions = [ v for v in lib.versions ]
-    lastversion = versions[0]
-    assert lastversion is not None
-    info = readLibFile(lastversion.info_path)
-    if field != "":
-      if field in info:
-        click.echo(info[field])
-      else:
-        click.echo("No information about " + field)
-    else:
-      for k, v in info.items():
-        if k is "version": pass
-        if (type(v) == str or type(v) == list) and len(v) > 0:
-          click.echo("{0}: {1}".format(k, v))
+def uninstall(libname):
+  library = Library.get(name = libname, installed = True)
+  if library is None:
+    click.echo(libname + " is not installed")
+  else:
+    # revisar si rompe algo y avisar!
+    # preguntar y/n
 
-    if len(versions) > 0:
-      click.echo("Versions available:")
-      for v in versions:
-        ms = "  - %s" % v.name + ("Installed!" if v.installed else "")
-        click.echo(ms)
+    library.installed = False
+    for version in library.versions:
+      version.installed = False
