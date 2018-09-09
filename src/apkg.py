@@ -7,6 +7,7 @@ import click
 
 from .commands.clean    import clean
 from .commands.download import download
+from .commands.freeze     import freeze
 from .commands.info     import info
 from .commands.init     import init
 from .commands.install  import install
@@ -23,6 +24,7 @@ def cli():
 
 cli.add_command(init)
 cli.add_command(install)
+cli.add_command(freeze)
 cli.add_command(info)
 cli.add_command(clean)
 cli.add_command(search)

@@ -26,6 +26,7 @@ class Library(db.Entity):
     versions = Set('LibraryVersion')
     appearson = Set('Dependency')
     keywords = Set('Keyword')
+    installed = Optional(bool, default=False)
 
 @pw.register_model('version', 'gitURL', 'sha', 'description', 'license')
 class LibraryVersion(db.Entity):
