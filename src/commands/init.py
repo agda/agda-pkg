@@ -107,4 +107,5 @@ def create_index():
 
 @init.command()
 def init():
+  """Working ..."""
   create_index()

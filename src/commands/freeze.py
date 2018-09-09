@@ -41,6 +41,7 @@ def freeze():
 @freeze.command()
 @db_session
 def freeze():
+  """Working ..."""
   libraries = select(l for l in Library if l.installed)[:]
   for library in libraries:
     versions = [v for v in library.versions if v.installed]

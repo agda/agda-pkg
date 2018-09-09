@@ -10,9 +10,10 @@ from ..config import AGDA_PKG_PATH,AGDA_DIR_PATH
 
 @click.group()
 def clean():
-    pass
+  pass
 
 @clean.command()
 def clean():
+  """Working ..."""
   shutil.rmtree(AGDA_PKG_PATH)
   shutil.rmtree(AGDA_DIR_PATH)

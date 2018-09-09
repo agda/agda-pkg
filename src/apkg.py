@@ -19,6 +19,7 @@ from .commands.upgrade  import upgrade
 @click.group()
 @click.version_option()
 def cli():
+  """Package manager for Agda v2.5.4+"""
   pass
 
 

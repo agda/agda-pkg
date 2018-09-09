@@ -40,10 +40,11 @@ def info():
 
 @info.command()
 @click.argument('libname')
-@click.option('--version', '-v', type=str, default="")
-@click.option('--field', '-f', type=str, default="")
+@click.option('--version', '-v', type=str, default="", help='show information of a specific version')
+@click.option('--field', '-f', type=str, default= help='show information of a specific field')
 @db_session
 def info(libname, version, field):
+  """Working ..."""
   if version == "":
     lib = Library.get(name = libname)
     if lib is None:
