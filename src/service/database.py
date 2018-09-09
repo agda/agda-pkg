@@ -41,6 +41,7 @@ class LibraryVersion(db.Entity):
     keywords = Set('Keyword')
     requires = Set('Dependency')
     installed = Optional(bool, default=False)
+    latest = Optional(bool, default=False)
 
 @pw.register_model('word')
 class Keyword(db.Entity):
