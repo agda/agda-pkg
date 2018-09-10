@@ -113,8 +113,6 @@ def create_index():
             else:
               print("Warning!!" + depend + " is not in the index")
               print("this may cause errors in the future.")
-
-
     commit()
 
 @init.command()
