@@ -13,7 +13,21 @@ __author__ = "Jonathan Prieto-Cubides & Camilo Rodriguez"
 
 # -----------------------------------------------------------------------------
 
-AGDA_PKG_PATH = Path().home().joinpath('apkg')
+# -- AGDA DIRECTORIES:
+AGDA_DIR_PATH = Path().home().joinpath(".agda")
+AGDA_DEFAULTS_PATH = AGDA_DIR_PATH.joinpath("defaults")
+AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries")
+AGDA_VERSION = ""
+
+try:
+  result = subprocess.run(["agda", "--version"], stdout=subprocess.PIPE)
+  AGDA_VERSION = result.stdout.split()[2].decode()
+  AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries-"+AGDA_VERSION)
+except Exception(FileNotFoundError):
+  print("Agda is not installed on this machine")
+
+
+AGDA_PKG_PATH = Path().home().joinpath('apkg' + ("-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
 GITHUB_USER  = "apkgbot"
 
 # The github repository index of all agda packages
@@ -33,11 +47,7 @@ DATABASE_FILE_PATH = AGDA_PKG_PATH.joinpath(DATABASE_FILE_NAME)
 DATABASE_SEARCH_INDEXES_PATH = AGDA_PKG_PATH.joinpath("search-indexes")
 
 
-# -- AGDA DIRECTORIES:
-AGDA_DIR_PATH = Path().home().joinpath(".agda")
-AGDA_DEFAULTS_PATH = AGDA_DIR_PATH.joinpath("defaults")
-AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries")
-AGDA_VERSION = ""
+
 
 REPO = None
 
@@ -65,13 +75,6 @@ if not DATABASE_FILE_PATH.exists():
 
 if not DATABASE_SEARCH_INDEXES_PATH.exists():
   DATABASE_SEARCH_INDEXES_PATH.mkdir()
-
-try:
-  result = subprocess.run(["agda", "--version"], stdout=subprocess.PIPE)
-  AGDA_VERSION = result.stdout.split()[2].decode()
-  AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries-"+AGDA_VERSION)
-except Exception(FileNotFoundError):
-  print("Agda is not installed on this machine")
 
 if not AGDA_DIR_PATH.exists():
   AGDA_DIR_PATH.mkdir()

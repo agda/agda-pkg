@@ -34,6 +34,7 @@ from ..service.database import ( Library
                                )
 from pprint   import pprint
 from pony.orm import *
+import shutil
 
 @click.group()
 def uninstall():
@@ -54,5 +55,9 @@ def uninstall(libname):
     library.default   = False
     for version in library.versions:
       version.installed = False
+      try:
+        shutil.rmtree(version.installation_path)
+      except:
+        print("[ERROR] Unsuccessfully to remove " + version.installation_path)
     commit()
     writeAgdaDirFiles()

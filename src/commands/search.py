@@ -65,6 +65,6 @@ def search(term, field):
       click.echo("="*len(result["entity"]["name"]))
       del result["entity"]["name"]
       for k, v in result["entity"].items():
-        if  k != "installed" and v != None:
+        if  v != None:
           click.echo("{0}: {1}".format(k,v))
       click.echo("")

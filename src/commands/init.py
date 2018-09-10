@@ -20,6 +20,7 @@ from ..config import ( AGDA_DEFAULTS_PATH
                      , INDEX_REPOSITORY_NAME
                      , INDEX_REPOSITORY_PATH
                      , INDEX_REPOSITORY_URL
+                     , PACKAGE_SOURCES_PATH
                      , REPO
                      )
 
@@ -34,6 +35,8 @@ from ..service.database import ( Library
 from pprint   import pprint
 from pony.orm import *
 
+from ..service.sortVersions import sortVersions
+
 @click.group()
 def init():
 	pass
@@ -44,7 +47,9 @@ def create_index():
 
   f = INDEX_REPOSITORY_PATH
   src = f.joinpath("src")
+  print("Agda-Pkg init process...")
 
+  print("Indexing packages...")
   with db_session:
     for lib in src.glob("*"):
       name = lib.name
@@ -53,17 +58,13 @@ def create_index():
       library.url = url
       library.localpath = lib.as_posix()
 
-      print(name)
-      print("="*len(name))
-      print("- URL: " + url)
-      print("- Versions:")
       for version in lib.joinpath("versions").glob("*"):
-        libVersion = LibraryVersion(library = library, name = version.name)
+        libVersion = LibraryVersion( library = library , name = version.name)
+        locationName = name + ("@" + version.name if len(version.name) > 0 else "")
+        libVersion.installation_path = PACKAGE_SOURCES_PATH.joinpath(locationName).as_posix()
 
         if version.joinpath("sha1").exists():
           libVersion.sha = version.joinpath("sha1").read_text()
-          valid = False
-          print( "  " + ("- [x]" if valid else "- [ ]") + " v"+(version.name))
         else:
           print("ERROR: "+ version.name + " no valid")
 
@@ -80,7 +81,16 @@ def create_index():
 
     for lib in src.glob("*"):
       library = Library.get(name = lib.name)
-      for version in library.versions:
+      versions = sortVersions(lib.name)
+      if len(versions) > 0:
+        versions[-1].latest = True
+
+      print("\n" +  name)
+      print("="*len(name))
+      print("- URL: %s" % url + "- Versions:")
+
+      for version in versions:
+        print( "  * v" + version.name + (" Latest" if version.latest else ""))
         info = readLibFile(version.info_path)
         keywords = info.get("keywords", [])
         if keywords == []:
@@ -103,6 +113,8 @@ def create_index():
             else:
               print("Warning!!" + depend + " is not in the index")
               print("this may cause errors in the future.")
+
+
     commit()
 
 @init.command()
