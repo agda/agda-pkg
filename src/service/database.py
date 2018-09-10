@@ -27,12 +27,13 @@ class Library(db.Entity):
     appearson = Set('Dependency')
     keywords = Set('Keyword')
     installed = Optional(bool, default=False)
+    default = Optional(bool, default=True)
 
-@pw.register_model('version', 'gitURL', 'sha', 'description', 'license')
+@pw.register_model('name', 'sha', 'description', 'license')
 class LibraryVersion(db.Entity):
     library = Required(Library)
     info_path = Optional(str, nullable=True, default=None)
-    name = Optional(str)
+    name = Optional(str, default="")
     sha = Optional(str)
     valid = Optional(bool, default=False)
     description = Optional(str)
@@ -42,6 +43,7 @@ class LibraryVersion(db.Entity):
     requires = Set('Dependency')
     installed = Optional(bool, default=False)
     latest = Optional(bool, default=False)
+    installation_path = Optional(str, default="")
 
 @pw.register_model('word')
 class Keyword(db.Entity):
