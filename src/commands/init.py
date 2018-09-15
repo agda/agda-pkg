@@ -3,53 +3,45 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
 
+# ----------------------------------------------------------------------------
 import click
+from pathlib import Path
 
-from pathlib import *
+from ..config import PACKAGE_SOURCES_PATH, INDEX_REPOSITORY_PATH
 
-from ..config import ( AGDA_DEFAULTS_PATH
-                     , AGDA_DIR_PATH
-                     , AGDA_LIBRARIES_PATH
-                     , AGDA_PKG_PATH
-                     , AGDA_VERSION
-                     , DATABASE_FILE_NAME
-                     , DATABASE_FILE_PATH
-                     , DATABASE_SEARCH_INDEXES_PATH
-                     , GITHUB_USER
-                     , INDEX_REPOSITORY_BRANCH
-                     , INDEX_REPOSITORY_NAME
-                     , INDEX_REPOSITORY_PATH
-                     , INDEX_REPOSITORY_URL
-                     , PACKAGE_SOURCES_PATH
-                     , REPO
-                     )
-
-from ..service.readLibFile import readLibFile
+from ..service.readLibFile  import readLibFile
+from ..service.sortVersions import sortVersions
 from ..service.database import db, pw
 from ..service.database import ( Library
                                , LibraryVersion
                                , Keyword
-                               , TestedWith
                                , Dependency
                                )
 from pprint   import pprint
 from pony.orm import *
 
-from ..service.sortVersions import sortVersions
+import logging
+import click_log as clog
+# ----------------------------------------------------------------------------
 
+# -- Logger def.
+logger = logging.getLogger(__name__)
+clog.basic_config(logger)
+
+# -- Command def.
 @click.group()
-def init():
-	pass
+def init():	pass
 
-def create_index():
+@init.command()
+@clog.simple_verbosity_option(logger)
+def init():
   db.drop_all_tables(with_all_data=True)
   db.create_tables()
 
   f = INDEX_REPOSITORY_PATH
   src = f.joinpath("src")
-  print("Agda-Pkg init process...")
 
-  print("Indexing packages...")
+  logger.info("Indexing packages...")
   with db_session:
     for lib in src.glob("*"):
       name = lib.name
@@ -66,7 +58,7 @@ def create_index():
         if version.joinpath("sha1").exists():
           libVersion.sha = version.joinpath("sha1").read_text()
         else:
-          print("ERROR: "+ version.name + " no valid")
+          logger.info("ERROR: "+ version.name + " no valid")
 
         agdaLibFile = version.joinpath(name + ".agda-lib")
         agdaPkgFile = version.joinpath(name + ".agda-pkg")
@@ -85,12 +77,12 @@ def create_index():
       if len(versions) > 0:
         versions[-1].latest = True
 
-      print("\n" +  name)
-      print("="*len(name))
-      print("- URL: %s" % url + "- Versions:")
+      logger.info("\n" +  name)
+      logger.info("="*len(name))
+      logger.info("- URL: %s" % url + "- Versions:")
 
       for version in versions:
-        print( "  * v" + version.name + (" Latest" if version.latest else ""))
+        logger.info( "  * v" + version.name + (" Latest" if version.latest else ""))
         info = readLibFile(version.info_path)
         keywords = info.get("keywords", [])
         if keywords == []:
@@ -105,17 +97,11 @@ def create_index():
 
         for depend in info["depend"]:
           if type(depend) == list:
-            print("no supported yet but the format is X.X <= name <= Y.Y")
+            logger.info("no supported yet but the format is X.X <= name <= Y.Y")
           else:
             dependency = Library.get(name = depend)
             if dependency is not None:
               version.requires.add(Dependency(library = dependency))
             else:
-              print("Warning!!" + depend + " is not in the index")
-              print("this may cause errors in the future.")
+              logger.warning(depend + " is not in the index")
     commit()
-
-@init.command()
-def init():
-  """Working ..."""
-  create_index()

@@ -3,21 +3,22 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
 
+# ----------------------------------------------------------------------------
 import click
 import shutil
 
 from pathlib  import Path
 from ..config import AGDA_PKG_PATH,AGDA_DIR_PATH
 
-# ----------------------------------------------------------------------------
-# -- Logger
 import logging
 import click_log as clog
-
-logger = logging.getLogger(__name__)
-clog.basic_config(logger)
 # ----------------------------------------------------------------------------
 
+# -- Logger def.
+logger = logging.getLogger(__name__)
+clog.basic_config(logger)
+
+# -- Command def.
 @click.group()
 def clean(): pass
 
