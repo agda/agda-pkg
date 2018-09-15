@@ -5,15 +5,30 @@
 
 import click
 import shutil
-from pathlib import Path
+
+from pathlib  import Path
 from ..config import AGDA_PKG_PATH,AGDA_DIR_PATH
 
+# ----------------------------------------------------------------------------
+# -- Logger
+import logging
+import click_log as clog
+
+logger = logging.getLogger(__name__)
+clog.basic_config(logger)
+# ----------------------------------------------------------------------------
+
 @click.group()
-def clean():
-  pass
+def clean(): pass
 
 @clean.command()
+@clog.simple_verbosity_option(logger)
 def clean():
   """Working ..."""
-  shutil.rmtree(AGDA_PKG_PATH)
-  shutil.rmtree(AGDA_DIR_PATH)
+  rmdirs = [ AGDA_PKG_PATH , AGDA_DIR_PATH ]
+  for dir in rmdirs:
+    try:
+      shutil.rmtree(dir)
+      logger.info("Deleted " + dir.as_posix())
+    except Exception as e:
+      logger.error(e)
