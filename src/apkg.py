@@ -4,6 +4,7 @@
 '''
 
 import click
+from .commands import *
 
 from .commands.clean    import clean
 from .commands.download import download

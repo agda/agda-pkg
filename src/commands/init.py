@@ -77,16 +77,17 @@ def init():
       if len(versions) > 0:
         versions[-1].latest = True
 
-      logger.info("\n" +  name)
-      logger.info("="*len(name))
+      logger.info("\n" +  lib.name)
+      logger.info("="*len(lib.name))
       logger.info("- URL: %s" % url + "- Versions:")
 
       for version in versions:
         logger.info( "  * v" + version.name + (" Latest" if version.latest else ""))
         info = readLibFile(version.info_path)
+
         keywords = info.get("keywords", [])
-        if keywords == []:
-          keywords = info.get("category", [])
+        keywords += info.get("category", [])
+        keywords = list(set(keywords))
 
         for word in keywords:
           keyword =  Keyword.get(word = word)
@@ -104,4 +105,3 @@ def init():
               version.requires.add(Dependency(library = dependency))
             else:
               logger.warning(depend + " is not in the index")
-    commit()

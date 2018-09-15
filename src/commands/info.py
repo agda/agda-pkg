@@ -15,6 +15,7 @@ from ..service.database    import ( Library
                                   , TestedWith
                                   , Dependency
                                   )
+from ..service.sortVersions import sortVersions
 from pprint   import pprint
 from pony.orm import *
 
@@ -48,7 +49,7 @@ def info(libname, version, field):
       print("No available")
       return
 
-    versions = [ v for v in lib.versions ]
+    versions = sortVersions(lib.name)
     if len(versions) == 0:
       logger.error("Database is corrupted. This library has no versions available")
       logger.info("Repair the database by running: apkg init")
@@ -76,5 +77,7 @@ def info(libname, version, field):
     if len(versions) > 0:
       click.echo("Versions available:")
       for v in versions:
-        ms = "  - %s" % v.name + ("Installed!" if v.installed else "")
+        ms = "  - %s" % v.name \
+          + (" ==> Latest!" if v.latest else "") \
+          + (" ==> Installed!" if v.installed else "")
         click.echo(ms)

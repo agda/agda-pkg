@@ -1,20 +1,31 @@
+'''
+  agda-pkg
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+'''
 
+# ----------------------------------------------------------------------------
 from ..config import DATABASE_FILE_NAME, DATABASE_FILE_PATH
 from ..config import DATABASE_SEARCH_INDEXES_PATH
 from ..config import INDEX_REPOSITORY_PATH
 
 from pony.orm   import *
 from ponywhoosh import PonyWhoosh
+import logging
+import click_log as clog
+# ----------------------------------------------------------------------------
 
-# --------------------------------------------------------------------
+# -- Logger def.
+logger = logging.getLogger(__name__)
+clog.basic_config(logger)
 
+# -- Search index
 pw = PonyWhoosh()
 
-# configurations
 pw.indexes_path          = DATABASE_SEARCH_INDEXES_PATH
 pw.search_string_min_len = 1
 pw.writer_timeout        = 3
 
+# -- Database
 db = Database()
 
 @pw.register_model('name', 'description', 'url')
@@ -29,11 +40,12 @@ class Library(db.Entity):
     installed = Optional(bool, default=False)
     default = Optional(bool, default=True)
 
+
 @pw.register_model('name', 'sha', 'description', 'license')
 class LibraryVersion(db.Entity):
     library = Required(Library)
     info_path = Optional(str, nullable=True, default=None)
-    name = Optional(str, default="")
+    name = Optional(str, nullable=True, default=None)
     sha = Optional(str)
     valid = Optional(bool, default=False)
     description = Optional(str)
@@ -44,6 +56,7 @@ class LibraryVersion(db.Entity):
     installed = Optional(bool, default=False)
     latest = Optional(bool, default=False)
     installation_path = Optional(str, default="")
+    user_version = Optional(bool, default=False)
 
 @pw.register_model('word')
 class Keyword(db.Entity):
@@ -63,5 +76,8 @@ class Dependency(db.Entity):
     maxVersion = Optional(str, nullable=True)
     supporting = Set(LibraryVersion)
 
-db.bind('sqlite', DATABASE_FILE_PATH.as_posix(), create_db=True)
-db.generate_mapping(create_tables=True)
+try:
+  db.bind('sqlite', DATABASE_FILE_PATH.as_posix(), create_db=True)
+  db.generate_mapping(create_tables=True)
+except Exception as e:
+  logger.error(e)

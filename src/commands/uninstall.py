@@ -3,10 +3,10 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
 
+# ----------------------------------------------------------------------------
+
 import click
-
-from pathlib import *
-
+from pathlib import Path
 from ..config import ( AGDA_DEFAULTS_PATH
                      , AGDA_DIR_PATH
                      , AGDA_LIBRARIES_PATH
@@ -32,32 +32,54 @@ from ..service.database import ( Library
                                , TestedWith
                                , Dependency
                                )
+from ..service.sortVersions import sortVersions
 from pprint   import pprint
 from pony.orm import *
 import shutil
 
+import logging
+import click_log as clog
+# ----------------------------------------------------------------------------
+
+# -- Logger def.
+logger = logging.getLogger(__name__)
+clog.basic_config(logger)
+
+# -- Command def.
 @click.group()
 def uninstall():
   pass
 
 @uninstall.command()
 @click.argument('libname')
+@clog.simple_verbosity_option(logger)
 @db_session
 def uninstall(libname):
   library = Library.get(name = libname, installed = True)
-  if library is None:
-    click.echo(libname + " is not installed")
-  else:
-    # revisar si rompe algo y avisar!
-    # preguntar y/n
-
-    library.installed = False
-    library.default   = False
-    for version in library.versions:
-      version.installed = False
+  if library is not None:
+    if click.confirm("Uninstalling... " + libname):
       try:
-        shutil.rmtree(version.installation_path)
-      except:
-        print("[ERROR] Unsuccessfully to remove " + version.installation_path)
-    commit()
-    writeAgdaDirFiles()
+        library.installed = False
+        library.default   = False
+        for version in library.versions:
+          version.installed = False
+          if version.user_version:
+            try:
+              msg = "Delete all files in "+version.installation_path
+              if click.confirm(msg):
+                shutil.rmtree(version.installation_path)
+            except Exception as e:
+              logger.error("Problems removing " + version.installation_path)
+        writeAgdaDirFiles(True)
+        logger.info(libname + " uninstalled")
+        commit()
+
+      except Expection as e:
+        logger.error(e)
+  libraries = select(library for library in Library)[:]
+  for library in libraries:
+    print(library)
+    versions = sortVersions(library.name)
+    if len(versions) > 0:
+      versions[-1].latest = True
+  commit()
