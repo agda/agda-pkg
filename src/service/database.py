@@ -94,7 +94,7 @@ class Library(db.Entity):
       return None
 
     def getLatestVersion(self):
-      versions = self.library.getSortedVersions()
+      versions = self.getSortedVersions()
       if len(versions) > 0: return versions[-1]
       return None
 
@@ -126,7 +126,9 @@ class LibraryVersion(db.Entity):
 
     @property
     def info(self):
-      return self.to_dict(with_collections=True, related_objects=True)
+      return self.to_dict(with_collections=True
+                         , related_objects=True
+                         , exclude=["id", "sha"])
 
     def libraryVersionName(self, sep):
       return self.library.name.strip() + sep + self.name.strip()
@@ -175,6 +177,8 @@ class LibraryVersion(db.Entity):
         return self.agdaPkgFilePath
       if self.agdaLibFilePath.exists():
         return self.agdaLibFilePath
+      print(self.agdaPkgFilePath)
+      print(self.agdaLibFilePath)
       raise ValueError(" There is not library agda file for this version, is it installed?")
 
     def isLatest(self):
@@ -219,7 +223,7 @@ class LibraryVersion(db.Entity):
 @pw.register_model('word')
 class Keyword(db.Entity):
     word = PrimaryKey(str)
-    libversions = Set(LibraryVersion)
+    libVersions = Set(LibraryVersion)
     libraries = Set(Library)
 
     def __str__(self):
@@ -252,9 +256,10 @@ class Dependency(db.Entity):
     def __str__(self):
       text = self.minVersion \
         + ("<=" if self.minVersion else "") \
-        + library.name \
+        + self.library.name \
         + ("<=" if self.maxVersion else "") \
-        + self.maxVersion 
+        + self.maxVersion
+      return text 
 
     def __repr__(self):
       return str(self)

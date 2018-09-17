@@ -3,6 +3,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~
 '''
 
+# ----------------------------------------------------------------------------
 import click
 
 from git      import *
@@ -16,11 +17,10 @@ from ..service.database import ( Library
                                , Dependency
                                )
 from pony.orm import *
-
+# ----------------------------------------------------------------------------
 
 @click.group()
-def upgrade():
-	pass
+def upgrade(): pass
 
 class ProgressPrinter(RemoteProgress):
   def update(self, op_code, cur_count, max_count=None, message=''):

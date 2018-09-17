@@ -22,8 +22,7 @@ clog.basic_config(logger)
 
 # -- Command def.
 @click.group()
-def freeze():
-    pass
+def freeze(): pass
 
 @freeze.command()
 @clog.simple_verbosity_option(logger)
@@ -33,15 +32,7 @@ def freeze():
      packages are listed in a case-insensitive sorted order.
   """
 
-  libraries = select(l for l in Library if l.installed)[:]
-
-  for library in libraries:
-    versions = [v for v in library.versions if v.installed]
-
-    if len(versions) != 1:
-      logger.error("Database is corrupted. This can cause import problems in Agda.")
-      logger.info("Repair the database by running: apkg init")
-      return
-
-    installedVersion = versions[0]
-    click.echo(library.name + "==" + installedVersion.name)
+  for library in select(l for l in Library if l.installed):
+    installedVersion = library.getInstalledVersion()    
+    if installedVersion is not None:
+      logger.info(installedVersion.freezeName)

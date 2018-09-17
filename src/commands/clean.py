@@ -30,6 +30,6 @@ def clean():
   for dir in rmdirs:
     try:
       shutil.rmtree(dir)
-      logger.info("Deleted " + dir.as_posix())
+      logger.info(dir.as_posix() + " (deleted)")
     except Exception as e:
       logger.error(e)

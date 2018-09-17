@@ -9,15 +9,13 @@ from pathlib import Path
 
 from ..config import PACKAGE_SOURCES_PATH, INDEX_REPOSITORY_PATH, INDEX_REPOSITORY_URL
 
-from ..service.readLibFile  import readLibFile
-from ..service.database import db, pw
+from ..service.database import db
 from ..service.database import ( Library
                                , LibraryVersion
                                , Keyword
                                , Dependency
                                )
 from pony.orm import *
-
 import logging
 import click_log as clog
 # ----------------------------------------------------------------------------
@@ -50,18 +48,19 @@ def init(drop_tables):
       url  = Path(lib).joinpath("url").read_text()
       library = Library.get(name = name, url = url)
       if library is None:
-        brary = Library(name = name, url = url)
+        library = Library(name = name, url = url)
 
       for version in lib.joinpath("versions").glob("*"):
-        libVersion = LibraryVersion.get(library = library , name = version.name, fromIndex=True)
-        if library is None:
-          libVersion = LibraryVersion(library = library , name = version.name, fromIndex=True)
-        
-        if version.joinpath("sha1").exists():
-          libVersion.sha = version.joinpath("sha1").read_text()
-        else:
-          logger.error(version.name + " no valid")
-      commit()
+        if version.is_dir():
+          libVersion = LibraryVersion.get(library = library , name = version.name, fromIndex=True)
+          if libVersion is None:
+            libVersion = LibraryVersion(library = library , name = version.name, fromIndex=True)
+
+          if version.joinpath("sha1").exists():
+            libVersion.sha = version.joinpath("sha1").read_text()
+          else:
+            logger.error(version.name + " no valid")
+        commit()
 
     # With all libraries indexed, we proceed to create the dependencies
     # as objects for the index.
@@ -72,7 +71,7 @@ def init(drop_tables):
         click.echo(version.freezeName)
 
         info = version.readInfoFromLibFile()
-
+        version.depend.clear()
         for depend in info["depend"]:
           if type(depend) == list:
             logger.info("no supported yet but the format is X.X <= name <= Y.Y")
@@ -83,7 +82,6 @@ def init(drop_tables):
             else:
               logger.warning(depend + " is not in the index")
 
-
         info = version.readInfoFromLibFile()
         keywords = info.get("keywords", [])
         keywords += info.get("category", [])
@@ -93,5 +91,9 @@ def init(drop_tables):
           keyword =  Keyword.get(word = word)
           if keyword is None:
             keyword = Keyword(word = word)
+
+          keyword.libraries.clear()
           keyword.libraries.add(library)
-          keyword.libversions.add(version)
+
+          keyword.libVersions.clear()
+          keyword.libVersions.add(version)
