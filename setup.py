@@ -47,6 +47,7 @@ setup(
     ]
   , entry_points='''
       [console_scripts]
+      agda-pkg=src.apkg:cli
       apkg=src.apkg:cli
       '''
   , classifiers=

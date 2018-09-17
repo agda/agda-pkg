@@ -140,6 +140,7 @@ def install(ctx, libnames, src, version, no_defaults):
     else:
       versionLibrary = LibraryVersion(library=library, name=versionName)
 
+    versionLibrary.fromIndex = False
     # we may be using a new version
 
     if libname == "." :

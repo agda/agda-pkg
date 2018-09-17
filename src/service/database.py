@@ -122,7 +122,8 @@ class LibraryVersion(db.Entity):
     keywords = Set('Keyword')
     installed = Optional(bool, default=False)
     fromIndex = Optional(bool, default=False)
-    
+    composite_key(library, name)
+
     def __str__(self):
       return self.name
 
@@ -170,13 +171,13 @@ class LibraryVersion(db.Entity):
     @property
     def agdaPkgFilePath(self):
       return (self.indexPath.joinpath(self.library.name + PKG_SUFFIX) \
-              if (self.isIndexed() and not (self.installed))
+              if (self.isIndexed())
               else self.sourcePath.joinpath(self.library.name + PKG_SUFFIX))
               
     @property
     def agdaLibFilePath(self):
       return (self.indexPath.joinpath(self.library.name + LIB_SUFFIX)\
-             if (self.isIndexed() and not (self.installed))
+             if (self.isIndexed())
              else self.sourcePath.joinpath(self.library.name + LIB_SUFFIX))
       
 
