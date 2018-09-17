@@ -10,7 +10,7 @@ from pathlib import Path
 from pprint import pprint
 
 def readLibLegacyFile(fname):
-  info = { "name": "",  "include": [], "depend":[]}
+  info = { "name": "", "version": "",  "include": [], "depend":[]}
   libraryfile = Path(fname)
   assert libraryfile.suffix == ".agda-lib"
 
@@ -21,6 +21,14 @@ def readLibLegacyFile(fname):
     indexName = content.index("name:")
     name = content[indexName + 1]
     info["name"] = name.strip()
+
+    # version field
+    try:
+      versionName = content.index("version:")
+      version = content[versionName + 1]
+      info["version"] = version.strip()
+    except Exception as e:
+      info["version"] = ""
 
     # include field
     indexInclude = content.index("include:")
@@ -44,13 +52,13 @@ def readLibLegacyFile(fname):
           info["depend"].append(content[i].strip())
           i += 1
         info["depend"] = list(set(info["depend"]))
-      except Exception(e):
+      except Exception as e:
         pass
-    except ValueError:
+    except Exception as e:
       pass
   return info
 
-def readLibYAMLFile(fname):
+def readPkgFile(fname):
   libraryfile = Path(fname)
   assert libraryfile.suffix == ".agda-pkg"
 
@@ -65,5 +73,5 @@ def readLibFile(fname):
   if libraryfile.suffix == ".agda-lib":
     return readLibLegacyFile(fname)
   if libraryfile.suffix == ".agda-pkg":
-    return readLibYAMLFile(fname)
-  print( libraryfile.suffix.as_posix() + " is not supported")
+    return readPkgFile(fname)
+  return None

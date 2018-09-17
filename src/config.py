@@ -27,7 +27,7 @@ except Exception(FileNotFoundError):
   print("Agda is not installed on this machine")
 
 
-AGDA_PKG_PATH = Path().home().joinpath('apkg' + ("-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
+AGDA_PKG_PATH = Path().home().joinpath('.apkg' + ("-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
 GITHUB_USER  = "apkgbot"
 
 # The github repository index of all agda packages
@@ -46,11 +46,10 @@ DATABASE_FILE_NAME = INDEX_REPOSITORY_NAME + ".db"
 DATABASE_FILE_PATH = AGDA_PKG_PATH.joinpath(DATABASE_FILE_NAME)
 DATABASE_SEARCH_INDEXES_PATH = AGDA_PKG_PATH.joinpath("search-indexes")
 
-
-
-
 REPO = None
 
+PKG_SUFFIX = ".agda-pkg"
+LIB_SUFFIX = ".agda-lib"
 # -----------------------------------------------------------------------------
 
 if not AGDA_PKG_PATH.exists():

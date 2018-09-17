@@ -32,8 +32,6 @@ from ..service.database import ( Library
                                , TestedWith
                                , Dependency
                                )
-from ..service.sortVersions import sortVersions
-from pprint   import pprint
 from pony.orm import *
 import shutil
 
@@ -52,34 +50,32 @@ def uninstall():
 
 @uninstall.command()
 @click.argument('libname')
+@click.option('--remove-files'
+             , type=bool
+             , default=False
+             , help='remove all source code related')
 @clog.simple_verbosity_option(logger)
 @db_session
-def uninstall(libname):
+def uninstall(libname, remove_files):
   library = Library.get(name = libname, installed = True)
   if library is not None:
     if click.confirm("Uninstalling... " + libname):
       try:
         library.installed = False
         library.default   = False
-        for version in library.versions:
-          version.installed = False
-          if version.user_version:
+        for v in library.versions:
+          v.installed = False
+          if v.user_version:
             try:
-              msg = "Delete all files in "+version.installation_path
-              if click.confirm(msg):
-                shutil.rmtree(version.installation_path)
+              msg = "Delete all files in " + v.installationPath
+              if remove_files or click.confirm(msg):
+                shutil.rmtree(v.installationPath)
             except Exception as e:
-              logger.error("Problems removing " + version.installation_path)
+              logger.error("Problems removing " + v.installationPath)
         writeAgdaDirFiles(True)
         logger.info(libname + " uninstalled")
         commit()
 
       except Expection as e:
         logger.error(e)
-  libraries = select(library for library in Library)[:]
-  for library in libraries:
-    print(library)
-    versions = sortVersions(library.name)
-    if len(versions) > 0:
-      versions[-1].latest = True
   commit()

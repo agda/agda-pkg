@@ -6,6 +6,12 @@
 import click
 from tempfile import *
 
+
+
+def download(index=True):
+  pass
+
+
 @click.group()
 def download():
   pass
