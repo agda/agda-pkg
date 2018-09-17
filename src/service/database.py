@@ -34,6 +34,7 @@ from operator import attrgetter, itemgetter
 import yaml
 
 import logging
+import shutil
 
 # ----------------------------------------------------------------------------
 
@@ -90,7 +91,7 @@ class Library(db.Entity):
 
     def getInstalledVersion(self):
       versions = [v for v in self.versions if v.installed]
-      if len(versions) == 1: return version[0]
+      if len(versions) == 1: return versions[0]
       return None
 
     def getLatestVersion(self):
@@ -104,6 +105,10 @@ class Library(db.Entity):
         return version.locationName()
       return self.name # --not sure about this
 
+    def uninstall(self):
+      self.installed = False
+      self.default = False
+
 @pw.register_model('name', 'description')
 class LibraryVersion(db.Entity):
     library = Required(Library)
@@ -116,7 +121,7 @@ class LibraryVersion(db.Entity):
     testedWith = Set('TestedWith')
     keywords = Set('Keyword')
     installed = Optional(bool, default=False)
-    fromIndex = Optional(bool, default=True)
+    fromIndex = Optional(bool, default=False)
     
     def __str__(self):
       return self.name
@@ -148,9 +153,6 @@ class LibraryVersion(db.Entity):
     def isUserVersion(self):
       return (not self.isIndexed())
 
-    @property
-    def installationPath(self):
-      return PACKAGE_SOURCES_PATH.joinpath(self.locationName)
 
     @property
     def indexPath(self):
@@ -162,14 +164,20 @@ class LibraryVersion(db.Entity):
              )
 
     @property
+    def sourcePath(self):
+      return PACKAGE_SOURCES_PATH.joinpath(self.locationName)
+
+    @property
     def agdaPkgFilePath(self):
-      return (self.indexPath.joinpath(self.library.name + PKG_SUFFIX) if (self.isIndexed() and not (self.installed))
-              else self.installationPath.joinpath(self.library.name + PKG_SUFFIX))
+      return (self.indexPath.joinpath(self.library.name + PKG_SUFFIX) \
+              if (self.isIndexed() and not (self.installed))
+              else self.sourcePath.joinpath(self.library.name + PKG_SUFFIX))
               
     @property
     def agdaLibFilePath(self):
-      return (self.indexPath.joinpath(self.library.name + LIB_SUFFIX) if (self.isIndexed() and not (self.installed))
-              else self.installationPath.joinpath(self.library.name + PKG_SUFFIX))
+      return (self.indexPath.joinpath(self.library.name + LIB_SUFFIX)\
+             if (self.isIndexed() and not (self.installed))
+             else self.sourcePath.joinpath(self.library.name + LIB_SUFFIX))
       
 
     def getLibFilePath(self):
@@ -177,8 +185,8 @@ class LibraryVersion(db.Entity):
         return self.agdaPkgFilePath
       if self.agdaLibFilePath.exists():
         return self.agdaLibFilePath
-      print(self.agdaPkgFilePath)
-      print(self.agdaLibFilePath)
+      print(self.agdaPkgFilePath, self.agdaPkgFilePath.exists())
+      print(self.agdaLibFilePath,  self.agdaLibFilePath.exists())
       raise ValueError(" There is not library agda file for this version, is it installed?")
 
     def isLatest(self):
@@ -219,6 +227,23 @@ class LibraryVersion(db.Entity):
 
     def readInfoFromLibFile(self):
       return readLibFile(self.getLibFilePath())    
+  
+    def removeSources(self):
+      try:
+        if self.sourcePath.exists():
+          shutil.rmtree(self.sourcePath.as_posix())
+      except Exception as e:
+        logger.error(e)
+        logger.error("Problems uninstalling directory:" + self.sourcePath.as_posix())
+
+    def uninstall(self):
+      self.installed = False
+      self.removeSources()
+      self.library.uninstall()
+
+    def toDefaults(self):
+      self.library.default = True
+
 
 @pw.register_model('word')
 class Keyword(db.Entity):

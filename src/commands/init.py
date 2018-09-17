@@ -6,18 +6,20 @@
 # ----------------------------------------------------------------------------
 import click
 from pathlib import Path
+from pony.orm import *
+import logging
+import click_log as clog
 
-from ..config import PACKAGE_SOURCES_PATH, INDEX_REPOSITORY_PATH, INDEX_REPOSITORY_URL
-
+from ..config import ( PACKAGE_SOURCES_PATH
+                     , INDEX_REPOSITORY_PATH
+                     , INDEX_REPOSITORY_URL
+                     )
 from ..service.database import db
 from ..service.database import ( Library
                                , LibraryVersion
                                , Keyword
                                , Dependency
                                )
-from pony.orm import *
-import logging
-import click_log as clog
 # ----------------------------------------------------------------------------
 
 # -- Logger def.
@@ -52,9 +54,14 @@ def init(drop_tables):
 
       for version in lib.joinpath("versions").glob("*"):
         if version.is_dir():
-          libVersion = LibraryVersion.get(library = library , name = version.name, fromIndex=True)
+          libVersion = LibraryVersion.get( library=library
+                                         , name=version.name
+                                         , fromIndex=True
+                                         )
           if libVersion is None:
-            libVersion = LibraryVersion(library = library , name = version.name, fromIndex=True)
+            libVersion = LibraryVersion( library=library
+                                       , name=version.name
+                                       , fromIndex=True)
 
           if version.joinpath("sha1").exists():
             libVersion.sha = version.joinpath("sha1").read_text()
@@ -83,8 +90,8 @@ def init(drop_tables):
               logger.warning(depend + " is not in the index")
 
         info = version.readInfoFromLibFile()
-        keywords = info.get("keywords", [])
-        keywords += info.get("category", [])
+
+        keywords = info.get("keywords", []) + info.get("category", [])
         keywords = list(set(keywords))
 
         for word in keywords:

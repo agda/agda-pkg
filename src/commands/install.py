@@ -5,25 +5,29 @@
 
 # ----------------------------------------------------------------------------
 import click
+import click_log as clog
+
+import shutil
+import uuid
+import logging
+
 from pathlib import Path
+from pony.orm import *
 
-from ..config import PACKAGE_SOURCES_PATH, INDEX_REPOSITORY_PATH
 
-from ..service.readLibFile  import readLibFile
+from .uninstall import uninstall
+from ..config import ( PACKAGE_SOURCES_PATH
+                     , INDEX_REPOSITORY_PATH
+                     )
+
 from ..service.database import db, pw
 from ..service.database import ( Library
                                , LibraryVersion
                                , Keyword
                                , Dependency
                                )
+from ..service.readLibFile       import readLibFile
 from ..service.writeAgdaDirFiles import writeAgdaDirFiles
-from pony.orm import *
-import uuid
-import shutil
-from .uninstall import uninstall
-
-import logging
-import click_log as clog
 # ----------------------------------------------------------------------------
 
 # -- Logger def.
@@ -55,9 +59,13 @@ def install(ctx, libnames, src, version, no_defaults):
 
   libnames = list(set(libnames))
   if len(libnames) == 0: libnames = ["."]
+  if len(libnames) > 0 and version != "":
+    logger.error("--version only works with one library, no more")
+    return
 
   for libname in libnames:
     if libname != ".": logger.info("Installing... " + libname)
+    else: logger.info("Installing local library...")
 
     # local variables
     libFile = Path("")
@@ -71,15 +79,16 @@ def install(ctx, libnames, src, version, no_defaults):
     if libname == ".":
 
       if version != "":
-        logger.error("You can not use --version when installing local a local library")
+        logger.error("You can not use --version when installing a local library")
         return
 
-      logger.info("Installation for user libraries")
-      pathlib = Path().cwd().joinpath(Path(src))
-      logger.info("Library location: " + pathlib.as_posix())
+      logger.info("Installating...")
 
-      agdaLibFiles = [ f for f in pathlib.glob("*.agda-lib") if f.is_file() ]
-      agdaPkgFiles = [ f for f in pathlib.glob("*.agda-pkg") if f.is_file() ]
+      pwd = Path().cwd().joinpath(Path(src))
+      logger.info("Library location: " + pwd.as_posix())
+
+      agdaLibFiles = [ f for f in pwd.glob("*.agda-lib") if f.is_file() ]
+      agdaPkgFiles = [ f for f in pwd.glob("*.agda-pkg") if f.is_file() ]
 
       # pkg has priority over lib files.
 
@@ -90,7 +99,7 @@ def install(ctx, libnames, src, version, no_defaults):
       elif len(agdaPkgFiles) == 1:
         libFile  = agdaPkgFiles[0]
       elif len(agdaLibFiles) == 1:
-        # -- TODO: offer the posibility to create a file agda-pkg!
+        # -- TODO: offer the posibility ssto create a file agda-pkg!
         libFile  = agdaLibFiles[0]
       else:
         logger.error("None or many agda libraries files.")
@@ -100,86 +109,92 @@ def install(ctx, libnames, src, version, no_defaults):
       info = readLibFile(libFile)
 
       name = info["name"]
-      logger.info("Name: " + name)
+      logger.info("name: " + name)
 
       versionName = str(info["version"])
-      logger.info("Version: " + versionName)
+      if versionName == "": versionName = str(uuid.uuid1())
+      logger.info("version: " + versionName)
+
+    else:
+      logger.error("No supported installation from the index.")
+      return 
 
     library = Library.get(name=name)
-    versionLibrary = None
+    if library is None:
+      library = Library(name=name)
 
-    if library is not None:
-      logger.info("Library name exists")
-      versionLibrary = LibraryVersion.get(library=library, name = versionName)
-      if versionLibrary is not None:
-        logger.info("Library Version exists")
-        logger.warning(name + "@" + versionName +" is already installed.")
-        versionName = str(info["version"]) +"-" + str(uuid.uuid1())
-        logger.warning("The new name is " + name + "@" + versionName)
-        if click.confirm('Do you want to continue?'):
-          ctx.invoke(uninstall,libname=name)
+    versionLibrary = LibraryVersion.get(library=library, name=versionName)
+    if versionLibrary is not None:
+      if versionLibrary.installed:
+        logger.warning("This version (" + versionLibrary.freezeName + ") is in the apkg-database")
+        if click.confirm('Do you want to uninstall it?'):
+          ctx.invoke(uninstall,libname=name, remove_files=True)
         else:
-          return
+          versionNameProposed = str(info["version"]) + "-" + str(uuid.uuid1())
+          logger.warning("Renaming version to " + name + "@" + versionNameProposed)
+          if click.confirm('Do you want to install it using this version?', abort=True):
+            versionLibrary = LibraryVersion(library=library, name=versionNameProposed)
+      else:
+        if versionLibrary.sourcePath.exists():
+          versionLibrary.sourcePath.rmdir()
     else:
-      library = Library(name = name)
-
-    library.installed = True
-    library.default = not(no_defaults)
-
-    for v in library.versions:
-      v.installed = False
-      v.latest    = False
+      versionLibrary = LibraryVersion(library=library, name=versionName)
 
     # we may be using a new version
-    versionLibrary = LibraryVersion.get(library=library, name = versionName)
-    if versionLibrary is None:
-      versionLibrary = LibraryVersion(library = library, name = versionName)
-
-    locationName = library.name + "@" + versionName
-    versionLibrary.user_version = True
-    versionLibrary.installed    = True
-
-    versionLibrary.info_path = (PACKAGE_SOURCES_PATH
-                               .joinpath(locationName)
-                               .joinpath(libFile.name)
-                               .as_posix())
-    versionLibrary.installationPath = (PACKAGE_SOURCES_PATH
-                                       .joinpath(locationName)
-                                       .as_posix())
-
-    if Path(versionLibrary.installationPath).exists():
-      Path(versionLibrary.installationPath).rmdir()
 
     if libname == "." :
       # I should just copy the important content
       try:
-        shutil.copytree(Path().cwd().as_posix(), versionLibrary.installationPath)
+        if versionLibrary.sourcePath.exists():
+          versionLibrary.sourcePath.rmdir()
+        shutil.copytree(Path().cwd().as_posix(), versionLibrary.sourcePath)
       except Exception as e:
         logger.error(e)
-        logger.error("Fail to copy directory..." + Path().cwd().as_posix())
+        logger.error("Fail to copy directory (" + Path().cwd().as_posix() + ")") 
         return
-
     commit()
 
-    keywords = info.get("keywords", []) + info.get("category", [])
-    keywords = list(set(keywords))
+    try:
+      info = versionLibrary.readInfoFromLibFile()
+      keywords = info.get("keywords", []) + info.get("category", [])
+      keywords = list(set(keywords))
 
-    for word in keywords:
-      keyword =  Keyword.get_for_update(word = word)
-      if keyword is None:
-        keyword = Keyword(word = word)
+      for word in keywords:
+        keyword = Keyword.get_for_update(word = word)
+        if keyword is None:
+          keyword = Keyword(word = word)
+        
+        if not library in keyword.libraries:
+          keyword.libraries.add(library)
+        if not versionLibrary in keyword.libVersions:
+          keyword.libVersions.add(versionLibrary)
 
-      keyword.libraries.add(library)
-      keyword.libversions.add(versionLibrary)
-
-    for depend in info["depend"]:
-      if type(depend) == list:
-        logger.info("no supported yet but the format is X.X <= name <= Y.Y")
-      else:
-        dependency = Library.get(name = depend)
-        if dependency is not None:
-          versionLibrary.depend.add(Dependency(library = dependency))
+      for depend in info["depend"]:
+        if type(depend) == list:
+          logger.info("no supported yet but the format is X.X <= name <= Y.Y")
         else:
-          logger.warning(depend + " is not in the index")
-    commit()
-    writeAgdaDirFiles(True)
+          dependency = Library.get(name = depend)
+          if dependency is not None:
+            versionLibrary.depend.add(Dependency(library = dependency))
+          else:
+            logger.warning(depend + " is not in the index")
+      commit()
+    except Exception as e:
+      versionLibrary.sourcePath.rmdir()
+      logger.error(e)
+      logger.error("(1)")
+      return 
+
+    try:
+      library.installed = True
+      library.default = not(no_defaults)
+      for v in library.versions:
+        v.installed = False
+      versionLibrary.installed = True
+      versionLibrary.fromIndex = False
+      writeAgdaDirFiles(True)
+      commit()
+    except Exception as e:
+      versionLibrary.sourcePath.rmdir()
+      logger.error(e)
+      logger.error("(2)")

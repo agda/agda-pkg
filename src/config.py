@@ -26,20 +26,19 @@ try:
 except Exception(FileNotFoundError):
   print("Agda is not installed on this machine")
 
-
-AGDA_PKG_PATH = Path().home().joinpath('.apkg' + ("-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
-GITHUB_USER  = "apkgbot"
+AGDA_PKG_PATH = Path().home().joinpath('.apkg' + ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
+GITHUB_USER   = "apkgbot"
 
 # The github repository index of all agda packages
 INDEX_REPOSITORY_NAME = "package-index"
 INDEX_REPOSITORY_URL = \
   "https://github.com/"+ GITHUB_USER + "/" + INDEX_REPOSITORY_NAME + ".git"
 INDEX_REPOSITORY_BRANCH = "master"
-INDEX_REPOSITORY_PATH  = AGDA_PKG_PATH.joinpath(INDEX_REPOSITORY_NAME)
+INDEX_REPOSITORY_PATH   = AGDA_PKG_PATH.joinpath(INDEX_REPOSITORY_NAME)
 
 # this is folder where I keep all the source code for every library installed
 PACKAGE_SOURCES_NAME = "package-sources"
-PACKAGE_SOURCES_PATH  = AGDA_PKG_PATH.joinpath(PACKAGE_SOURCES_NAME)
+PACKAGE_SOURCES_PATH = AGDA_PKG_PATH.joinpath(PACKAGE_SOURCES_NAME)
 
 # We want to search fast queries using a database
 DATABASE_FILE_NAME = INDEX_REPOSITORY_NAME + ".db"

@@ -16,7 +16,7 @@ from ..config import ( AGDA_DEFAULTS_PATH
                      )
 
 from ..service.readLibFile import readLibFile
-from ..service.database import db, pw
+from ..service.database import db
 from ..service.database import ( Library
                                , LibraryVersion
                                , Keyword
@@ -45,17 +45,15 @@ def writeAgdaDirFiles(debug = False):
   if debug: click.echo("Updating files for Agda...")
   # libraries file
   libVersions = getLibraries()
-  if debug: click.echo(str(len(libVersions)) + " librar"+("ies" if len(libVersions) != 1 else "y")+ " available")
-
-  path_libraries = header + \
-    '\n'.join([libVer.freezeName for libVer in libVersions])
-  AGDA_LIBRARIES_PATH.write_text(path_libraries)
-
-  if debug: click.echo(AGDA_LIBRARIES_PATH.as_posix() + " (updated)")
+  
+  try:
+    AGDA_LIBRARIES_PATH.write_text(header + '\n'.join([v.agdaLibFilePath.as_posix() for v in libVersions])+'\n')
+    if debug: click.echo(AGDA_LIBRARIES_PATH.as_posix() + " (updated)")
+  except Exception as e:
+    click.echo(e)
 
   # defaults file
   defaults = getDefaultLibraries()
-  if debug: click.echo(str(len(defaults)) + " librar"+("ies" if len(defaults) != 1 else "y") +" by default")
   default_libraries = header + '\n'.join( lib.name for lib in defaults) + '\n'
   AGDA_DEFAULTS_PATH.write_text(default_libraries)
   if debug: click.echo(AGDA_DEFAULTS_PATH.as_posix() + " (updated)")

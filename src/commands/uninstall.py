@@ -50,32 +50,28 @@ def uninstall():
 
 @uninstall.command()
 @click.argument('libname')
-@click.option('--remove-files'
+@click.option('--database'
              , type=bool
              , default=False
-             , help='remove all source code related')
+             , help='remove from the database as well')
 @clog.simple_verbosity_option(logger)
+@click.confirmation_option(prompt='Are you sure you want to uninstall it?')
 @db_session
-def uninstall(libname, remove_files):
-  library = Library.get(name = libname, installed = True)
-  if library is not None:
-    if click.confirm("Uninstalling... " + libname):
-      try:
-        library.installed = False
-        library.default   = False
-        for v in library.versions:
-          v.installed = False
-          if v.user_version:
-            try:
-              msg = "Delete all files in " + v.installationPath
-              if remove_files or click.confirm(msg):
-                shutil.rmtree(v.installationPath)
-            except Exception as e:
-              logger.error("Problems removing " + v.installationPath)
-        writeAgdaDirFiles(True)
-        logger.info(libname + " uninstalled")
-        commit()
-
-      except Expection as e:
-        logger.error(e)
+def uninstall(libname, database):
+  library = Library.get(name = libname)
+  if library is None: return 
+  for version in library.versions:
+    try:
+      if database:
+        LibraryVersion.remove(version)
+      version.uninstall()
+    except Exception as e:
+      logger.error(e)
+      logger.error("u1")
+      
+  if database:
+    Library.remove(library)
+  else:
+    library.uninstall()
   commit()
+  writeAgdaDirFiles(True)
