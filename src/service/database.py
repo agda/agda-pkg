@@ -99,6 +99,12 @@ class Library(db.Entity):
       if len(versions) > 0: return versions[-1]
       return None
 
+    def getLatestCachedVersion(self):
+      versions = [v for v in self.versions if v.cached]
+      versions = natsorted(versions, key=attrgetter('name'))
+      if len(versions) > 0: return versions[-1]
+      return None
+
     def freezeName(self):
       version = self.getInstalledVersion()
       if version is not None:
@@ -108,6 +114,11 @@ class Library(db.Entity):
     def uninstall(self):
       self.installed = False
       self.default = False
+
+
+    def install(self, defaults=True):
+      self.installed = True
+      self.default = defaults
 
 @pw.register_model('name', 'description')
 class LibraryVersion(db.Entity):
@@ -122,6 +133,8 @@ class LibraryVersion(db.Entity):
     keywords = Set('Keyword')
     installed = Optional(bool, default=False)
     fromIndex = Optional(bool, default=False)
+    cached = Optional(bool, default=False)
+
     composite_key(library, name)
 
     def __str__(self):
@@ -147,6 +160,9 @@ class LibraryVersion(db.Entity):
     def freezeName(self):
       if self.name == "": return self.library.name
       return self.libraryVersionName("==")
+
+    def isCached(self):
+      return self.cached
 
     def isIndexed(self):
       return self.fromIndex
@@ -237,13 +253,20 @@ class LibraryVersion(db.Entity):
         logger.error(e)
         logger.error("Problems uninstalling directory:" + self.sourcePath.as_posix())
 
-    def uninstall(self):
+
+
+    def uninstall(self, remove_cache=True):
       self.installed = False
-      self.removeSources()
+      if remove_cache:
+        self.removeSources()
       self.library.uninstall()
 
-    def toDefaults(self):
-      self.library.default = True
+    def install(self, defaults=True):
+      for v in self.library.versions:
+        v.installed = False
+      self.installed = True
+      self.cached = True
+      self.library.install(defaults)
 
 
 @pw.register_model('word')

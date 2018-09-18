@@ -50,12 +50,16 @@ def install(): pass
              , help='info of one version')
 @click.option('--no-defaults'
              , type=bool
-             , default=False
+             , is_flag=True 
              , help='do not installed as a default library')
+@click.option('--cache'
+             , type=bool
+             , is_flag=True 
+             , help='install the cache version')
 @clog.simple_verbosity_option(logger)
 @click.pass_context
 @db_session
-def install(ctx, libnames, src, version, no_defaults):
+def install(ctx, libnames, src, version, no_defaults, cache):
 
   libnames = list(set(libnames))
   if len(libnames) == 0: libnames = ["."]
@@ -116,19 +120,45 @@ def install(ctx, libnames, src, version, no_defaults):
       logger.info("version: " + versionName)
 
     else:
-      logger.error("No supported installation from the index.")
-      return 
+      # Check first if the library is in the cache
+      library = Library.get(name=libname)
+      if library is not None:
+        versionLibrary = None
+        if version == "":
+          versionLibrary = library.getLatestCachedVersion()
+        else:
+          versionLibrary = LibraryVersion(library=library, name=version, cached=True)
+        if versionLibrary is not None:
+          if versionLibrary.installed:
+            logger.warning("This library is installed")
+            return
+          if click.confirm('Do you want to install the cached version?'):
+            versionLibrary.install()
+            writeAgdaDirFiles(True)
+            return
+          else:
+            logger.error("No supported yet installation from the index")
+            return
+      else:
+        logger.error("No supported yet installation from the index")
+        return
 
+    # At this point we have the name from the local library
     library = Library.get(name=name)
-    if library is None:
+    if library is None and libname == "." :
       library = Library(name=name)
 
     versionLibrary = LibraryVersion.get(library=library, name=versionName)
+
     if versionLibrary is not None:
       if versionLibrary.installed:
-        logger.warning("This version (" + versionLibrary.freezeName + ") is in the apkg-database")
-        if click.confirm('Do you want to uninstall it?'):
-          ctx.invoke(uninstall,libname=name, remove_files=True)
+        logger.warning("This version ({})) is already installed!"
+                        .format(versionLibrary.freezeName))
+        if click.confirm('Do you want to uninstall it first?'):
+          ctx.invoke( uninstall
+                    , libname=name
+                    , remove_cache=True
+                    )
         else:
           versionNameProposed = str(info["version"]) + "-" + str(uuid.uuid1())
           logger.warning("Renaming version to " + name + "@" + versionNameProposed)
@@ -136,9 +166,12 @@ def install(ctx, libnames, src, version, no_defaults):
             versionLibrary = LibraryVersion(library=library, name=versionNameProposed)
       else:
         if versionLibrary.sourcePath.exists():
-          versionLibrary.sourcePath.rmdir()
+          shutil.rmtree(versionLibrary.sourcePath)
     else:
-      versionLibrary = LibraryVersion(library=library, name=versionName)
+      versionLibrary = LibraryVersion( library=library
+                                     , name=versionName
+                                     , cached=True
+                                     )
 
     versionLibrary.fromIndex = False
     # we may be using a new version
@@ -187,12 +220,7 @@ def install(ctx, libnames, src, version, no_defaults):
       return 
 
     try:
-      library.installed = True
-      library.default = not(no_defaults)
-      for v in library.versions:
-        v.installed = False
-      versionLibrary.installed = True
-      versionLibrary.fromIndex = False
+      versionLibrary.install(not(no_defaults))
       writeAgdaDirFiles(True)
       commit()
     except Exception as e:

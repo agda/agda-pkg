@@ -53,18 +53,25 @@ def uninstall():
 @click.option('--database'
              , type=bool
              , default=False
+             , is_flag=True 
              , help='remove from the database as well')
+@click.option('--remove-cache'
+             , type=bool
+             , is_flag=True 
+             , help='remove files completely')
 @clog.simple_verbosity_option(logger)
 @click.confirmation_option(prompt='Are you sure you want to uninstall it?')
 @db_session
-def uninstall(libname, database):
+def uninstall(libname, database, remove_cache):
   library = Library.get(name = libname)
   if library is None: return 
   for version in library.versions:
     try:
       if database:
+        version.uninstall(True)
         LibraryVersion.remove(version)
-      version.uninstall()
+      else:
+        version.uninstall(remove_cache)
     except Exception as e:
       logger.error(e)
       logger.error("u1")
