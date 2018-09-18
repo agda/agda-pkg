@@ -91,6 +91,7 @@ for personal reasons, we choose Python for its flexibility.
 
 ## TODO
 
+- [ ] Test for all the commands and combinations of common actions
 - [ ] Install from the git repositories using info from the index
 - [ ] Install from the git repositories
 - [ ] Update command
