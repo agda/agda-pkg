@@ -119,6 +119,7 @@ for personal reasons, we choose Python for its flexibility.
 - [ ] Doctor command for problems
 - [ ] Specify the version of agda to install packages
 - [ ] Update command
+- [ ] Have .apkg-project to set up the defaults libraries for the current agda session.
 
  
 
