@@ -91,7 +91,13 @@ for personal reasons, we choose Python for its flexibility.
 
 ## TODO
 
-- [ ] Test for all the commands and combinations of common actions
+- [ ] Offer the chance to generate pkg file and normal files
+- [ ] Improve help messages
+- [ ] Index the main libraries, maybe from Agda wiki
+- [ ] Specify the version of agda to install packages
+- [ ] Update command
+- [ ] Have .apkg-project to set up the defaults libraries for the current agda session.
+- [ ] [Test](https://docs.python.org/3/library/unittest.html) for all the commands and combinations of common actions
 - [ ] Split the install command in index/local/urls/gits
 - [ ] Install from a url:
   - Create a temporal directory
@@ -107,19 +113,14 @@ for personal reasons, we choose Python for its flexibility.
   - Check the version to exists (git tag..)
   - Install as a git repository
   - git checkout on the package source with the tag or commit
-- [ ] Info command to show stats of the index package
+  
 - [ ] Read relevant environment variables like AGDA_DIR
 - [ ] Travis at least on OSX
 - [ ] Pip package 
-- [ ] Offer the chance to generate pkg file and normal files
 - [ ] Show info to open issues when an error happens
-- [ ] Improve help messages
-- [ ] Index the main libraries, maybe from Agda wiki
 - [ ] Comment in the Agda mail-listings
 - [ ] Doctor command for problems
-- [ ] Specify the version of agda to install packages
-- [ ] Update command
-- [ ] Have .apkg-project to set up the defaults libraries for the current agda session.
+- [ ] Info command to show stats of the index package
 
  
 

@@ -132,8 +132,12 @@ class LibraryVersion(db.Entity):
     testedWith = Set('TestedWith')
     keywords = Set('Keyword')
     installed = Optional(bool, default=False)
-    fromIndex = Optional(bool, default=False)
     cached = Optional(bool, default=False)
+
+    fromIndex = Optional(bool, default=False)
+    fromUrl = Optional(bool, default=False)
+    fromGit = Optional(bool, default=False)
+    origin  = Optional(str) # path, url, git
 
     composite_key(library, name)
 
@@ -204,7 +208,8 @@ class LibraryVersion(db.Entity):
         return self.agdaLibFilePath
       print(self.agdaPkgFilePath, self.agdaPkgFilePath.exists())
       print(self.agdaLibFilePath,  self.agdaLibFilePath.exists())
-      raise ValueError(" There is not library agda file for this version, is it installed?")
+      raise ValueError(" There is not library agda file for this version,\
+                         is it installed?")
 
     def isLatest(self):
       versions = self.library.getSortedVersions()
@@ -212,11 +217,10 @@ class LibraryVersion(db.Entity):
 
     def tolibFormat(self):
       msg = '\n'.join(
-            [ "name: %s" % self.library.name
-            , "version: %s" % self.name
-            , "include: %s" % ' '.join([inc for inc in self.include.split()])
-            , "depend: %s" % ' '.join([dep.library.name for dep in self.depend.split()])
-            ])
+        [ "name: %s" % self.library.name
+        , "include: %s" % ' '.join([inc for inc in self.include.split()])
+        , "depend: %s" % ' '.join([d.library.name for d in self.depend.split()])
+        ])
       return '\n'.join(msg)
 
     def toPkgFormat(self):
@@ -251,8 +255,8 @@ class LibraryVersion(db.Entity):
           shutil.rmtree(self.sourcePath.as_posix())
       except Exception as e:
         logger.error(e)
-        logger.error("Problems uninstalling directory:" + self.sourcePath.as_posix())
-
+        logger.error("Problems uninstalling directory:" \
+                    + self.sourcePath.as_posix())
 
 
     def uninstall(self, remove_cache=True):
@@ -293,7 +297,6 @@ class TestedWith(db.Entity):
     def __repr__(self):
       return "agda-" + self.agdaVersion
         
-
 
 class Dependency(db.Entity):
     id = PrimaryKey(int, auto=True)
