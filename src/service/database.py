@@ -206,8 +206,8 @@ class LibraryVersion(db.Entity):
         return self.agdaPkgFilePath
       if self.agdaLibFilePath.exists():
         return self.agdaLibFilePath
-      print(self.agdaPkgFilePath, self.agdaPkgFilePath.exists())
-      print(self.agdaLibFilePath,  self.agdaLibFilePath.exists())
+      # print(self.agdaPkgFilePath, self.agdaPkgFilePath.exists())
+      # print(self.agdaLibFilePath,  self.agdaLibFilePath.exists())
       raise ValueError(" There is not library agda file for this version,\
                          is it installed?")
 

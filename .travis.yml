@@ -22,9 +22,9 @@ script:
   - cd /tmp/agda-stdlib && apkg install
   - cd /tmp/agda-prop && apkg install
   - cd /tmp/agda-metis && apkg install
-  - cd /tmp/agda-metis && make 
+  - cd /tmp/agda-metis && make test
   - apkg search agda
   - apkg info agda-prop
   - apkg freeze
-  - apkg uninstall agda-metis
+  - apkg uninstall agda-metis --yes --remove-cache
   - apkg freeze

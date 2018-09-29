@@ -184,10 +184,10 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
   try:
     if versionLibrary.sourcePath.exists():
       versionLibrary.sourcePath.rmdir()
-    shutil.copytree(Path().cwd().as_posix(), versionLibrary.sourcePath)
+    shutil.copytree(pwd.as_posix(), versionLibrary.sourcePath)
   except Exception as e:
     logger.error(e)
-    logger.error("Fail to copy directory (" + Path().cwd().as_posix() + ")") 
+    logger.error("Fail to copy directory (" + pwd.as_posix() + ")") 
     return None
     
   commit()
@@ -245,7 +245,7 @@ def installFromURL(url, src, version, no_defaults, cache):
   return None
 
 # ----------------------------------------------------------------------------
-def installFromGit(url, src, version, no_defaults, cache, branch="master"):
+def installFromGit(url, src, version, no_defaults, cache, branch):
   logger.info("Installing from git: %s" % url )
   if not isGit(url):
     logger.error("this is not a git repository")
@@ -253,10 +253,14 @@ def installFromGit(url, src, version, no_defaults, cache, branch="master"):
   with TemporaryDirectory() as tmpdirname:
     print("Using temporal directory:", tmpdirname)
     try:
+      if branch is None: branch = "master"
+      if Path(tmpdirname).exists():
+        shutil.rmtree(tmpdirname)
+
       REPO = git.Repo.clone_from(url, tmpdirname, branch=branch)
       if version != "":
         try:
-          logger.info("Using commit verson", version)
+          logger.info("Using commit version", version)
           REPO.commit(version)
         except Exception as e:
           logger.error(" version or tag not found it " + version)
@@ -274,6 +278,7 @@ def installFromGit(url, src, version, no_defaults, cache, branch="master"):
       return libVersion
     except Exception as e:
       logger.error(e)
+      logger.error("Problems install from this git repository")
       return None
 
 # ----------------------------------------------------------------------------
