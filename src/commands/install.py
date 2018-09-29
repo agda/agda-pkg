@@ -105,7 +105,7 @@ def installFromIndex(libname, src, version, no_defaults, cache):
 def installFromLocal(pathlib, src, version, no_defaults, cache):
   # check
   # pathlib is . or is a directory in the filesystem 
-  logger.info("Installing from a local package...")
+  logger.info("Installing as a local package...")
 
   if len(pathlib) == 0 or pathlib == ".":
     pathlib = Path().cwd()
@@ -245,7 +245,7 @@ def installFromURL(url, src, version, no_defaults, cache):
   return None
 
 # ----------------------------------------------------------------------------
-def installFromGit(url, src, version, no_defaults, cache, branch):
+def installFromGit(url, src, version, no_defaults, cache, branch="master"):
   logger.info("Installing from git: %s" % url )
   if not isGit(url):
     logger.error("this is not a git repository")
@@ -253,10 +253,23 @@ def installFromGit(url, src, version, no_defaults, cache, branch):
   with TemporaryDirectory() as tmpdirname:
     print("Using temporal directory:", tmpdirname)
     try:
-      REPO = git.Repo.clone_from(url, tmpdirname)
+      REPO = git.Repo.clone_from(url, tmpdirname, branch=branch)
+      if version != "":
+        try:
+          logger.info("Using commit verson", version)
+          REPO.commit(version)
+        except Exception as e:
+          logger.error(" version or tag not found it " + version)
+          return None
+
       libVersion = installFromLocal(tmpdirname, src, version, no_defaults, cache)
       libVersion.fromGit = True
       libVersion.origin = url
+      libVersion.library.url = url
+
+      if version != "":
+        libVersion.name = version
+        libVersion.sha = REPO.head.commit.hexsha
       commit()
       return libVersion
     except Exception as e:
