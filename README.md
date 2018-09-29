@@ -1,4 +1,4 @@
-# agda-pkg v0.1
+# agda-pkg v0.1 [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg)
 
 The next package manager for Agda. This will bring the most common features
 of other package manager to the Agda proof-assistant.
@@ -115,7 +115,7 @@ for personal reasons, we choose Python for its flexibility.
   - git checkout on the package source with the tag or commit
   
 - [ ] Read relevant environment variables like AGDA_DIR
-- [ ] Travis at least on OSX
+- [x] Travis at least on OSX
 - [ ] Pip package 
 - [ ] Show info to open issues when an error happens
 - [ ] Comment in the Agda mail-listings

@@ -1,0 +1,32 @@
+# This file was adapted from https://github.com/hvr/multi-ghc-travis
+os:
+  osx
+language: python
+python:
+  - 3.6
+
+before_install:
+  - brew update
+  - brew install python3
+
+  - brew install ghc
+  - brew install agda
+
+  - brew install tree
+
+script:
+  - pip3 install --editable .
+  - apkg clean
+  - apkg init
+  - cd /tmp/ && git clone http://github.com/agda/agda-stdlib
+  - cd /tmp/ && git clone http://github.com/jonaprieto/agda-prop
+  - cd /tmp/ && git clone http://github.com/jonaprieto/agda-metis
+  - cd /tmp/agda-stdlib && apkg install
+  - cd /tmp/agda-prop && apkg install
+  - cd /tmp/agda-metis && apkg install
+  - cd /tmp/agda-metis && make 
+  - apkg search agda
+  - apkg info agda-prop
+  - apkg freeze
+  - apkg uninstall agda-metis
+  - apkg freeze

@@ -135,9 +135,9 @@ class LibraryVersion(db.Entity):
     cached = Optional(bool, default=False)
 
     fromIndex = Optional(bool, default=False)
-    fromUrl = Optional(bool, default=False)
-    fromGit = Optional(bool, default=False)
-    origin  = Optional(str) # path, url, git
+    fromUrl   = Optional(bool, default=False)
+    fromGit   = Optional(bool, default=False)
+    origin    = Optional(str) # path, url, git
 
     composite_key(library, name)
 
