@@ -234,6 +234,10 @@ def installFromURL(url, src, version, no_defaults, cache):
 # ----------------------------------------------------------------------------
 def installFromGit(url, src, version, no_defaults, cache, branch):
   logger.info("Installing from git: %s" % url )
+  if not isGit(libname):
+    logger.error("this is not a git repository")
+    return
+  
 
 # ----------------------------------------------------------------------------
 @install.command()
@@ -283,7 +287,7 @@ def install(ctx, libnames, src, version, no_defaults, cache, url, git, branch):
 
   for libname in libnames:
     try:
-      if git and isGit(libname):
+      if git:
         installFromGit(libname, src, version, no_defaults, cache, branch)
       elif url and isURL(libname):
         installFromURL(libname, src, version, no_defaults, cache)

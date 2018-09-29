@@ -1,9 +1,6 @@
 # This file was adapted from https://github.com/hvr/multi-ghc-travis
 os:
   osx
-language: python
-python:
-  - 3.6
 
 before_install:
   - brew update
