@@ -104,10 +104,9 @@ for personal reasons, we choose Python for its flexibility.
   - Download the url with url request in it
   - Install as a local package 
 - [ ] Install from the git repositories with version as tag (commit)
-  - Create a temporal directory
-  - Download the url with url request in it
-  - Install as a local package
-  - Mark the package as git repository 
+  - [X] Create a temporal directory
+  - [X] Install as a local package
+  - [x] Mark the package as git repository 
 - [ ] Install from the git repositories using info from the index
   - Check the index, the file url
   - Check the version to exists (git tag..)
