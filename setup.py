@@ -27,11 +27,11 @@ setup(
   , author='Jonathan Prieto-Cubides & Camilo Rodriguez'
   , author_email='jcu043@uib.no'
   , description='Package manager for Agda.'
-  , long_description='%s' % (read('README.md'))
+  , long_description='%s' % (read('README.rst'))
   , packages=find_packages()
   , zip_safe=False
   , include_package_data=True
-  , package_data = {'agda_pkg': ['README.md']}
+  , package_data = {'agda_pkg': ['README.rst']}
   , platforms='any'
   , keywords=
     [ 'agda'
