@@ -72,6 +72,7 @@ TODO
 -  [ ] Index the main libraries, maybe from Agda wiki
 -  [x] Specify the version of agda to install packages
 -  [ ] Update command
+-  [ ] install dependencies if the user approves that.
 -  [ ] Have .apkg-project to set up the defaults libraries for the
    current agda session.
 -  [ ] `Test <https://docs.python.org/3/library/unittest.html>`__ for
