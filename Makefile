@@ -58,4 +58,4 @@ deploy :
 	git tag v$(VERSION)
 	git commit -am "[ v$(VERSION) ] new version: $(MSG)"
 	make pip-package
-	make clean
+	git push origin master --tags
