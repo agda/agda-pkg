@@ -296,7 +296,7 @@ class Keyword(db.Entity):
 
 @pw.register_model('agdaVersion')
 class TestedWith(db.Entity):
-    agdaVersion = PrimaryKey(str, auto=True)
+    agdaVersion = PrimaryKey(str)
     libraries = Set(LibraryVersion)
     
     def __str__(self):
