@@ -44,7 +44,7 @@ def search():
 @click.argument('term')
 @click.option('--field', '-f', type=str, default=None)
 def search(term, field):
-  """Working ..."""
+  """Search into the package index."""
   results = \
     pw.search(
         term

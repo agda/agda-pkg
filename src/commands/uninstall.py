@@ -86,4 +86,5 @@ def uninstallLibrary(libname, database=False, remove_cache=False):
 @click.confirmation_option(prompt='Are you sure you want to uninstall it?')
 @db_session
 def uninstall(libname, database, remove_cache):
+  """Uninstall a package"""
   uninstallLibrary(libname, database, remove_cache)

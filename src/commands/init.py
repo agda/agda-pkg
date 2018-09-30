@@ -34,6 +34,7 @@ def init():	pass
 @clog.simple_verbosity_option(logger)
 @click.option('--drop_tables', type=bool, default=True)
 def init(drop_tables):
+  """Initialize Agda-Pkg state."""
 
   if drop_tables:
     db.drop_all_tables(with_all_data=True)

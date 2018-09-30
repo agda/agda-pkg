@@ -29,7 +29,6 @@ def freeze(): pass
 @db_session
 def freeze():
   """Output installed packages in requirements format.
-     packages are listed in a case-insensitive sorted order.
   """
 
   for library in select(l for l in Library if l.installed):

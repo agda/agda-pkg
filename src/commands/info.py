@@ -37,7 +37,7 @@ def info(): pass
 @clog.simple_verbosity_option(logger)
 @db_session
 def info(libname, version, field):
-  """Show information about one package"""
+  """Show information about installed packages."""
   library = Library.get(name = libname)
   if library is None:
     logger.error("The library does not exist")

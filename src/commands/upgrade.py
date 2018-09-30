@@ -26,11 +26,10 @@ class ProgressPrinter(RemoteProgress):
   def update(self, op_code, cur_count, max_count=None, message=''):
     print(op_code, cur_count, max_count, cur_count / (max_count or 100.0), message or "NO MESSAGE")
 
-# This update the index
 @upgrade.command()
 @click.pass_context
 def upgrade(ctx):
-  """Working ..."""
+  """Update the list of available packages."""
   origin = REPO.remotes["origin"]
   click.echo("Updating Agda-Pkg from " + [url for url in REPO.remote().urls][0])
   for pull_info in origin.pull(progress=ProgressPrinter()):

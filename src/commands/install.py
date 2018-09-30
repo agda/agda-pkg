@@ -360,7 +360,7 @@ def installFromURL(url, src, version, no_defaults, cache):
 @click.pass_context
 @db_session
 def install(ctx, libnames, src, version, no_defaults, cache, url, git, github, branch):
-
+  """Install packages."""
   libnames = list(set(libnames))
 
   if len(libnames) > 1 and version != "":
