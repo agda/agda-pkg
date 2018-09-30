@@ -341,11 +341,11 @@ def installFromURL(url, src, version, no_defaults, cache):
              , type=bool
              , is_flag=True 
              , help='No default library.')
-@click.option('--no-cache'
+@click.option('--cache'
              , type=bool
              , is_flag=True
              , default=True
-             , help='Disable the cache.')
+             , help='Cache available.')
 @click.option('--url'
              , type=bool
              , is_flag=True 
@@ -380,6 +380,9 @@ def install(ctx, libnames, src, version, no_defaults, cache, url, git, github, b
   if github: git = True
 
   for libname in libnames:
+
+    if "@" in libname:
+      libname, version = libname.split("@")
 
     if github: libname = "http://github.com/" + libname + ".git"
 

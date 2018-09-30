@@ -85,7 +85,7 @@ In addition, you may want to install multiple libraries at once
     $ apkg install standard-library agda-prop agda-metis
 ```
 
-**Uninstalling**
+**Uninstalling a package**
 
 Uninstall a package by default, just hide the library for Agda but no
 remove the sources:
@@ -101,7 +101,7 @@ remove-cache flag.
     $ apkg uninstall standard-library --remove-cache
 ```
 
-**See packages installed**
+**See all the package installed**
 
 ```
     $ apkg freeze
