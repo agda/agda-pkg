@@ -383,6 +383,8 @@ def install(ctx, libnames, src, version, no_defaults, cache, url, git, github, b
 
     if "@" in libname:
       libname, version = libname.split("@")
+    elif "==" in libname:
+      libname, version = libname.split("==")
 
     if github: libname = "http://github.com/" + libname + ".git"
 

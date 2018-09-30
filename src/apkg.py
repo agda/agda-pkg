@@ -14,6 +14,7 @@ from .commands import *
 from .commands.clean      import clean
 from .commands.download   import download
 from .commands.freeze     import freeze
+from .commands.list       import list
 from .commands.info       import info
 from .commands.init       import init
 from .commands.install    import install
@@ -43,6 +44,7 @@ cli.add_command(init)
 cli.add_command(install)
 cli.add_command(uninstall)
 cli.add_command(freeze)
+cli.add_command(list)
 cli.add_command(info)
 cli.add_command(clean)
 cli.add_command(search)

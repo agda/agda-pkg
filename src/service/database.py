@@ -128,7 +128,7 @@ class LibraryVersion(db.Entity):
     library = Required(Library)
     name = Optional(str, nullable=True, default="")
     sha = Optional(str)
-    description = Optional(str)
+    description = Optional(str, default="Missing.")
     license = Optional(str)
     include = Optional(str, default="src/")
     depend = Set('Dependency')

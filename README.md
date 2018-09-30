@@ -46,6 +46,7 @@ If you want to index your library make a PR in [the package index]
 
 We have three possibilities to install a package:
 
+
 <img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/index-stdlib.gif"
  alt="agda package manager installation" width=256 align="right" />
 
@@ -106,17 +107,23 @@ remove-cache flag.
 
 **See all the package installed**
 
+
 ```
     $ apkg freeze
-    agda-metis==a8df5b74ea2e0c007f0b7ffe24d440a35e1c6d94
-    agda-prop==0.1.1
 ```
 
-Useful to save the exact versions of your environment:
+Useful to save the versions used for each library:
 
 
 ```
     $ apkg freeze > requirements.txt
+```
+
+You may want to install from the requirements file:
+
+
+```
+    $ apkg install < requirements.txt
 ```
 
 

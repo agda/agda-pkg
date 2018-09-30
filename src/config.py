@@ -31,8 +31,7 @@ try:
   AGDA_VERSION = result.stdout.split()[2].decode()
   AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries-"+AGDA_VERSION)
 except Exception as e:
-  print(e)
-  print("[!] Agda is not installed on this machine!")
+  print("[!] Agda may not be installed on this machine!")
   print("    Please consider to install Agda v2.5.4+")
 
 AGDA_PKG_PATH = Path().home().joinpath('.apkg' + ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
