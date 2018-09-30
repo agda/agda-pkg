@@ -17,6 +17,9 @@ Python packages.
     $ pip install agda-pkg
 ```
 
+Now, we can run the package manager using the command `agda-pkg` or even
+shorter `apkg`.
+
 2.  Initialisation of the package index
 
 ```
