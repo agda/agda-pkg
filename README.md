@@ -2,7 +2,9 @@ agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.
 ========
 
 
-The Agda package manager that we all have been waiting for ~~so long~~.
+The Agda package manager that we all have been waiting for ~~so long~~. This
+tool do not modify `Agda` at all, it will just manage systematically the directory
+`.agda` and its files: `.agda/defaults` and `.agda/libraries`.
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
@@ -17,6 +19,10 @@ The Agda package manager that we all have been waiting for ~~so long~~.
 	- [See packages installed](#see-packages-installed)
 	- [Approximate search of packages](#approximate-search-of-packages)
 	- [Get all the information of a package](#get-all-the-information-of-a-package)
+- [Managing your own library](#managing-your-own-library)
+	- [Directory structure of an agda library](#directory-structure-of-an-agda-library)
+	- [.agda-lib library file](#agda-lib-library-file)
+	- [.agda-pkg library file](#agda-pkg-library-file)
 
 <!-- /TOC -->
 
@@ -188,6 +194,70 @@ example:
     $ apkg info agda-prop
     library: agda-prop
     sha: 6b2ea8e099ac6968004ec57d96f19b46bcb081ff
+```
+
+# Managing your own library
+
+## Directory structure of an agda library
+
+A common Agda library has the following structure:
+
+```
+$ tree -L 1 mylibrary/
+mylibrary/
+├── LICENSE
+├── README.md
+├── mylibrary.agda-lib
+├── mylibrary.agda-pkg
+├── src
+└── test
+
+2 directories, 3 files
+```
+
+## .agda-lib library file
+
+```yaml
+$ cat mylibrary.agda-lib
+name: mylibrary  -- Comment
+depend: LIB1 LIB2
+  LIB3
+  LIB4
+include: PATH1
+  PATH2
+  PATH3
+```
+
+## .agda-pkg library file
+
+This file is only works for `agda-pkg`. The idea of
+this file is to provide more information about the
+package, pretty similar to the cabal files in Haskell.
+This file has priority over its version `.agda-lib`.
+
+```yaml
+$ cat mylibrary.agda-pkg
+name:              mylibrary
+version:           0.0.1
+author:            AuthorName
+category:          [ classic, logic, theorems ]
+homepage:          http://github.com/user/mylibrary
+license:           MIT
+license-file:      LICENSE.md
+source-repository: http://github.com/user/mylibrary.git
+tested-with:       2.5.6
+description:       Put here a description.
+
+include:
+    - PATH1
+    - PATH2
+    - PATH3
+depend:
+    - LIB1
+    - LIB2
+    - LIB3
+    - LIB4
+
 ```
 
   [the package index]: https://github.com/apkgbot/package-index
