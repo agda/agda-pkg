@@ -18,9 +18,13 @@ def readLibLegacyFile(fname):
     content = sum([ line.strip().split() for line in f.readlines()],[])
 
     # name field
-    indexName = content.index("name:")
-    name = content[indexName + 1]
-    info["name"] = name.strip()
+    try:
+      indexName = content.index("name:")
+      name = content[indexName + 1]
+      info["name"] = name.strip()
+    except Exception as e:
+      # print("[!] 'name' field not found ==> using filename instead.")
+      info["name"] = libraryfile.name.split(libraryfile.suffix)[0]
 
     # version field
     try:

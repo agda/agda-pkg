@@ -1,4 +1,4 @@
-# agda-pkg v0.1
+# agda-pkg v0.1 [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg)
 
 The next package manager for Agda. This will bring the most common features
 of other package manager to the Agda proof-assistant.
@@ -91,35 +91,35 @@ for personal reasons, we choose Python for its flexibility.
 
 ## TODO
 
-- [ ] Test for all the commands and combinations of common actions
+- [ ] Offer the chance to generate pkg file and normal files
+- [ ] Improve help messages
+- [ ] Index the main libraries, maybe from Agda wiki
+- [ ] Specify the version of agda to install packages
+- [ ] Update command
+- [ ] Have .apkg-project to set up the defaults libraries for the current agda session.
+- [ ] [Test](https://docs.python.org/3/library/unittest.html) for all the commands and combinations of common actions
 - [ ] Split the install command in index/local/urls/gits
 - [ ] Install from a url:
   - Create a temporal directory
   - Download the url with url request in it
   - Install as a local package 
 - [ ] Install from the git repositories with version as tag (commit)
-  - Create a temporal directory
-  - Download the url with url request in it
-  - Install as a local package
-  - Mark the package as git repository 
+  - [X] Create a temporal directory
+  - [X] Install as a local package
+  - [x] Mark the package as git repository 
 - [ ] Install from the git repositories using info from the index
   - Check the index, the file url
   - Check the version to exists (git tag..)
   - Install as a git repository
   - git checkout on the package source with the tag or commit
-- [ ] Info command to show stats of the index package
+  
 - [ ] Read relevant environment variables like AGDA_DIR
-- [ ] Travis at least on OSX
+- [x] Travis at least on OSX
 - [ ] Pip package 
-- [ ] Offer the chance to generate pkg file and normal files
 - [ ] Show info to open issues when an error happens
-- [ ] Improve help messages
-- [ ] Index the main libraries, maybe from Agda wiki
 - [ ] Comment in the Agda mail-listings
 - [ ] Doctor command for problems
-- [ ] Specify the version of agda to install packages
-- [ ] Update command
-- [ ] Have .apkg-project to set up the defaults libraries for the current agda session.
+- [ ] Info command to show stats of the index package
 
  
 

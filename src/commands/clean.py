@@ -25,7 +25,7 @@ def clean(): pass
 @clean.command()
 @clog.simple_verbosity_option(logger)
 def clean():
-  """Working ..."""
+  """Remove the directories used by apkg."""
   rmdirs = [ AGDA_PKG_PATH , AGDA_DIR_PATH ]
   for dir in rmdirs:
     try:

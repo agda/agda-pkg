@@ -32,7 +32,7 @@ class ProgressPrinter(RemoteProgress):
 def upgrade(ctx):
   """Working ..."""
   origin = REPO.remotes["origin"]
-  click.echo("Updating index from " + [url for url in REPO.remote().urls][0])
+  click.echo("Updating Agda-Pkg from " + [url for url in REPO.remote().urls][0])
   for pull_info in origin.pull(progress=ProgressPrinter()):
     click.echo("%s to %s" % (pull_info.ref, pull_info.commit))
   ctx.invoke(init, drop_tables=False)

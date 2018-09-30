@@ -44,6 +44,8 @@ setup(
     , 'pony'
     , 'whoosh'
     , 'ponywhoosh'
+    , 'natsort'
+    , 'click-log'
     ]
   , entry_points='''
       [console_scripts]
