@@ -39,7 +39,7 @@ on your machine. In addition, the python package manager `pip 18.0+`.
 
 We have tested `agda-pkg` with `Agda v2.5.4+`.
 
-Installing using Pypi
+Installing using `pip`:
 
 ```
     $ pip install agda-pkg
