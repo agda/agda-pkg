@@ -28,7 +28,7 @@ def read(*names, **kwargs):
 
 setup(
     name='agda-pkg'
-  , version="0.1.7"
+  , version="0.1.8"
   , python_requires='>=3.6.0'
   , url='https://github.com/apkgbot/client'
   , license='MIT'
