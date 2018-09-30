@@ -1,6 +1,9 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
 
 # ----------------------------------------------------------------------------
@@ -14,6 +17,7 @@ from ..service.database import ( Library , LibraryVersion )
 
 import logging
 import click_log as clog
+
 # ----------------------------------------------------------------------------
 
 # -- Logger def.
@@ -28,8 +32,7 @@ def freeze(): pass
 @clog.simple_verbosity_option(logger)
 @db_session
 def freeze():
-  """Output installed packages in requirements format.
-  """
+  """List of installed packages."""
 
   for library in select(l for l in Library if l.installed):
     installedVersion = library.getInstalledVersion()    

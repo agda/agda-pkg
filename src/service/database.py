@@ -1,9 +1,13 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
 
 # ----------------------------------------------------------------------------
+
 from ..config import ( AGDA_DEFAULTS_PATH
                      , AGDA_DIR_PATH
                      , AGDA_LIBRARIES_PATH
@@ -48,7 +52,6 @@ pw.indexes_path          = DATABASE_SEARCH_INDEXES_PATH
 pw.search_string_min_len = 1
 pw.writer_timeout        = 3
 
-# -- Database
 db = Database()
 
 

@@ -1,7 +1,12 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
+
+# ----------------------------------------------------------------------------
 
 import click
 
@@ -34,6 +39,8 @@ from ..service.database import ( Library
 from pprint   import pprint
 from pony.orm import *
 from ponywhoosh  import PonyWhoosh, search, full_search
+
+# ----------------------------------------------------------------------------
 
 @click.group()
 def search():

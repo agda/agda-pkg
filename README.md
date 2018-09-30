@@ -1,12 +1,15 @@
-agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg) [![GitHub version](https://badge.fury.io/gh/apkgbot%2Fagda-pkg.svg)](https://badge.fury.io/gh/apkgbot%2Fagda-pkg)
+agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg)
 ========
 
 <img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/installation.gif"
  alt="agda package manager installation" width=256 align="right" />
  
-The next package manager for Agda.
+The Agda package manager that we all are waiting for so long.
 
 **Quick Start**
+
+We need to have installed `Python 3.6+` or a latter version and `pip` to install
+Python packages.
 
 1.  Installation from Pypi
 
@@ -129,8 +132,6 @@ example:
     agda-metis
     ==========
     url: https://github.com/jonaprieto/test-agdapkgbot.git
-    installed: False
-    default: True
 ```
 
 **Get information of a package**
@@ -140,8 +141,6 @@ example:
     $ apkg info agda-prop
     library: agda-prop
     sha: 6b2ea8e099ac6968004ec57d96f19b46bcb081ff
-    description: None
-    license:
 ```
 
   [the package index]: https://github.com/apkgbot/package-index.git

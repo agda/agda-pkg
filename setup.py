@@ -1,7 +1,12 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
+
+# ----------------------------------------------------------------------------
 
 from __future__ import absolute_import, print_function
 
@@ -13,6 +18,8 @@ import re
 from os.path    import basename, dirname, join
 from setuptools import find_packages, setup
 
+# ----------------------------------------------------------------------------
+
 def read(*names, **kwargs):
   return io.open(
       join(dirname(__file__), *names)
@@ -21,7 +28,8 @@ def read(*names, **kwargs):
 
 setup(
     name='agda-pkg'
-  , version="0.1.5"
+  , version="0.1.6"
+  , python_requires='>=3.6.0'
   , url='https://github.com/apkgbot/client'
   , license='MIT'
   , author='Jonathan Prieto-Cubides & Camilo Rodriguez'
@@ -57,8 +65,6 @@ setup(
     [ 'Intended Audience :: Developers'
     , 'License :: OSI Approved :: MIT License'
     , 'Operating System :: OS Independent'
-    , 'Programming Language :: Python'
-    , 'Topic :: Internet :: WWW/HTTP :: Dynamic Content'
-    , 'Topic :: Software Development :: Libraries :: Python Modules'
+    , 'Programming Language :: Python :: 3.6'
     ]
 )

@@ -1,13 +1,20 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
+
+# ----------------------------------------------------------------------------
 
 from pathlib import Path
 
 import click
 import git
 import subprocess
+
+# ----------------------------------------------------------------------------
 
 __author__ = "Jonathan Prieto-Cubides & Camilo Rodriguez"
 

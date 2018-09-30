@@ -1,9 +1,13 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
 
 # ----------------------------------------------------------------------------
+
 import click
 import shutil
 
@@ -12,6 +16,7 @@ from ..config import AGDA_PKG_PATH,AGDA_DIR_PATH
 
 import logging
 import click_log as clog
+
 # ----------------------------------------------------------------------------
 
 # -- Logger def.

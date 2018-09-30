@@ -1,9 +1,13 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
 
 # ----------------------------------------------------------------------------
+
 import click
 from pathlib import Path
 from pony.orm import *
@@ -20,6 +24,7 @@ from ..service.database import ( Library
                                , Keyword
                                , Dependency
                                )
+
 # ----------------------------------------------------------------------------
 
 # -- Logger def.

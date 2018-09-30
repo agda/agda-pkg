@@ -1,6 +1,9 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
 
 # ----------------------------------------------------------------------------
@@ -37,6 +40,7 @@ import shutil
 
 import logging
 import click_log as clog
+
 # ----------------------------------------------------------------------------
 
 # -- Logger def.
@@ -76,15 +80,15 @@ def uninstallLibrary(libname, database=False, remove_cache=False):
              , type=bool
              , default=False
              , is_flag=True 
-             , help='remove from the database as well')
+             , help='Remove from the database the package')
 @click.option('--remove-cache'
              , type=bool
              , default=False
              , is_flag=True 
-             , help='remove files completely')
+             , help='Remove all the files.')
 @clog.simple_verbosity_option(logger)
 @click.confirmation_option(prompt='Are you sure you want to uninstall it?')
 @db_session
 def uninstall(libname, database, remove_cache):
-  """Uninstall a package"""
+  """Uninstall a package."""
   uninstallLibrary(libname, database, remove_cache)

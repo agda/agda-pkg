@@ -1,3 +1,13 @@
+'''
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
+'''
+
+# ----------------------------------------------------------------------------
+
 from ..config import ( AGDA_DEFAULTS_PATH
                      , AGDA_DIR_PATH
                      , AGDA_LIBRARIES_PATH
@@ -28,6 +38,7 @@ from pony.orm import *
 from pathlib  import Path
 
 import click
+
 # ----------------------------------------------------------------------------
 
 

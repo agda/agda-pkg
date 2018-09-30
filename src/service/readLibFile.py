@@ -1,13 +1,20 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
+
+# ----------------------------------------------------------------------------
 
 import sys
 import yaml
 
 from pathlib import Path
 from pprint import pprint
+
+# ----------------------------------------------------------------------------
 
 def readLibLegacyFile(fname):
   info = { "name": "", "version": "",  "include": [], "depend":[]}

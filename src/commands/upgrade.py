@@ -1,9 +1,13 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
 
 # ----------------------------------------------------------------------------
+
 import click
 
 from git      import *
@@ -17,6 +21,7 @@ from ..service.database import ( Library
                                , Dependency
                                )
 from pony.orm import *
+
 # ----------------------------------------------------------------------------
 
 @click.group()

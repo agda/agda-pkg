@@ -1,5 +1,5 @@
 click==6.7
 GitPython==2.1.11
-ponywhoosh==1.7.6
+ponywhoosh==1.7.8
 natsort==5.4.1
 click-log==0.3.2

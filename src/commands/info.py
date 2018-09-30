@@ -1,6 +1,9 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
 
 # ----------------------------------------------------------------------------
@@ -20,6 +23,7 @@ from pony.orm import *
 
 import logging
 import click_log as clog
+
 # ----------------------------------------------------------------------------
 
 # -- Logger def.
@@ -32,8 +36,8 @@ def info(): pass
 
 @info.command()
 @click.argument('libname')
-@click.option('--version', type=str, default="", help='info of one version')
-@click.option('--field', type=str, default="", help='info of one field')
+@click.option('--version', type=str, default="", help='Specific the package version.')
+@click.option('--field', type=str, default="", help='Show a specific field')
 @clog.simple_verbosity_option(logger)
 @db_session
 def info(libname, version, field):

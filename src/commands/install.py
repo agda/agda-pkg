@@ -1,9 +1,13 @@
 '''
-  agda-pkg
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  apkg
+  ~~~~
+
+  The Agda Package Manager.
+
 '''
 
 # ----------------------------------------------------------------------------
+
 import click
 import click_log as clog
 
@@ -31,6 +35,7 @@ from ..service.database import ( Library
                                )
 from ..service.readLibFile       import readLibFile
 from ..service.writeAgdaDirFiles import writeAgdaDirFiles
+
 # ----------------------------------------------------------------------------
 
 # -- Some tests
@@ -327,35 +332,36 @@ def installFromURL(url, src, version, no_defaults, cache):
 @click.option('--src'
              , type=str
              , default=""
-             , help='source code of the library')
+             , help='Directory to the source.')
 @click.option('--version'
              , type=str
              , default=""
-             , help='version or commit if you use --git')
+             , help='Version, tag or commit.')
 @click.option('--no-defaults'
              , type=bool
              , is_flag=True 
-             , help='do not installed as a default library')
-@click.option('--cache'
+             , help='No default library.')
+@click.option('--no-cache'
              , type=bool
-             , is_flag=True 
-             , help='install the cache version')
+             , is_flag=True
+             , default=True
+             , help='Disable the cache.')
 @click.option('--url'
              , type=bool
              , is_flag=True 
-             , help='from a url address')
+             , help='From a url address.')
 @click.option('--git'
              , type=bool
              , is_flag=True 
-             , help='from a git repository')
+             , help='From a git repository.')
 @click.option('--github'
              , type=bool
              , is_flag=True 
-             , help='Use the prefix http://github.com and --git option')
+             , help='From a github repository.')
 @click.option('--branch'
              , type=bool
              , is_flag=True 
-             , help='from a git repository')
+             , help='from a git repository.')
 @clog.simple_verbosity_option(logger)
 @click.pass_context
 @db_session
