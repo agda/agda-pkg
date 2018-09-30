@@ -2,7 +2,7 @@ agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.
 ========
 
 
-The Agda package manager that we all have been waiting for so long.
+The Agda package manager that we all have been waiting for ~~so long~~.
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
