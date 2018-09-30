@@ -21,7 +21,7 @@ def read(*names, **kwargs):
 
 setup(
     name='agda-pkg'
-  , version="0.1.3"
+  , version="0.1.5"
   , url='https://github.com/apkgbot/client'
   , license='MIT'
   , author='Jonathan Prieto-Cubides & Camilo Rodriguez'
