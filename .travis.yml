@@ -14,17 +14,4 @@ before_install:
 script:
   - pip3 install --editable .
   - pip3 install -r requirements.txt
-  - apkg clean
-  - apkg init
-  - cd /tmp/ && git clone http://github.com/agda/agda-stdlib
-  - cd /tmp/ && git clone http://github.com/jonaprieto/agda-prop
-  - cd /tmp/ && git clone http://github.com/jonaprieto/agda-metis
-  - cd /tmp/agda-stdlib && apkg install
-  - cd /tmp/agda-prop && apkg install
-  - cd /tmp/agda-metis && apkg install
-  - cd /tmp/agda-metis && make test
-  - apkg search agda
-  - apkg info agda-prop
-  - apkg freeze
-  - apkg uninstall agda-metis --yes --remove-cache
-  - apkg freeze
+  - make test

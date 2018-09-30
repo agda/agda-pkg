@@ -75,8 +75,8 @@ class Library(db.Entity):
 
     @property
     def info(self):
-      return self.to_dict( with_collections=True
-                         , related_objects=True)
+      return self.to_dict( with_collections=False
+                         , related_objects=False)
 
     @property
     def indexPath(self):
@@ -149,9 +149,17 @@ class LibraryVersion(db.Entity):
 
     @property
     def info(self):
-      return self.to_dict(with_collections=True
-                         , related_objects=True
-                         , exclude=["id", "sha"])
+      d = self.to_dict( with_collections=True
+                      , related_objects=True
+                      , exclude=["id"]
+                      )
+      del d["name"]
+      d["library"] = self.library.name
+      d["version"] = self.name
+      d["default"] = self.library.default
+      d["description"] = self.library.description
+
+      return d
 
     def libraryVersionName(self, sep):
       return self.library.name.strip() + sep + self.name.strip()

@@ -61,12 +61,17 @@ def init(drop_tables):
           if libVersion is None:
             libVersion = LibraryVersion( library=library
                                        , name=version.name
-                                       , fromIndex=True)
+                                       , fromIndex=True
+                                       )
 
           if version.joinpath("sha1").exists():
             libVersion.sha = version.joinpath("sha1").read_text()
+            libVersion.origin  = url
+            libVersion.fromGit = True
           else:
             logger.error(version.name + " no valid")
+            libVersion.delete()
+
         commit()
 
     # With all libraries indexed, we proceed to create the dependencies
@@ -78,8 +83,9 @@ def init(drop_tables):
         click.echo(version.freezeName)
 
         info = version.readInfoFromLibFile()
+
         version.depend.clear()
-        for depend in info["depend"]:
+        for depend in info.get("depend", []):
           if type(depend) == list:
             logger.info("no supported yet but the format is X.X <= name <= Y.Y")
           else:

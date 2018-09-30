@@ -73,38 +73,7 @@ def install(): pass
 
 # ----------------------------------------------------------------------------
 @db_session
-def installFromIndex(libname, src, version, no_defaults, cache):
-  # Check first if the library is in the cache
-  logger.info("Installing from the index...")
-  library = Library.get(name=libname)
-  if library is not None:
-    versionLibrary = None
-    if version == "":
-      versionLibrary = library.getLatestCachedVersion()
-    else:
-      versionLibrary = LibraryVersion(library=library, name=version, cached=True)
-    if versionLibrary is not None:
-      if versionLibrary.installed:
-        logger.warning("This library is installed")
-        return versionLibrary
-      if click.confirm('Do you want to install the cached version?'):
-        versionLibrary.install()
-        writeAgdaDirFiles(True)
-        return versionLibrary
-      else:
-        # use installFromGit
-        # replace fromIndex = True
-        logger.error("No supported yet installation from the index")
-        return None
-  else:
-    logger.error("No supported yet installation from the index")
-    return None
-
-# ----------------------------------------------------------------------------
-@db_session
 def installFromLocal(pathlib, src, version, no_defaults, cache):
-  # check
-  # pathlib is . or is a directory in the filesystem 
   logger.info("Installing as a local package...")
 
   if len(pathlib) == 0 or pathlib == ".":
@@ -123,15 +92,14 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
   agdaLibFiles = [ f for f in pwd.glob("*.agda-lib") if f.is_file() ]
   agdaPkgFiles = [ f for f in pwd.glob("*.agda-pkg") if f.is_file() ]
 
-
-  libFile = Path("") # ".agda-std" or ".agda-pkg" file
-
   if len(agdaLibFiles) == 0 and len(agdaPkgFiles) == 0:
     logger.error("No libraries (.agda-lib or .agda-pkg) files detected")
     return None
 
-    # -- TODO: offer the posibility to create a file agda-pkg!
-  elif len(agdaPkgFiles) == 1:
+  libFile = Path("")
+  
+  # -- TODO: offer the posibility to create a file agda-pkg!
+  if len(agdaPkgFiles) == 1:
     libFile = agdaPkgFiles[0]
   elif len(agdaLibFiles) == 1:
     # -- TODO: offer the posibility ssto create a file agda-pkg!
@@ -143,16 +111,23 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
   logger.info("Library file detected: " + libFile.name)
   info = readLibFile(libFile)
 
-  name = info.get("name", None)
-  logger.info("name: " + name)
+  name = info.get("name", "")
+  if len(name) == 0:
+    name = pathlib.name
+  logger.info("Library name: " + name)
 
-  versionName = str(info.get("version", None))
-  if versionName == "": versionName = str(uuid.uuid1())
-  logger.info("version: " + versionName)
+  versionName = ""
+  if versionName == "":
+    versionName = str(info.get("version", ""))
+  if versionName == "": 
+    versionName = version
+  if versionName == "": 
+    versionName = str(uuid.uuid1())
+  logger.info("Library version: " + versionName)
 
   # At this point we have the name from the local library
   library = Library.get(name=name)
-  if library is None and pathlib == "." :
+  if library is None:
     library = Library(name=name)
 
   versionLibrary = LibraryVersion.get(library=library, name=versionName)
@@ -169,17 +144,16 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
         logger.warning("Renaming version to " + name + "@" + versionNameProposed)
         if click.confirm('Do you want to install it using this version?', abort=True):
           versionLibrary = LibraryVersion( library=library
-                                         , name=versionNameProposed)
+                                         , name=versionNameProposed
+                                         )
     else:
       if versionLibrary.sourcePath.exists():
-        shutil.rmtree(versionLibrary.sourcePath)
+        shutil.rmtree(versionLibrary.sourcePath.as_posix())
   else:
     versionLibrary = LibraryVersion( library=library
                                    , name=versionName
                                    , cached=True
                                    )
-
-  versionLibrary.fromIndex = False
 
   try:
     if versionLibrary.sourcePath.exists():
@@ -209,7 +183,7 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
       if not versionLibrary in keyword.libVersions:
         keyword.libVersions.add(versionLibrary)
 
-    for depend in info["depend"]:
+    for depend in info.get("depend",[]):
       if type(depend) == list:
         logger.info("no supported yet but the format is X.X <= name <= Y.Y")
       else:
@@ -239,17 +213,14 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
   return None
 
 # ----------------------------------------------------------------------------
-def installFromURL(url, src, version, no_defaults, cache):
-  logger.info("Not available yet")
-  # isURL(libname)
-  return None
-
-# ----------------------------------------------------------------------------
 def installFromGit(url, src, version, no_defaults, cache, branch):
   logger.info("Installing from git: %s" % url )
   if not isGit(url):
     logger.error("this is not a git repository")
     return None
+
+  # tmpdirname = "/tmp/qwerty"
+  # if True:
   with TemporaryDirectory() as tmpdirname:
     print("Using temporal directory:", tmpdirname)
     try:
@@ -257,29 +228,97 @@ def installFromGit(url, src, version, no_defaults, cache, branch):
       if Path(tmpdirname).exists():
         shutil.rmtree(tmpdirname)
 
+      logger.info("Cloning repository...")
       REPO = git.Repo.clone_from(url, tmpdirname, branch=branch)
+
       if version != "":
+
         try:
-          logger.info("Using commit version", version)
-          REPO.commit(version)
+          # Seen on https://goo.gl/JVs8jJ
+          REPO.git.checkout(version)
+
         except Exception as e:
+          logger.error(e)
           logger.error(" version or tag not found it " + version)
           return None
+      else:
+        version = REPO.head.commit.hexsha
 
       libVersion = installFromLocal(tmpdirname, src, version, no_defaults, cache)
+      if libVersion is None:
+        raise ValueError(" we couldn't install the version specified")
+
       libVersion.fromGit = True
       libVersion.origin = url
       libVersion.library.url = url
+      libVersion.library.default = not(no_defaults)
 
       if version != "":
         libVersion.name = version
         libVersion.sha = REPO.head.commit.hexsha
+
       commit()
+      writeAgdaDirFiles(False)
       return libVersion
+
     except Exception as e:
       logger.error(e)
-      logger.error("Problems install from this git repository")
+      logger.error("Problems to install the library, may you want to run $ apkg init?")
       return None
+
+# ----------------------------------------------------------------------------
+@db_session
+def installFromIndex(libname, src, version, no_defaults, cache):
+
+  # Check first if the library is in the cache
+  logger.info("Installing from the index...")
+  library = Library.get(name=libname)
+
+  if library is not None:
+
+    versionLibrary = None
+    
+    if version == "":
+      # we'll try to install the latest git version
+      for v in library.getSortedVersions():
+        if v.fromGit and v.fromIndex:
+          versionLibrary = v
+          break
+      if versionLibrary is None:
+        logger.error("No versions for this library. Index may be corrupted. Try $ apkg init")
+        return None
+    else:
+      versionLibrary = LibraryVersion( library=library
+                                     , name=version
+                                     , fromIndex=True
+                                     , fromGit=True
+                                     )
+
+    if versionLibrary is not None:
+
+      if versionLibrary.installed:
+        if click.confirm('Do you want to install the cached version?'):
+          versionLibrary.install()
+          writeAgdaDirFiles(False)
+        else: 
+          logger.warning("This library is installed")
+        return versionLibrary
+          
+      else:
+        url = versionLibrary.library.url
+        versionLibrary = installFromGit(url, src, version, no_defaults, cache, "master")
+        if versionLibrary is not None:
+          versionLibrary.fromIndex = True
+        return versionLibrary
+  else:
+    logger.error("It's not in the index")
+    return None
+
+# ----------------------------------------------------------------------------
+def installFromURL(url, src, version, no_defaults, cache):
+  logger.info("Not available yet")
+  # isURL(libname)
+  return None
 
 # ----------------------------------------------------------------------------
 @install.command()
@@ -308,6 +347,10 @@ def installFromGit(url, src, version, no_defaults, cache, branch):
              , type=bool
              , is_flag=True 
              , help='from a git repository')
+@click.option('--github'
+             , type=bool
+             , is_flag=True 
+             , help='Use the prefix http://github.com and --git option')
 @click.option('--branch'
              , type=bool
              , is_flag=True 
@@ -315,21 +358,29 @@ def installFromGit(url, src, version, no_defaults, cache, branch):
 @clog.simple_verbosity_option(logger)
 @click.pass_context
 @db_session
-def install(ctx, libnames, src, version, no_defaults, cache, url, git, branch):
+def install(ctx, libnames, src, version, no_defaults, cache, url, git, github, branch):
 
   libnames = list(set(libnames))
 
   if len(libnames) > 1 and version != "":
     return logger.error("--version only works with one library, no more")
   
-  if git and url:
+  if (git or github) and url:
     return logger.error("--git and --url are incompatible")
 
   if len(libnames) == 0: libnames = ["."]
 
+  if github: git = True
+
   for libname in libnames:
+
+    if github: 
+      libname = "http://github.com/" + libname + ".git"
+
     try:
       if git or isGit(libname):
+        if not (libname.endswith(".git")):
+          libname = libname + ".git"
         installFromGit(libname, src, version, no_defaults, cache, branch)
       elif url or isURL(libname):
         installFromURL(libname, src, version, no_defaults, cache)
@@ -340,3 +391,4 @@ def install(ctx, libnames, src, version, no_defaults, cache, url, git, branch):
     except Exception as e:
       logger.error(e)
       logger.error("we can not install " + libname)
+  writeAgdaDirFiles(False)
