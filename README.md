@@ -230,7 +230,7 @@ include: PATH1
 
 ## .agda-pkg library file
 
-This file is only works for `agda-pkg`. The idea of
+This file only works for `agda-pkg`. The idea of
 this file is to provide more information about the
 package, pretty similar to the cabal files in Haskell.
 This file has priority over its version `.agda-lib`.
