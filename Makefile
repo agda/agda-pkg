@@ -40,10 +40,6 @@ TODO :
 	| xargs grep -I 'TODO' \
 	| sort
 
-.PHONY : README.rst
-README.rst :
-	pandoc --from=rst --to=rst --output=README.rst README.rst
-
 .PHONY: pip-package
 pip-package:
 	python setup.py build
@@ -54,7 +50,7 @@ pip-package:
 # pip install twine
 
 .PHONY : deploy 
-deploy : README.rst
+deploy : 
 	$(eval VERSION := $(shell bash -c 'read -p "Version: " pwd; echo $$pwd'))
 	echo
 	$(eval MSG := $(shell bash -c 'read -p "Comment: " pwd; echo $$pwd'))
