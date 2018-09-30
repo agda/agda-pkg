@@ -42,6 +42,8 @@ TODO :
 
 .PHONY: pip-package
 pip-package:
+	rm -Rf dist
+	rm -Rf build
 	python setup.py build
 	python setup.py sdist
 	python setup.py bdist_wheel --universal
