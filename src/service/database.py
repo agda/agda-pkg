@@ -199,13 +199,13 @@ class LibraryVersion(db.Entity):
     @property
     def agdaPkgFilePath(self):
       return (self.indexPath.joinpath(self.library.name + PKG_SUFFIX) \
-              if (self.isIndexed())
+              if (self.isIndexed() and not self.installed)
               else self.sourcePath.joinpath(self.library.name + PKG_SUFFIX))
               
     @property
     def agdaLibFilePath(self):
       return (self.indexPath.joinpath(self.library.name + LIB_SUFFIX)\
-             if (self.isIndexed())
+             if (self.isIndexed() and not self.installed)
              else self.sourcePath.joinpath(self.library.name + LIB_SUFFIX))
       
 

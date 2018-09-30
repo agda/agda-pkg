@@ -254,7 +254,7 @@ def installFromGit(url, src, version, no_defaults, cache, branch):
       libVersion.library.default = not(no_defaults)
 
       if version != "":
-        libVersion.name = version
+        # libVersion.name = version
         libVersion.sha = REPO.head.commit.hexsha
 
       commit()
@@ -297,7 +297,8 @@ def installFromIndex(libname, src, version, no_defaults, cache):
     if versionLibrary is not None:
 
       if versionLibrary.installed:
-        if click.confirm('Do you want to install the cached version?'):
+        if not(versionLibrary.library.default) and \
+           click.confirm('Do you want to install the cached version?'):
           versionLibrary.install()
           writeAgdaDirFiles(False)
         else: 
@@ -374,8 +375,7 @@ def install(ctx, libnames, src, version, no_defaults, cache, url, git, github, b
 
   for libname in libnames:
 
-    if github: 
-      libname = "http://github.com/" + libname + ".git"
+    if github: libname = "http://github.com/" + libname + ".git"
 
     try:
       if git or isGit(libname):
