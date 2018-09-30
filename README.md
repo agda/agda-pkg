@@ -1,4 +1,4 @@
-agda-pkg [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg)
+agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg) [![GitHub version](https://badge.fury.io/gh/apkgbot%2Fagda-pkg.svg)](https://badge.fury.io/gh/apkgbot%2Fagda-pkg)
 ========
 
 <img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/installation.gif"
