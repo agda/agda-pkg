@@ -4,7 +4,7 @@ agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.
 <img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/installation.gif"
  alt="agda package manager installation" width=256 align="right" />
  
-The Agda package manager that we all are waiting for so long.
+The Agda package manager that we all have been waiting for so long.
 
 **Quick Start**
 
