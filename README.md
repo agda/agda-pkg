@@ -26,8 +26,8 @@ The Agda package manager that we all have been waiting for ~~so long~~.
  alt="agda package manager installation" width=256 align="right" />
 
 
-To install `agda-pkg`, you must have installed `Python 3.6+` or a latter version on your machine
-In addition, the python package manager `pip 18.0+`.
+To install `agda-pkg`, you must have installed `Python 3.6+` or a latter version
+on your machine. In addition, the python package manager `pip 18.0+`.
 
 We have tested `agda-pkg` with `Agda v2.5.4+`.
 
@@ -45,7 +45,7 @@ shorter just `apkg`.
 ## Initialisation of the package index
 
 The easiest way to get libraries is from [the package index].
-`agda-pkg` will use this index to download and to install
+We will use this index to download and to install
 Agda libraries. In addition, `agda-pkg` use a database to
 maintain a register of all libraries available. To initialise
 the index and the database run the following command:
@@ -70,7 +70,7 @@ Recall updating the index every once in a while
     Updating Agda-Pkg from https://github.com/apkgbot/package-index.git
 ```
 
-If you want to index your library make a PR in [the package index]
+If you want to index your library make a [PR] in [the package index]
 
 ## List all the packages available
 
@@ -192,3 +192,4 @@ example:
 
   [the package index]: https://github.com/apkgbot/package-index
   [local directory]: https://agda.readthedocs.io/en/v2.5.4/tools/package-system.html
+  [PR]: https://github.com/apkgbot/package-index/pull/new/master
