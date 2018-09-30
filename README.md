@@ -6,6 +6,8 @@ The Agda package manager that we all have been waiting for ~~so long~~. This
 tool do not modify `Agda` at all, it will just manage systematically the directory
 `.agda` and its files: `.agda/defaults` and `.agda/libraries`.
 
+**Table of contents**
+
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Quick Start](#quick-start)
