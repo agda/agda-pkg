@@ -28,7 +28,7 @@ test:
 
 	- apkg clean
 	- apkg init
-	- apkg install --github agda/agda-stdlib.git --version v0.16
+	- apkg install --github agda/agda-stdlib --version v0.16
 	- apkg install agda-prop
 	- apkg install --git http://github.com/jonaprieto/agda-metis.git
 	- cd /tmp/agda-metis && make test
