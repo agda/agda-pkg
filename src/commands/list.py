@@ -68,6 +68,10 @@ def list(short):
                 ]
 
   i  = 0
+  if short:
+    logger.info("{:<20.20} {:<20.20} {:.42}"
+                    .format("Name", "Last version", "Description"))
+    logger.info("-"*53)
   for library in libraries:
     v = library.getLatestVersion()    
     if v is not None:
@@ -88,7 +92,7 @@ def list(short):
           print("Versions: ", vs)
       
       else:
-        logger.info("{:<20.20} {:<7.7} {:.42}"
+        logger.info("{:<20.20} {:<20.20} {:.42}"
                     .format(v.library.name,v.name,v.description))
 
       i += 1
