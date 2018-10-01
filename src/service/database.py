@@ -266,7 +266,7 @@ class LibraryVersion(db.Entity):
           shutil.rmtree(self.sourcePath.as_posix())
       except Exception as e:
         logger.error(e)
-        logger.error("Problems uninstalling directory:" \
+        logger.error("Unsuccessfully to remove " \
                     + self.sourcePath.as_posix())
 
 
@@ -299,7 +299,7 @@ class Keyword(db.Entity):
 
 @pw.register_model('agdaVersion')
 class TestedWith(db.Entity):
-    agdaVersion = PrimaryKey(str, auto=True)
+    agdaVersion = PrimaryKey(str)
     libraries = Set(LibraryVersion)
     
     def __str__(self):

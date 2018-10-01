@@ -15,17 +15,21 @@ import shutil
 import uuid
 import logging
 import git
+import os
 import subprocess
-from tempfile import *
+from distutils.dir_util import copy_tree, remove_tree
 
-from pathlib import Path
-from pony.orm import *
-from urllib.parse import urlparse
+from pathlib       import Path
+from pony.orm      import *
+from tempfile      import *
+from urllib.parse  import urlparse
 
-from .uninstall import uninstallLibrary
-from ..config import ( PACKAGE_SOURCES_PATH
-                     , INDEX_REPOSITORY_PATH
-                     )
+from .uninstall    import uninstallLibrary
+from ..config      import ( PACKAGE_SOURCES_PATH
+                          , INDEX_REPOSITORY_PATH
+                          , PKG_SUFFIX
+                          , LIB_SUFFIX
+                          )
 
 from ..service.database import db, pw
 from ..service.database import ( Library
@@ -38,7 +42,7 @@ from ..service.writeAgdaDirFiles import writeAgdaDirFiles
 
 # ----------------------------------------------------------------------------
 
-# -- Some tests
+# -- Some tests -- TODO: move these to some util module outside.
 def isURL(url):
   min_attr = ('scheme' , 'netloc')
   try:
@@ -78,7 +82,7 @@ def install(): pass
 
 # ----------------------------------------------------------------------------
 @db_session
-def installFromLocal(pathlib, src, version, no_defaults, cache):
+def installFromLocal(pathlib, name, src, version, no_defaults, cache):
   logger.info("Installing as a local package...")
 
   if len(pathlib) == 0 or pathlib == ".":
@@ -94,11 +98,11 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
   
   logger.info("Library location: " + pwd.as_posix())
 
-  agdaLibFiles = [ f for f in pwd.glob("*.agda-lib") if f.is_file() ]
-  agdaPkgFiles = [ f for f in pwd.glob("*.agda-pkg") if f.is_file() ]
+  agdaLibFiles = [ f for f in pwd.glob(name + LIB_SUFFIX) if f.is_file() ]
+  agdaPkgFiles = [ f for f in pwd.glob(name + PKG_SUFFIX) if f.is_file() ]
 
   if len(agdaLibFiles) == 0 and len(agdaPkgFiles) == 0:
-    logger.error("No libraries (.agda-lib or .agda-pkg) files detected")
+    logger.error("No libraries ("+LIB_SUFFIX+" or "+PKG_SUFFIX+") files detected.")
     return None
 
   libFile = Path("")
@@ -111,6 +115,7 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
     libFile = agdaLibFiles[0]
   else:
     logger.error("None or many agda libraries files.")
+    logger.info("[!] Use --name to specify the library name.")
     return None
 
   logger.info("Library file detected: " + libFile.name)
@@ -121,13 +126,37 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
     name = pathlib.name
   logger.info("Library name: " + name)
 
+  # -- Let's attach a version number
   versionName = ""
   if versionName == "":
     versionName = str(info.get("version", ""))
   if versionName == "": 
     versionName = version
+  if versionName == "" and pwd.joinpath(".git").exists():
+    try:
+      with open(os.devnull, 'w') as devnull:
+        result = subprocess.run( ["git", "describe", "--tags", "--long"]
+                               , stdout=subprocess.PIPE
+                               , stderr=devnull
+                               )
+        versionName = result.stdout.decode()
+    except:
+      pass
+
+  if versionName == "" and pwd.joinpath(".git").exists():
+    try:
+      with open(os.devnull, 'w') as devnull:
+        result = subprocess.run( ["git", "rev-parse", "HEAD"]
+                               , stdout=subprocess.PIPE
+                               , stderr=devnull
+                               )
+        versionName = result.stdout.decode()[:8]
+    except:
+      pass
+
   if versionName == "": 
     versionName = str(uuid.uuid1())
+
   logger.info("Library version: " + versionName)
 
   # At this point we have the name from the local library
@@ -153,7 +182,8 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
                                          )
     else:
       if versionLibrary.sourcePath.exists():
-        shutil.rmtree(versionLibrary.sourcePath.as_posix())
+        print("[!] rmtree 1....")
+        remove_tree(versionLibrary.sourcePath.as_posix())
   else:
     versionLibrary = LibraryVersion( library=library
                                    , name=versionName
@@ -162,8 +192,12 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
 
   try:
     if versionLibrary.sourcePath.exists():
-      versionLibrary.sourcePath.rmdir()
-    shutil.copytree(pwd.as_posix(), versionLibrary.sourcePath)
+      print("[!] rmtree 2")
+      remove_tree(versionLibrary.sourcePath.as_posix())
+
+    logger.info("Moving sources to " + versionLibrary.sourcePath.as_posix())
+    copy_tree(pwd.as_posix(), versionLibrary.sourcePath.as_posix())
+
   except Exception as e:
     logger.error(e)
     logger.error("Fail to copy directory (" + pwd.as_posix() + ")") 
@@ -200,25 +234,31 @@ def installFromLocal(pathlib, src, version, no_defaults, cache):
     commit()
 
   except Exception as e:
-    versionLibrary.sourcePath.rmdir()
+    try:
+      remove_tree(versionLibrary.sourcePath.as_posix())
+    except:
+      logger.error(" fail to remove the sources:" + versionLibrary.sourcePath.as_posix())
+
     logger.error(e)
     logger.error("(1)")
     return None
 
   try:
     versionLibrary.install(not(no_defaults))
-    writeAgdaDirFiles(True)
+    writeAgdaDirFiles(False)
     commit()
     return versionLibrary
 
   except Exception as e:
-    versionLibrary.sourcePath.rmdir()
+    if versionLibrary.sourcePath.exists():
+      remove_tree(versionLibrary.sourcePath.as_posix())
+      print("[!] rmtree 3")
     logger.error(e)
     logger.error("(2)")
   return None
 
 # ----------------------------------------------------------------------------
-def installFromGit(url, src, version, no_defaults, cache, branch):
+def installFromGit(url, name, src, version, no_defaults, cache, branch):
   logger.info("Installing from git: %s" % url )
   if not isGit(url):
     logger.error("this is not a git repository")
@@ -231,7 +271,7 @@ def installFromGit(url, src, version, no_defaults, cache, branch):
     try:
       if branch is None: branch = "master"
       if Path(tmpdirname).exists():
-        shutil.rmtree(tmpdirname)
+        remove_tree(tmpdirname)
 
       logger.info("Cloning repository...")
       REPO = git.Repo.clone_from(url, tmpdirname, branch=branch)
@@ -249,7 +289,8 @@ def installFromGit(url, src, version, no_defaults, cache, branch):
       else:
         version = REPO.head.commit.hexsha
 
-      libVersion = installFromLocal(tmpdirname, src, version, no_defaults, cache)
+      libVersion = installFromLocal(tmpdirname, name, src, version, no_defaults, cache)
+
       if libVersion is None:
         raise ValueError(" we couldn't install the version specified")
 
@@ -312,7 +353,7 @@ def installFromIndex(libname, src, version, no_defaults, cache):
           
       else:
         url = versionLibrary.library.url
-        versionLibrary = installFromGit(url, src, version, no_defaults, cache, "master")
+        versionLibrary = installFromGit(url, libname, src, version, no_defaults, cache, "master")
         if versionLibrary is not None:
           versionLibrary.fromIndex = True
         return versionLibrary
@@ -321,7 +362,7 @@ def installFromIndex(libname, src, version, no_defaults, cache):
     return None
 
 # ----------------------------------------------------------------------------
-def installFromURL(url, src, version, no_defaults, cache):
+def installFromURL(url, name, src, version, no_defaults, cache):
   logger.info("Not available yet")
   # isURL(libname)
   return None
@@ -346,6 +387,14 @@ def installFromURL(url, src, version, no_defaults, cache):
              , is_flag=True
              , default=True
              , help='Cache available.')
+@click.option('--local'
+             , type=bool
+             , is_flag=True 
+             , help='Force to install just local packages.')
+@click.option('--name'
+             , type=str
+             , default="*"
+             , help='Help to disambiguate when many lib files are present in the directory.')
 @click.option('--url'
              , type=bool
              , is_flag=True 
@@ -365,7 +414,8 @@ def installFromURL(url, src, version, no_defaults, cache):
 @clog.simple_verbosity_option(logger)
 @click.pass_context
 @db_session
-def install(ctx, libnames, src, version, no_defaults, cache, url, git, github, branch):
+def install( ctx, libnames, src, version, no_defaults \
+           , cache, local, name, url, git, github, branch):
   """Install packages."""
   libnames = list(set(libnames))
 
@@ -388,18 +438,30 @@ def install(ctx, libnames, src, version, no_defaults, cache, url, git, github, b
 
     if github: libname = "http://github.com/" + libname + ".git"
 
-    try:
-      if git or isGit(libname):
-        if not (libname.endswith(".git")):
-          libname = libname + ".git"
-        installFromGit(libname, src, version, no_defaults, cache, branch)
-      elif url or isURL(libname):
-        installFromURL(libname, src, version, no_defaults, cache)
-      elif isLocal(libname):
-        installFromLocal(libname, src, version, no_defaults, cache)
-      elif isIndexed(libname):
-        installFromIndex(libname, src, version, no_defaults, cache)
-    except Exception as e:
-      logger.error(e)
-      logger.error("we can not install " + libname)
-  writeAgdaDirFiles(False)
+    pathlib = libname
+    url     = libname
+
+    vLibrary = None
+    
+    if local:
+      vLibrary = installFromLocal(pathlib, name, src, version, no_defaults, cache)
+    else:
+      try:
+        if git or isGit(libname):
+          if not (libname.endswith(".git")):
+            libname = libname + ".git"
+          vLibrary = installFromGit(url, name, src, version, no_defaults, cache, branch)
+        # elif url or isURL(libname):
+          # installFromURL(url, name, src, version, no_defaults, cache)
+        elif isLocal(pathlib):
+          vLibrary =  installFromLocal(pathlib, name, src, version, no_defaults, cache)
+        elif isIndexed(libname):
+          vLibrary = installFromIndex(libname, src, version, no_defaults, cache)
+      except Exception as e:
+        logger.error(e)
+        logger.info("Unsuccessfully installation of " + (libname if name =="*" else name))
+    if vLibrary is not None:
+      logger.info("Successfully installed " + (libname if name =="*" else name) + ".")
+
+  print()
+  writeAgdaDirFiles(True)

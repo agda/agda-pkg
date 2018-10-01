@@ -12,7 +12,6 @@ import click
 from .commands import *
 
 from .commands.clean      import clean
-from .commands.download   import download
 from .commands.freeze     import freeze
 from .commands.list       import list
 from .commands.info       import info
