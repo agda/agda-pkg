@@ -219,8 +219,8 @@ class LibraryVersion(db.Entity):
         return self.agdaLibFilePath
       # print(self.agdaPkgFilePath, self.agdaPkgFilePath.exists())
       # print(self.agdaLibFilePath,  self.agdaLibFilePath.exists())
-      raise ValueError(" No file descriptor for this version of {}."
-                       .format(self.library.name))
+      raise ValueError(" No file descriptor for the version {} of {}."
+                       .format(self.name, self.library.name))
 
     def isLatest(self):
       versions = self.library.getSortedVersions()

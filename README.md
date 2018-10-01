@@ -141,7 +141,6 @@ Generate a requirement file using `apkg freeze`:
 ```
     $ apkg freeze > requirements.txt
     $ cat requirements.txt
-    cat requirements.txt
     agda-metis==0.1
     agda-prop==0.1.1
 ````
