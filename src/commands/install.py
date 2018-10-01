@@ -143,6 +143,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
         result = subprocess.run( ["git", "describe", "--tags", "--long"]
                                , stdout=subprocess.PIPE
                                , stderr=devnull
+                               , cwd=pwd.as_posix()
                                )
         versionName = result.stdout.decode()
     except:
@@ -154,6 +155,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
         result = subprocess.run( ["git", "rev-parse", "HEAD"]
                                , stdout=subprocess.PIPE
                                , stderr=devnull
+                               , cwd=pwd.as_posix()
                                )
         versionName = result.stdout.decode()[:8]
     except:
@@ -312,7 +314,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
       
       with click.progressbar(
             length=10*size
-          # , label = 
+          # , label = ""
           , bar_template='|%(bar)s| %(info)s %(label)s'
           , fill_char=click.style('█', fg='cyan')
           , empty_char=' '
@@ -335,9 +337,6 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
         REPO = git.Repo.clone_from(url, tmpdirname, branch=branch, progress=Progress())
 
       if version != "":
-
-
-
         try:
           # Seen on https://goo.gl/JVs8jJ
           REPO.git.checkout(version)
@@ -346,8 +345,8 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
           logger.error(e)
           logger.error(" version or tag not found it " + version)
           return None
-      else:
-        version = REPO.head.commit.hexsha
+      # else:
+        # version = REPO.head.commit.hexsha
 
       libVersion = installFromLocal(tmpdirname, name, src, version, no_defaults, cache)
 
