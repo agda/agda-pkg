@@ -28,7 +28,7 @@ def read(*names, **kwargs):
 
 setup(
     name='agda-pkg'
-  , version="0.1.12"
+  , version="0.1.13"
   , python_requires='>=3.6.0'
   , url='https://github.com/apkgbot/agda-pkg'
   , license='MIT'
@@ -56,6 +56,7 @@ setup(
     , 'ponywhoosh'
     , 'natsort'
     , 'click-log'
+    , 'requests'
     , 'humanize'
     ]
   , entry_points='''

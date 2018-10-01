@@ -1,38 +1,36 @@
 agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg)
 ========
 
-
 The Agda package manager that we all have been waiting for ~~so long~~. This
 tool do not modify `Agda` at all, it will just manage systematically the directory
 `.agda` and its files: `.agda/defaults` and `.agda/libraries`.
 
+<img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/demo.gif"
+ alt="agda package manager installation" height=500 align="right" />
+ 
 **Table of contents**
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Quick Start](#quick-start)
 - [Usage](#usage)
-	- [Initialisation of the package index](#initialisation-of-the-package-index)
-	- [Help command](#help-command)
-	- [Upgrade package indexed](#upgrade-package-indexed)
-	- [List all the packages available](#list-all-the-packages-available)
-	- [Installation of packages](#installation-of-packages)
-	- [Uninstalling a package](#uninstalling-a-package)
-	- [See packages installed](#see-packages-installed)
-	- [Approximate search of packages](#approximate-search-of-packages)
-	- [Get all the information of a package](#get-all-the-information-of-a-package)
+    - [Initialisation of the package index](#initialisation-of-the-package-index)
+    - [Help command](#help-command)
+    - [Upgrade package indexed](#upgrade-package-indexed)
+    - [List all the packages available](#list-all-the-packages-available)
+    - [Installation of packages](#installation-of-packages)
+    - [Uninstalling a package](#uninstalling-a-package)
+    - [See packages installed](#see-packages-installed)
+    - [Approximate search of packages](#approximate-search-of-packages)
+    - [Get all the information of a package](#get-all-the-information-of-a-package)
 - [Managing your own library](#managing-your-own-library)
-	- [Directory structure of an agda library](#directory-structure-of-an-agda-library)
-	- [.agda-lib library file](#agda-lib-library-file)
-	- [.agda-pkg library file](#agda-pkg-library-file)
+    - [Directory structure of an agda library](#directory-structure-of-an-agda-library)
+    - [.agda-lib library file](#agda-lib-library-file)
+    - [.agda-pkg library file](#agda-pkg-library-file)
 
 <!-- /TOC -->
 
 # Quick Start
-
-<img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/installation.gif"
- alt="agda package manager installation" width=256 align="right" />
-
 
 To install `agda-pkg`, you must have installed `Python 3.6+` or a latter version
 on your machine. In addition, the python package manager `pip 18.0+`.
