@@ -11,12 +11,15 @@
 import click
 import click_log as clog
 
-import shutil
+import shutil # maybe I should remove this
 import uuid
 import logging
 import git
+import requests
 import os
 import subprocess
+import humanize
+
 from distutils.dir_util import copy_tree, remove_tree
 
 from pathlib       import Path
@@ -182,7 +185,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
                                          )
     else:
       if versionLibrary.sourcePath.exists():
-        print("[!] rmtree 1....")
+        logger.warning("[!] removing tree 1.")
         remove_tree(versionLibrary.sourcePath.as_posix())
   else:
     versionLibrary = LibraryVersion( library=library
@@ -192,7 +195,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
 
   try:
     if versionLibrary.sourcePath.exists():
-      print("[!] rmtree 2")
+      logger.warning("[!] removing tree 2.")
       remove_tree(versionLibrary.sourcePath.as_posix())
 
     logger.info("Moving sources to " + versionLibrary.sourcePath.as_posix())
@@ -240,7 +243,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
       logger.error(" fail to remove the sources:" + versionLibrary.sourcePath.as_posix())
 
     logger.error(e)
-    logger.error("(1)")
+    logger.warning("[!] removing tree 3.")
     return None
 
   try:
@@ -252,9 +255,8 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
   except Exception as e:
     if versionLibrary.sourcePath.exists():
       remove_tree(versionLibrary.sourcePath.as_posix())
-      print("[!] rmtree 3")
+      logger.warning("[!] removing tree." + versionLibrary.sourcePath.as_posix())
     logger.error(e)
-    logger.error("(2)")
   return None
 
 # ----------------------------------------------------------------------------
@@ -273,8 +275,54 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
       if Path(tmpdirname).exists():
         remove_tree(tmpdirname)
 
-      logger.info("Cloning repository...")
-      REPO = git.Repo.clone_from(url, tmpdirname, branch=branch)
+      # To display a nice progress bar, we need the size of
+      # the repository, so let's try to get that number
+      # --
+      size = 0
+      if "github" in url:
+        reporef = url.split("github.com")[-1]
+        infourl = "https://api.github.com/repos" + reporef.split(".git")[0]
+        # print(url)
+        response = requests.get(infourl, stream=True)
+        if not response.ok:
+          logger.error("Request failed: %d" % response.status_code)
+          return None
+        info = response.json()
+        size = int(info.get("size", 0))
+      else:
+        response = requests.get(url, stream=True)
+        if not response.ok:
+          logger.error("Request failed: %d" % response.status_code)
+          return None
+
+        size_length = response.headers.get('content-length')
+        size = 0
+        if size_length is None:
+          for block in response.iter_content(1024):
+              size += 1024
+        else:
+          size = size_length
+        size = int(size)
+      # --
+      
+      logger.info("Downloading repository... (%s)" % humanize.naturalsize(size, binary=True))
+      
+      with click.progressbar(length=10*size,fill_char='=', empty_char=' ', width=40) as bar:
+
+        class Progress(git.remote.RemoteProgress):
+          
+          total, past = 0 , 0
+
+          def update(self, op_code, cur_count, max_count=None, message=''):
+
+            if cur_count == 0:
+              self.past = self.total
+            self.total = self.past + int(cur_count)
+            bar.update(self.total)
+
+        REPO = git.Repo.clone_from(url, tmpdirname, branch=branch, progress=Progress())
+
+      logger.info("Finish the download")
 
       if version != "":
 

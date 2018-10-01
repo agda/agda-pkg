@@ -28,7 +28,7 @@ def read(*names, **kwargs):
 
 setup(
     name='agda-pkg'
-  , version="0.1.10"
+  , version="0.1.11"
   , python_requires='>=3.6.0'
   , url='https://github.com/apkgbot/client'
   , license='MIT'
@@ -55,6 +55,7 @@ setup(
     , 'ponywhoosh'
     , 'natsort'
     , 'click-log'
+    , 'humanize'
     ]
   , entry_points='''
       [console_scripts]
