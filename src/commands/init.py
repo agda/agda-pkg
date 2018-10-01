@@ -88,7 +88,7 @@ def init(drop_tables):
       library = Library.get(name = lib.name)
 
       for version in library.getSortedVersions():
-        click.echo(version.freezeName)
+        # click.echo(version.freezeName)
 
         info = version.readInfoFromLibFile()
 
@@ -118,3 +118,16 @@ def init(drop_tables):
 
           keyword.libVersions.clear()
           keyword.libVersions.add(version)
+
+
+    libraries = select(l for l in Library)[:]
+
+    click.echo( str(len(libraries)) + " librar" \
+        + ("ies" if len(libraries) != 1 else "y")  \
+        + " indexed."
+        )
+
+    logger.info("")
+    logger.info("[+] Check all the available libraries by running")
+    logger.info("    the command:")
+    logger.info("    $ apkg list")
