@@ -88,11 +88,12 @@ def list(short):
             click.echo("{0}: {1}".format(k,val))
 
         vs = ','.join(str(ver) for ver in v.library.versions)
+       
         if len(vs) > 0:
-          logger.info("Versions: ", vs)
+          print("Versions: ", vs)
       
       else:
-        logger.info("{:<20.20} {:<20.20} {:.42}"
+        print("{:<20.20} {:<20.20} {:.42}"
                     .format(v.library.name,v.name,v.description))
 
       i += 1
