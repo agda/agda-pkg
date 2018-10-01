@@ -9,19 +9,19 @@
 # ----------------------------------------------------------------------------
 
 import click
-
-from ..service.readLibFile import readLibFile
-from ..service.database    import db, pw
-from ..service.database    import ( Library
-                                  , LibraryVersion
-                                  , Keyword
-                                  , TestedWith
-                                  , Dependency
-                                  )
-from pprint   import pprint
-from pony.orm import *
-
 import logging
+
+from ..service.readLibFile  import readLibFile
+from ..service.database     import db, pw
+from ..service.database     import ( Library
+                                   , LibraryVersion
+                                   , Keyword
+                                   , TestedWith
+                                   , Dependency
+                                   )
+from pprint                 import pprint
+from pony.orm               import *
+
 import click_log as clog
 
 # ----------------------------------------------------------------------------

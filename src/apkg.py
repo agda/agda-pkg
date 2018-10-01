@@ -9,8 +9,12 @@
 # ----------------------------------------------------------------------------
 
 import click
-from .commands import *
 
+from pprint               import pprint
+from pony.orm             import *
+
+
+from .commands            import *
 from .commands.clean      import clean
 from .commands.freeze     import freeze
 from .commands.list       import list
@@ -21,7 +25,6 @@ from .commands.uninstall  import uninstall
 from .commands.search     import search
 from .commands.update     import update
 from .commands.upgrade    import upgrade
-
 from .service.database    import db, pw
 from .service.database    import ( Library
                                  , LibraryVersion
@@ -29,8 +32,6 @@ from .service.database    import ( Library
                                  , TestedWith
                                  , Dependency
                                  )
-from pprint   import pprint
-from pony.orm import *
 
 # ----------------------------------------------------------------------------
 

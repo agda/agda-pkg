@@ -11,39 +11,39 @@
 import click
 import click_log as clog
 
-import shutil # maybe I should remove this
-import uuid
-import logging
 import git
-import requests
-import os
-import subprocess
 import humanize
-import time
+import logging
+import os
 import random
+import requests
+import subprocess
+import time
+import uuid
 
-from distutils.dir_util import copy_tree, remove_tree
+from distutils.dir_util  import copy_tree, remove_tree
+from pathlib             import Path
+from pony.orm            import *
+from tempfile            import *
+from urllib.parse        import urlparse
 
-from pathlib       import Path
-from pony.orm      import *
-from tempfile      import *
-from urllib.parse  import urlparse
 
-from .uninstall    import uninstallLibrary
-from ..config      import ( PACKAGE_SOURCES_PATH
-                          , INDEX_REPOSITORY_PATH
-                          , PKG_SUFFIX
-                          , LIB_SUFFIX
-                          )
+from ..config            import ( PACKAGE_SOURCES_PATH
+                                , INDEX_REPOSITORY_PATH
+                                , PKG_SUFFIX
+                                , LIB_SUFFIX
+                                )
 
-from ..service.database import db, pw
-from ..service.database import ( Library
-                               , LibraryVersion
-                               , Keyword
-                               , Dependency
-                               )
+from ..service.database  import db
+from ..service.database  import ( Library
+                                , LibraryVersion
+                                , Keyword
+                                , Dependency
+                                )
+
 from ..service.readLibFile       import readLibFile
 from ..service.writeAgdaDirFiles import writeAgdaDirFiles
+from .uninstall                  import uninstallLibrary
 
 # ----------------------------------------------------------------------------
 
@@ -318,7 +318,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
           , bar_template='|%(bar)s| %(info)s %(label)s'
           , fill_char=click.style('█', fg='cyan')
           , empty_char=' '
-          , width=50
+          , width=30
           ) as bar:
 
         class Progress(git.remote.RemoteProgress):

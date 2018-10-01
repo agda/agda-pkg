@@ -9,34 +9,35 @@
 # ----------------------------------------------------------------------------
 
 import click
-from pathlib import Path
-from ..config import ( AGDA_DEFAULTS_PATH
-                     , AGDA_DIR_PATH
-                     , AGDA_LIBRARIES_PATH
-                     , AGDA_PKG_PATH
-                     , AGDA_VERSION
-                     , DATABASE_FILE_NAME
-                     , DATABASE_FILE_PATH
-                     , DATABASE_SEARCH_INDEXES_PATH
-                     , GITHUB_USER
-                     , INDEX_REPOSITORY_BRANCH
-                     , INDEX_REPOSITORY_NAME
-                     , INDEX_REPOSITORY_PATH
-                     , INDEX_REPOSITORY_URL
-                     , REPO
-                     )
 
-from ..service.readLibFile import readLibFile
-from ..service.writeAgdaDirFiles import writeAgdaDirFiles
-from ..service.database import db, pw
-from ..service.database import ( Library
-                               , LibraryVersion
-                               , Keyword
-                               , TestedWith
-                               , Dependency
-                               )
-from pony.orm import *
-import shutil
+from pathlib    import Path
+from pony.orm   import *
+
+from ..config   import ( AGDA_DEFAULTS_PATH
+                       , AGDA_DIR_PATH
+                       , AGDA_LIBRARIES_PATH
+                       , AGDA_PKG_PATH
+                       , AGDA_VERSION
+                       , DATABASE_FILE_NAME
+                       , DATABASE_FILE_PATH
+                       , DATABASE_SEARCH_INDEXES_PATH
+                       , GITHUB_USER
+                       , INDEX_REPOSITORY_BRANCH
+                       , INDEX_REPOSITORY_NAME
+                       , INDEX_REPOSITORY_PATH
+                       , INDEX_REPOSITORY_URL
+                       , REPO
+                       )
+
+from ..service.readLibFile        import readLibFile
+from ..service.writeAgdaDirFiles  import writeAgdaDirFiles
+from ..service.database           import db, pw
+from ..service.database           import ( Library
+                                         , LibraryVersion
+                                         , Keyword
+                                         , TestedWith
+                                         , Dependency
+                                         )
 
 import logging
 import click_log as clog
@@ -73,6 +74,7 @@ def uninstallLibrary(libname, database=False, remove_cache=False):
   commit()
   writeAgdaDirFiles(True)
 
+# --
 
 @uninstall.command()
 @click.argument('libname')

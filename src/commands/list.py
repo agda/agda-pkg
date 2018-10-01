@@ -9,16 +9,16 @@
 # ----------------------------------------------------------------------------
 
 import click
-
-from pony.orm import db_session, select
-
-from ..service.database import db
-from ..service.database import ( Library , LibraryVersion )
-from natsort            import natsorted
-from operator import attrgetter, itemgetter
-
 import logging
 import click_log as clog
+
+from pony.orm            import db_session, select
+
+from ..service.database  import db
+from ..service.database  import ( Library , LibraryVersion )
+from natsort             import natsorted
+from operator            import attrgetter, itemgetter
+
 
 # ----------------------------------------------------------------------------
 
@@ -88,18 +88,9 @@ def list(short):
           print("Versions: ", vs)
       
       else:
-        logger.info("{:<20.20} {:<7.7} {:.42}".format(v.library.name,v.name,v.description))
+        logger.info("{:<20.20} {:<7.7} {:.42}"
+                    .format(v.library.name,v.name,v.description))
 
       i += 1
       if i < len(libraries):
-        print()
-
-  # logger.info(" "*30 + "--END--\n")
-
-  # logger.info("[+] You may want to search by keywords over this list")
-  # logger.info("    running the command:")
-  # logger.info("      $ apkg search keyword\n")
-
-  # logger.info("[+] To check information about a package.")
-  # logger.info("    running the command:")
-  # logger.info("      $ apkg info packageName")
+        logger.info("")

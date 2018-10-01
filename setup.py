@@ -30,11 +30,11 @@ setup(
     name='agda-pkg'
   , version="0.1.12"
   , python_requires='>=3.6.0'
-  , url='https://github.com/apkgbot/client'
+  , url='https://github.com/apkgbot/agda-pkg'
   , license='MIT'
   , author='Jonathan Prieto-Cubides & Camilo Rodriguez'
   , author_email='jcu043@uib.no'
-  , description='Package manager for Agda.'
+  , description='The Agda Package Manager'
   , long_description='%s' % (read('README.md'))
   , long_description_content_type='text/markdown'
   , packages=find_packages()
@@ -45,6 +45,7 @@ setup(
   , keywords=
     [ 'agda'
     , 'package-manager'
+    , 'agda-pkg'
     ]
   , install_requires=
     [ 'click'

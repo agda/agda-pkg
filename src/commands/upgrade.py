@@ -10,17 +10,11 @@
 
 import click
 
-from git      import *
-from ..config import REPO
+from git       import *
+from pony.orm  import *
 
-from .init import init
-from ..service.database import db, pw
-from ..service.database import ( Library
-                               , LibraryVersion
-                               , Keyword
-                               , Dependency
-                               )
-from pony.orm import *
+from .init     import init
+from ..config  import REPO
 
 # ----------------------------------------------------------------------------
 

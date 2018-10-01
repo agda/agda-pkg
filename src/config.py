@@ -8,15 +8,12 @@
 
 # ----------------------------------------------------------------------------
 
-from pathlib import Path
 
 import click
 import git
 import subprocess
 
-# ----------------------------------------------------------------------------
-
-__author__ = "Jonathan Prieto-Cubides & Camilo Rodriguez"
+from pathlib import Path
 
 # -----------------------------------------------------------------------------
 
@@ -34,7 +31,8 @@ except Exception as e:
   print("[!] Agda may not be installed on this machine!")
   print("    Please consider to install Agda v2.5.4+")
 
-AGDA_PKG_PATH = Path().home().joinpath('.apkg' + ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
+AGDA_PKG_PATH = Path().home().joinpath('.apkg' + \
+                ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
 GITHUB_USER   = "apkgbot"
 
 # The github repository index of all agda packages
@@ -57,24 +55,26 @@ REPO = None
 
 PKG_SUFFIX = ".agda-pkg"
 LIB_SUFFIX = ".agda-lib"
+
 # -----------------------------------------------------------------------------
 
 if not AGDA_PKG_PATH.exists():
   AGDA_PKG_PATH.mkdir()
-  # print("AGDA_PKG_PATH created at ", AGDA_PKG_PATH.as_posix())
 
 if not INDEX_REPOSITORY_PATH.exists():
   INDEX_REPOSITORY_PATH.mkdir()
-  # print("Package Index created at ", INDEX_REPOSITORY_PATH.as_posix())
 
 if not PACKAGE_SOURCES_PATH.exists():
   PACKAGE_SOURCES_PATH.mkdir()
-  # print("Package Sources created at ", INDEX_REPOSITORY_PATH.as_posix())
 
 try:
-  REPO = git.Repo.clone_from(INDEX_REPOSITORY_URL, INDEX_REPOSITORY_PATH)
+  REPO = git.Repo(INDEX_REPOSITORY_PATH, search_parent_directories=True)
 except:
-  REPO = git.Repo(INDEX_REPOSITORY_PATH)
+  try:
+    REPO = git.Repo.clone_from(INDEX_REPOSITORY_URL, INDEX_REPOSITORY_PATH)
+  except Exception as e:
+    print(e)
+  
 
 if not DATABASE_FILE_PATH.exists():
   DATABASE_FILE_PATH.touch()
@@ -84,10 +84,5 @@ if not DATABASE_SEARCH_INDEXES_PATH.exists():
 
 if not AGDA_DIR_PATH.exists():
   AGDA_DIR_PATH.mkdir()
-  # print("AGDA_DIR created at " + AGDA_DIR_PATH.as_posix())
-
   AGDA_DEFAULTS_PATH.touch()
-  # print("defaults file created at " + AGDA_DEFAULTS_PATH.as_posix())
-
   AGDA_LIBRARIES_PATH.touch()
-  # print("libraries file created at " + AGDA_LIBRARIES_PATH.as_posix())

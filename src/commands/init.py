@@ -9,15 +9,17 @@
 # ----------------------------------------------------------------------------
 
 import click
-from pathlib import Path
-from pony.orm import *
 import logging
 import click_log as clog
 
-from ..config import ( PACKAGE_SOURCES_PATH
-                     , INDEX_REPOSITORY_PATH
-                     , INDEX_REPOSITORY_URL
-                     )
+from pathlib            import Path
+from pony.orm           import *
+
+from ..config           import ( PACKAGE_SOURCES_PATH
+                               , INDEX_REPOSITORY_PATH
+                               , INDEX_REPOSITORY_URL
+                               )
+
 from ..service.database import db
 from ..service.database import ( Library
                                , LibraryVersion

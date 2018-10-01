@@ -58,7 +58,8 @@ def writeAgdaDirFiles(debug = False):
   libVersions = getLibraries()
   
   try:
-    AGDA_LIBRARIES_PATH.write_text(header + '\n'.join([v.agdaLibFilePath.as_posix() for v in libVersions])+'\n')
+    AGDA_LIBRARIES_PATH.write_text(header + \
+      '\n'.join([v.agdaLibFilePath.as_posix() for v in libVersions])+'\n')
     if debug: click.echo(AGDA_LIBRARIES_PATH.as_posix() + " (updated)")
   except Exception as e:
     click.echo(e)
