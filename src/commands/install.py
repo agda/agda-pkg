@@ -19,6 +19,8 @@ import requests
 import os
 import subprocess
 import humanize
+import time
+import random
 
 from distutils.dir_util import copy_tree, remove_tree
 
@@ -198,7 +200,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
       logger.warning("[!] removing tree 2.")
       remove_tree(versionLibrary.sourcePath.as_posix())
 
-    logger.info("Moving sources to " + versionLibrary.sourcePath.as_posix())
+    logger.info("Adding " + versionLibrary.sourcePath.as_posix())
     copy_tree(pwd.as_posix(), versionLibrary.sourcePath.as_posix())
 
   except Exception as e:
@@ -304,10 +306,18 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
           size = size_length
         size = int(size)
       # --
+
+      logger.info("Collecting external library")
+      logger.info("Downloading " + url  + " (%s)" % str(humanize.naturalsize(size, binary=True)))
       
-      logger.info("Downloading repository... (%s)" % humanize.naturalsize(size, binary=True))
-      
-      with click.progressbar(length=10*size,fill_char='=', empty_char=' ', width=40) as bar:
+      with click.progressbar(
+            length=10*size
+          # , label = 
+          , bar_template='|%(bar)s| %(info)s %(label)s'
+          , fill_char=click.style('█', fg='cyan')
+          , empty_char=' '
+          , width=50
+          ) as bar:
 
         class Progress(git.remote.RemoteProgress):
           
@@ -315,16 +325,18 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 
           def update(self, op_code, cur_count, max_count=None, message=''):
 
-            if cur_count == 0:
+            if cur_count < 10:
               self.past = self.total
             self.total = self.past + int(cur_count)
+            # time.sleep(0.1 * random.random())
             bar.update(self.total)
+            # click.echo("{}/{}".format(self.total, size))
 
         REPO = git.Repo.clone_from(url, tmpdirname, branch=branch, progress=Progress())
 
-      logger.info("Finish the download")
-
       if version != "":
+
+
 
         try:
           # Seen on https://goo.gl/JVs8jJ
