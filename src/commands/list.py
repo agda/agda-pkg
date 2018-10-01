@@ -89,7 +89,7 @@ def list(short):
 
         vs = ','.join(str(ver) for ver in v.library.versions)
         if len(vs) > 0:
-          print("Versions: ", vs)
+          logger.info("Versions: ", vs)
       
       else:
         logger.info("{:<20.20} {:<20.20} {:.42}"

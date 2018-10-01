@@ -469,17 +469,33 @@ def installFromURL(url, name, src, version, no_defaults, cache):
 @click.option('--branch'
              , type=bool
              , is_flag=True 
-             , help='from a git repository.')
+             , help='From a git repository.')
+@click.option('-r'
+             , '--requirement'
+             , type=click.Path(exists=True)
+             , help='Use a requirement file.')
 @clog.simple_verbosity_option(logger)
 @click.pass_context
 @db_session
 def install( ctx, libnames, src, version, no_defaults \
-           , cache, local, name, url, git, github, branch):
+           , cache, local, name, url, git, github, branch,requirement):
   """Install packages."""
+
   libnames = list(set(libnames))
 
+  if requirement:
+    try:
+      rfile = Path(requirement)
+      libnames += rfile.read_text().split()
+    except Exception as e:
+      logger.error(e)
+      logger.error(" Installation failed.")
+      return
+
+
   if len(libnames) > 1 and version != "":
-    return logger.error("--version only works with one library, no more")
+    return logger.error("--version only works with one library.\n\
+      Consider using nameLibrary@versionNumber instead.")
   
   if (git or github) and url:
     return logger.error("--git and --url are incompatible")

@@ -126,8 +126,3 @@ def init(drop_tables):
         + ("ies" if len(libraries) != 1 else "y")  \
         + " indexed."
         )
-
-    logger.info("")
-    logger.info("[+] Check all the available libraries by running")
-    logger.info("    the command:")
-    logger.info("    $ apkg list")

@@ -37,4 +37,4 @@ def freeze():
   for library in select(l for l in Library if l.installed):
     installedVersion = library.getInstalledVersion()    
     if installedVersion is not None:
-      logger.info(installedVersion.freezeName)
+      click.echo(installedVersion.freezeName)

@@ -121,16 +121,43 @@ We have three possibilities to install a package:
     $ apkg install http://github.com/jonaprieto/agda-prop.git
 ```
 
-To see all the options, check out the help:
 
-```
-    $ apkg install --help
-```
+### Installation of multiple packages at once
 
-In addition, you may want to install multiple libraries at once
+
+We may want to install multiple libraries at once,
+so we have two options:
+
+1. Using the inline method
 
 ```
     $ apkg install standard-library agda-prop agda-metis
+```
+
+2. Using a requirement file:
+
+Generate a requirement file using `apkg freeze`:
+
+```
+    $ apkg freeze > requirements.txt
+    $ cat requirements.txt
+    cat requirements.txt
+    agda-metis==0.1
+    agda-prop==0.1.1
+````
+
+Now, use the flag `-r` to install all the listed libraries
+in this file:
+
+```
+    $ apkg install -r requirements.txt
+```
+
+
+Lastly, to see all the options, pleasee check out the help information:
+
+```
+    $ apkg install --help
 ```
 
 ## Uninstalling a package
