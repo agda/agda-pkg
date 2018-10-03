@@ -91,7 +91,7 @@ def install(): pass
 # ----------------------------------------------------------------------------
 @db_session
 def installFromLocal(pathlib, name, src, version, no_defaults, cache):
-  # logger.info("Installing as a local package...")
+  logger.info("Installing as a local package...")
 
   if len(pathlib) == 0 or pathlib == ".":
     pathlib = Path().cwd()
@@ -180,10 +180,14 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
   if versionLibrary is not None:
 
     if versionLibrary.installed:
-      logger.warning("This version ({})) is already installed!"
+      logger.warning("This version ({}) is already installed."
                       .format(versionLibrary.freezeName))
       if click.confirm('Do you want to uninstall it first?'):
-        uninstallLibrary(libname=name, database=True, remove_cache=True)
+        try:
+          uninstallLibrary(libname=name, database=False, remove_cache=True)
+        except Exception as e:
+          logger.error(e)
+          return None
       else:
         versionNameProposed = str(info["version"]) + "-" + str(uuid.uuid1())
         logger.warning("Renaming version to " + name + "@" + versionNameProposed)
@@ -202,6 +206,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
                                    )
 
   try:
+
     if versionLibrary.sourcePath.exists():
       remove_tree(versionLibrary.sourcePath.as_posix())
 
@@ -230,6 +235,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
       
       if not library in keyword.libraries:
         keyword.libraries.add(library)
+
       if not versionLibrary in keyword.libVersions:
         keyword.libVersions.add(versionLibrary)
 
@@ -242,11 +248,16 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
           versionLibrary.depend.add(Dependency(library = dependency))
         else:
           logger.warning(depend + " is not in the index")
+    
+    versionLibrary.install(not(no_defaults))
+    writeAgdaDirFiles(False)
     commit()
+    return versionLibrary
 
   except Exception as e:
     try:
-      remove_tree(versionLibrary.sourcePath.as_posix())
+      if versionLibrary.sourcePath.exists():
+        remove_tree(versionLibrary.sourcePath.as_posix())
     except:
       logger.error(" fail to remove the sources:" + versionLibrary.sourcePath.as_posix())
 
@@ -254,18 +265,6 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
     logger.warning("[!] removing tree 3.")
     return None
 
-  try:
-    versionLibrary.install(not(no_defaults))
-    writeAgdaDirFiles(False)
-    commit()
-    return versionLibrary
-
-  except Exception as e:
-    if versionLibrary.sourcePath.exists():
-      remove_tree(versionLibrary.sourcePath.as_posix())
-      logger.warning("[!] removing tree." + versionLibrary.sourcePath.as_posix())
-    logger.error(e)
-  return None
 
 # ----------------------------------------------------------------------------
 def installFromGit(url, name, src, version, no_defaults, cache, branch):
@@ -352,22 +351,19 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
           logger.error(" version or tag not found ({})".format(version))
           return None
 
-      # else:
-        # version = REPO.head.commit.hexsha
-
       libVersion = installFromLocal(tmpdirname, name, src, version, no_defaults, cache)
 
+
       if libVersion is None:
-        raise ValueError(" we couldn't install the version you specified.")
+        logger.error(" we couldn't install the version you specified.")
+        return None
 
       libVersion.fromGit = True
       libVersion.origin = url
       libVersion.library.url = url
       libVersion.library.default = not(no_defaults)
 
-      if version != "":
-        # libVersion.name = version
-        libVersion.sha = REPO.commit()
+      if version != "": libVersion.sha = REPO.head.commit.hexsha
 
       commit()
       writeAgdaDirFiles(False)
@@ -375,8 +371,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 
     except Exception as e:
       logger.error(e)
-      logger.error("Problems to install the library,\n\
-                    May you want to run $ apkg init?")
+      logger.error("Problems to install the library, may you want to run $ apkg init?")
       return None
 
 # ----------------------------------------------------------------------------
@@ -384,7 +379,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 def installFromIndex(libname, src, version, no_defaults, cache):
 
   # Check first if the library is in the cache
-  # logger.info("Installing from the index...")
+  logger.info("Installing from the index...")
   library = Library.get(name=libname)
 
   if library is not None:
@@ -539,9 +534,9 @@ def install( ctx, libnames, src, version, no_defaults \
       elif isIndexed(libname):
         vLibrary = installFromIndex(libname,src,version,no_defaults,cache)
       elif git or isGit(libname):
-          Library = installFromGit(url,name,src,version,no_defaults,cache,branch)
+        vLibrary = installFromGit(url,name,src,version,no_defaults,cache,branch)
       elif isLocal(pathlib):
-        vLibrary =  installFromLocal(pathlib,name,src,version,no_defaults,cache)
+        vLibrary  = installFromLocal(pathlib,name,src,version,no_defaults,cache)
 
     except Exception as e:
       logger.error("Unsuccessfully installation ({}@{})."
