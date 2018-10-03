@@ -222,7 +222,7 @@ example:
     sha: 6b2ea8e099ac6968004ec57d96f19b46bcb081ff
 ```
 
-# Managing your own library
+# Creating a library for Agda-Pkg
 
 ## Directory structure of an agda library
 
