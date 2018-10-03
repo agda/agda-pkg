@@ -250,7 +250,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
           logger.warning(depend + " is not in the index")
     
     versionLibrary.install(not(no_defaults))
-    writeAgdaDirFiles(False)
+
     commit()
     return versionLibrary
 
@@ -259,7 +259,9 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
       if versionLibrary.sourcePath.exists():
         remove_tree(versionLibrary.sourcePath.as_posix())
     except:
-      logger.error(" fail to remove the sources:" + versionLibrary.sourcePath.as_posix())
+      logger.error(" fail to remove the sources: {}"
+                  .format(versionLibrary.sourcePath.as_poasix())
+                  )
 
     logger.error(e)
     logger.warning("[!] removing tree 3.")
@@ -275,19 +277,20 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
     logger.error("this is not a git repository")
     return None
 
-  # tmpdirname = "/tmp/qwerty"
+  # tmpdir = "/tmp/qwerty"
   # if True:
-  with TemporaryDirectory() as tmpdirname:
-    print("Using temporal directory:", tmpdirname)
+  with TemporaryDirectory() as tmpdir:
+    print("Using temporal directory:", tmpdir)
     try:
       if branch is None: branch = "master"
-      if Path(tmpdirname).exists():
-        remove_tree(tmpdirname)
+      if Path(tmpdir).exists():
+        remove_tree(tmpdir)
 
       # To display a nice progress bar, we need the size of
       # the repository, so let's try to get that number
 
-      # --
+      # -- SIZE Repo
+
       size = 0
       if "github" in url:
         reporef = url.split("github.com")[-1]
@@ -313,18 +316,20 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
         else:
           size = size_length
         size = int(size)
+
       # --
 
-      logger.info("Downloading " + url  + " (%s)" % str(humanize.naturalsize(size, binary=True)))
+      logger.info("Downloading " + url  \
+            + " (%s)" % str(humanize.naturalsize(size, binary=True)))
       
       with click.progressbar(
-            length=10*size
-          # , label = ""
-          , bar_template='|%(bar)s| %(info)s %(label)s'
-          , fill_char=click.style('█', fg='cyan')
-          , empty_char=' '
-          , width=30
-          ) as bar:
+                    length=10*size
+                  # , label = ""
+                  , bar_template='|%(bar)s| %(info)s %(label)s'
+                  , fill_char=click.style('█', fg='cyan')
+                  , empty_char=' '
+                  , width=30
+                  ) as bar:
 
         class Progress(git.remote.RemoteProgress):
           
@@ -335,11 +340,14 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
             if cur_count < 10:
               self.past = self.total
             self.total = self.past + int(cur_count)
-            # time.sleep(0.1 * random.random())
-            bar.update(self.total)
-            # click.echo("{}/{}".format(self.total, size))
 
-        REPO = git.Repo.clone_from(url, tmpdirname, branch=branch, progress=Progress())
+            bar.update(self.total)
+
+        REPO = git.Repo.clone_from( url
+                                  , tmpdir
+                                  , branch=branch
+                                  , progress=Progress()
+                                  )
 
       if version != "":
         try:
@@ -351,8 +359,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
           logger.error(" version or tag not found ({})".format(version))
           return None
 
-      libVersion = installFromLocal(tmpdirname, name, src, version, no_defaults, cache)
-
+      libVersion = installFromLocal(tmpdir,name,src,version,no_defaults,cache)
 
       if libVersion is None:
         logger.error(" we couldn't install the version you specified.")
@@ -364,14 +371,12 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
       libVersion.library.default = not(no_defaults)
 
       if version != "": libVersion.sha = REPO.head.commit.hexsha
-
       commit()
-      writeAgdaDirFiles(False)
       return libVersion
 
     except Exception as e:
       logger.error(e)
-      logger.error("Problems to install the library, may you want to run $ apkg init?")
+      logger.error("Problems to install the library, may you want to run init?")
       return None
 
 # ----------------------------------------------------------------------------
@@ -411,7 +416,6 @@ def installFromIndex(libname, src, version, no_defaults, cache):
     elif versionLibrary.cached and \
       click.confirm('Do you want to install the cached version?'):
         versionLibrary.install()
-        writeAgdaDirFiles()
         return versionLibrary
 
     else:
@@ -421,7 +425,6 @@ def installFromIndex(libname, src, version, no_defaults, cache):
       if versionLibrary is not None:
         versionLibrary.fromIndex = True
         versionLibrary.cached    = True
-
       return versionLibrary
   else:
     logger.error("Library not available.")
@@ -549,5 +552,4 @@ def install( ctx, libnames, src, version, no_defaults \
     else:
       logger.info("Unsuccessfully installation ({})."
                  .format(libname if name =="*" else name))
-
   writeAgdaDirFiles()

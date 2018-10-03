@@ -292,8 +292,7 @@ depend:
 
 # About
 
-This is the `Python` version for the Agda Package Manager.
-The Haskell version is an [early stage](http://github.com/jonaprieto/agda-pkg),
-we more spare time, I hope to finish that version.
+This is a proof of concept of an Agda Package Manager.
+The Haskell version is an [very early stage](http://github.com/jonaprieto/agda-pkg).
 
 Any contribution or feedback to improve this work is very welcomed.
