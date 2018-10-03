@@ -4,29 +4,33 @@ agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.
 The Agda package manager that we all have been waiting for. This
 tool do not modify `Agda` at all, it will just manage systematically the directory
 `.agda` and its files: `.agda/defaults` and `.agda/libraries`.
+For more information about how the Agda package system works, read
+the official documentation [here](https://agda.readthedocs.io/en/v2.5.4.1/tools/package-system.html).
 
 <img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/demo.gif"
  alt="agda package manager installation" height=500 align="right" />
- 
+
 **Table of contents**
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Quick Start](#quick-start)
 - [Usage](#usage)
-    - [Initialisation of the package index](#initialisation-of-the-package-index)
-    - [Help command](#help-command)
-    - [Upgrade package indexed](#upgrade-package-indexed)
-    - [List all the packages available](#list-all-the-packages-available)
-    - [Installation of packages](#installation-of-packages)
-    - [Uninstalling a package](#uninstalling-a-package)
-    - [See packages installed](#see-packages-installed)
-    - [Approximate search of packages](#approximate-search-of-packages)
-    - [Get all the information of a package](#get-all-the-information-of-a-package)
-- [Managing your own library](#managing-your-own-library)
-    - [Directory structure of an agda library](#directory-structure-of-an-agda-library)
-    - [.agda-lib library file](#agda-lib-library-file)
-    - [.agda-pkg library file](#agda-pkg-library-file)
+	- [Initialisation of the package index](#initialisation-of-the-package-index)
+	- [Help command](#help-command)
+	- [Upgrade the package index](#upgrade-the-package-index)
+	- [List all the packages available](#list-all-the-packages-available)
+	- [Installation of packages](#installation-of-packages)
+		- [Installation of multiple packages at once](#installation-of-multiple-packages-at-once)
+	- [Uninstalling a package](#uninstalling-a-package)
+	- [See packages installed](#see-packages-installed)
+	- [Approximate search of packages](#approximate-search-of-packages)
+	- [Get all the information of a package](#get-all-the-information-of-a-package)
+- [Creating a library for Agda-Pkg](#creating-a-library-for-agda-pkg)
+	- [Directory structure of an agda library](#directory-structure-of-an-agda-library)
+	- [.agda-lib library file](#agda-lib-library-file)
+	- [.agda-pkg library file](#agda-pkg-library-file)
+- [About](#about)
 
 <!-- /TOC -->
 
@@ -50,11 +54,9 @@ shorter just `apkg`.
 
 ## Initialisation of the package index
 
-The easiest way to get libraries is from [the package index].
-We will use this index to download and to install
-Agda libraries. In addition, `agda-pkg` use a database to
-maintain a register of all libraries available. To initialise
-the index and the database run the following command:
+The easiest way to get some libraries s by using [the package index]. We will use this index to download and to install
+the libraries. In addition, `agda-pkg` use a local database to
+maintain a register of all libraries available in your system. To initialise the index and the database run the following command:
 
 ```
     $ apkg init
@@ -63,11 +65,13 @@ the index and the database run the following command:
 
 ## Help command
 
+Check all the options of a command or subcommand by using the flag `--help`.
+
 ```
     $ apkg --help
 ```
 
-## Upgrade package indexed
+## Upgrade the package index
 
 Recall updating the index every once in a while
 
@@ -87,17 +91,31 @@ To see all the package available run the following command:
 ```
 
 This command also has the flag `--short` to display a short version of the
-same list.
+same list. For instance,
+
+```
+    $ apkg list --short
+    Name                 Last version         Description
+    -----------------------------------------------------
+    agda-metis           v0.2.1               Missing.
+    agda-prelude         4e0caf0              Missing.
+    agda-prop            v0.1.2               Missing.
+    agdarsec             v0.1.1               Missing.
+    alga-theory          0fdb96c              Missing.
+    fotc                 apia-1.0.2           Missing.
+    hott-core            937e227              Missing.
+    hott-theorems        937e227              Missing.
+    standard-library     v0.16.1              Missing.
+```
 
 ## Installation of packages
 
-We have three possibilities to install a package:
-
+Install a library is now easy. We have multiple ways to install a package.
 
 <img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/index-stdlib.gif"
  alt="agda package manager installation" width=350 align="right" />
 
- -   from the [package index](http://github.com/apkgbot/package-index)
+ -   from the [package-index](http://github.com/apkgbot/package-index)
 
  ```
      $ apkg install standard-library
@@ -121,9 +139,9 @@ We have three possibilities to install a package:
     $ apkg install http://github.com/jonaprieto/agda-prop.git
 ```
 
+- from a tar ball file (coming soon).
 
 ### Installation of multiple packages at once
-
 
 We may want to install multiple libraries at once,
 so we have two options:
