@@ -57,34 +57,31 @@ def uninstall():
 def uninstallLibrary(libname, database=False, remove_cache=False):
   library = Library.get(name = libname)
   logger.info("Uninstalling")
-  if library is None or not library.installed and not(remove_cache): 
+
+  if library is None \
+    or (not library.installed and not (remove_cache)): 
+
     logger.info("  Library not installed.")
     logger.info("Nothing to uninstall.")
-    return 
+    return
 
-  for version in library.versions:
-    if version.installed:
-      try:
-        vname = version.name
-        if database:
-          version.uninstall(True)
-          version.delete()
-        else:
-          version.uninstall(remove_cache)
-        logger.info("  Version removed ({}).".format(vname))
-      except Exception as e:
-        logger.error(e)
+
   try:
     if database:
       library.delete()
     else:
-      library.uninstall()
+      if library.installed:
+        library.uninstall(remove_cache)
+        logger.info("Successfully uninstallation ({}).".format(libname))
+
+    commit()
+    writeAgdaDirFiles()
+    return
   except Exception as e:
     logger.error(e)
+    logger.error(" Unsuccessfully uninstallation.")
 
-  commit()
-  writeAgdaDirFiles()
-  logger.info("Successfully uninstallation ({}).".format(libname))
+
 
 # --
 

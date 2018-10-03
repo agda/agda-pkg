@@ -9,6 +9,8 @@
 # ----------------------------------------------------------------------------
 
 import click
+import logging
+import click_log as clog
 
 from git       import *
 from pony.orm  import *
@@ -17,6 +19,11 @@ from .init     import init
 from ..config  import REPO
 
 # ----------------------------------------------------------------------------
+
+# -- Logger def.
+logger = logging.getLogger(__name__)
+clog.basic_config(logger)
+
 
 @click.group()
 def upgrade(): pass

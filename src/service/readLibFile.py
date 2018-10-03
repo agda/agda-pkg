@@ -11,14 +11,16 @@
 import sys
 import yaml
 
-from pathlib import Path
-from pprint import pprint
+from pathlib  import Path
+from pprint   import pprint
 
 # ----------------------------------------------------------------------------
 
 def readLibLegacyFile(fname):
   info = { "name": "", "version": "",  "include": [], "depend":[]}
   libraryfile = Path(fname)
+
+  assert libraryfile.exists()
   assert libraryfile.suffix == ".agda-lib"
 
   with libraryfile.open('r') as f:
@@ -71,6 +73,7 @@ def readLibLegacyFile(fname):
 
 def readPkgFile(fname):
   libraryfile = Path(fname)
+  assert libraryfile.exists()
   assert libraryfile.suffix == ".agda-pkg"
 
   stream = libraryfile.open("r")

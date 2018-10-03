@@ -61,14 +61,14 @@ db = Database()
 
 @pw.register_model('name', 'description', 'url')
 class Library(db.Entity):
-    name = PrimaryKey(str)
-    description = Optional(str, nullable=True)
-    url = Optional(str, nullable=True)
-    versions = Set('LibraryVersion')
-    appearson = Set('Dependency')
-    keywords = Set('Keyword')
-    installed = Optional(bool, default=False)
-    default = Optional(bool, default=True)
+    name         = PrimaryKey(str)
+    description  = Optional(str, nullable=True)
+    url          = Optional(str, nullable=True)
+    versions     = Set('LibraryVersion')
+    appearson    = Set('Dependency')
+    keywords     = Set('Keyword')
+    installed    = Optional(bool, default=False)
+    default      = Optional(bool, default=True)
 
     def __str__(self):
       return self.name
@@ -114,33 +114,44 @@ class Library(db.Entity):
         return version.locationName()
       return self.name # --not sure about this
 
-    def uninstall(self):
+    def uninstall(self, remove_cache=False):
+
       self.installed = False
-      self.default = False
+      self.default   = False
+
+      for v in self.versions:
+        try:
+          v.uninstall(remove_cache)
+        except Exception as e:
+          logger.error(e)
+          logger.error(" Failed uninstallation ({}).".format(v.name))
 
 
     def install(self, defaults=True):
       self.installed = True
-      self.default = defaults
+      self.default   = defaults
+
+
+# ----
 
 @pw.register_model('name', 'description')
 class LibraryVersion(db.Entity):
-    library = Required(Library)
-    name = Optional(str, nullable=True, default="")
-    sha = Optional(str)
-    description = Optional(str, default="Missing.")
-    license = Optional(str)
-    include = Optional(str, default="src/")
-    depend = Set('Dependency')
-    testedWith = Set('TestedWith')
-    keywords = Set('Keyword')
-    installed = Optional(bool, default=False)
-    cached = Optional(bool, default=False)
+    library      = Required(Library)
+    name         = Optional(str, nullable=True, default="")
+    sha          = Optional(str)
+    description  = Optional(str, default="Missing.")
+    license      = Optional(str)
+    include      = Optional(str, default="src/")
+    depend       = Set('Dependency')
+    testedWith   = Set('TestedWith')
+    keywords     = Set('Keyword')
+    installed    = Optional(bool, default=False)
+    cached       = Optional(bool, default=False)
 
-    fromIndex = Optional(bool, default=False)
-    fromUrl   = Optional(bool, default=False)
-    fromGit   = Optional(bool, default=False)
-    origin    = Optional(str) # path, url, git
+    fromIndex    = Optional(bool, default=False)
+    fromUrl      = Optional(bool, default=False)
+    fromGit      = Optional(bool, default=False)
+    origin       = Optional(str) # path, url, git
 
     composite_key(library, name)
 
@@ -264,31 +275,42 @@ class LibraryVersion(db.Entity):
       try:
         if self.sourcePath.exists():
           shutil.rmtree(self.sourcePath.as_posix())
+        logger.info("  Version removed ({}).".format(self.name))
       except Exception as e:
-        logger.error(e)
+        # logger.error(e)
         logger.error("Unsuccessfully to remove " \
                     + self.sourcePath.as_posix())
 
 
     def uninstall(self, remove_cache=True):
+
       self.installed = False
+
+      self.library.installed = False
+      self.library.default = False
+
       if remove_cache:
+        self.cached = False
         self.removeSources()
-      self.library.uninstall()
+
+      logger.info("  Version removed ({}).".format(self.name))
 
     def install(self, defaults=True):
+
       for v in self.library.versions:
         v.installed = False
+      
       self.installed = True
       self.cached = True
+
       self.library.install(defaults)
 
 
 @pw.register_model('word')
 class Keyword(db.Entity):
-    word = PrimaryKey(str)
-    libVersions = Set(LibraryVersion)
-    libraries = Set(Library)
+    word         = PrimaryKey(str)
+    libVersions  = Set(LibraryVersion)
+    libraries    = Set(Library)
 
     def __str__(self):
       return self.word
@@ -310,8 +332,8 @@ class TestedWith(db.Entity):
         
 
 class Dependency(db.Entity):
-    id = PrimaryKey(int, auto=True)
-    library = Required(Library)
+    id         = PrimaryKey(int, auto=True)
+    library    = Required(Library)
     minVersion = Optional(str, default="")
     maxVersion = Optional(str, default="")
     supporting = Set(LibraryVersion)

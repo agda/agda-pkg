@@ -217,6 +217,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
 
   try:
     info = versionLibrary.readInfoFromLibFile()
+    
     keywords = info.get("keywords", []) + info.get("category", [])
     keywords = list(set(keywords))
 
@@ -406,22 +407,24 @@ def installFromIndex(libname, src, version, no_defaults, cache):
     if versionLibrary is not None:
 
       if versionLibrary.installed:
-        if not(versionLibrary.library.default) and \
-           click.confirm('Do you want to install the cached version?'):
-          versionLibrary.install()
-          writeAgdaDirFiles(False)
-        else: 
-          logger.info("Requirement already satisfied.")
+        logger.info("Requirement already satisfied.")
         return versionLibrary
-          
+      elif versionLibrary.cached and \
+        click.confirm('Do you want to install the cached version?'):
+          versionLibrary.install()
+          writeAgdaDirFiles()
+          return versionLibrary
       else:
         url = versionLibrary.library.url
-        versionLibrary = installFromGit(url, libname, src, version, no_defaults, cache, "master")
+        versionLibrary = installFromGit(url, libname, src, version
+                                       , no_defaults, cache, "master")
         if versionLibrary is not None:
           versionLibrary.fromIndex = True
+          versionLibrary.cached    = True
+
         return versionLibrary
   else:
-    logger.error("It's not in the index")
+    logger.error("Librar no availabe.")
     return None
 
 # ----------------------------------------------------------------------------
@@ -528,10 +531,10 @@ def install( ctx, libnames, src, version, no_defaults \
     try:  
       if local:
         vLibrary = installFromLocal(pathlib, name, src, version, no_defaults, cache)
-      elif git or isGit(libname):
-          Library = installFromGit(url, name, src, version, no_defaults, cache, branch)
       elif isIndexed(libname):
         vLibrary = installFromIndex(libname, src, version, no_defaults, cache)
+      elif git or isGit(libname):
+          Library = installFromGit(url, name, src, version, no_defaults, cache, branch)
       elif isLocal(pathlib):
         vLibrary =  installFromLocal(pathlib, name, src, version, no_defaults, cache)
 
@@ -543,5 +546,8 @@ def install( ctx, libnames, src, version, no_defaults \
     if vLibrary is not None:
       logger.info("Successfully installed ({}@{})."
                   .format(libname if name =="*" else name, vLibrary.name))
+    else:
+      logger.info("Unsuccessfully installation ({})."
+                  .format(libname if name =="*" else name))
 
   writeAgdaDirFiles()

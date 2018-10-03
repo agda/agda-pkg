@@ -1,7 +1,7 @@
 agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg)
 ========
 
-The Agda package manager that we all have been waiting for ~~so long~~. This
+The Agda package manager that we all have been waiting for. This
 tool do not modify `Agda` at all, it will just manage systematically the directory
 `.agda` and its files: `.agda/defaults` and `.agda/libraries`.
 
@@ -289,3 +289,11 @@ depend:
   [the package index]: https://github.com/apkgbot/package-index
   [local directory]: https://agda.readthedocs.io/en/v2.5.4/tools/package-system.html
   [PR]: https://github.com/apkgbot/package-index/pull/new/master
+
+# About
+
+This is the `Python` version for the Agda Package Manager.
+The Haskell version is an [early stage](http://github.com/jonaprieto/agda-pkg),
+we more spare time, I hope to finish that version.
+
+Any contribution or feedback to improve this work is very welcomed.

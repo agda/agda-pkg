@@ -49,16 +49,19 @@ def init(drop_tables):
     db.create_tables()
 
   f = INDEX_REPOSITORY_PATH
+
   src = f.joinpath("src")
   click.echo("Indexing libraries from " + INDEX_REPOSITORY_URL)
-  click.echo("  Current version of the index: " + str(REPO.head.commit))
+  click.echo("  Current version of the index: " + str(REPO.commit()))
 
   with db_session:
 
     for lib in src.glob("*"):
+
       name = lib.name
       url  = Path(lib).joinpath("url").read_text()
       library = Library.get(name = name, url = url)
+
       if library is None:
         library = Library(name = name, url = url)
 
@@ -79,14 +82,16 @@ def init(drop_tables):
             libVersion.origin  = url
             libVersion.fromGit = True
           else:
-            logger.error(version.name + " no valid")
+            logger.error(version.name + " no valid!.")
             libVersion.delete()
 
         commit()
 
     # With all libraries indexed, we proceed to create the dependencies
     # as objects for the index.
+
     for lib in src.glob("*"):
+
       library = Library.get(name = lib.name)
 
       for version in library.getSortedVersions():
@@ -112,6 +117,7 @@ def init(drop_tables):
 
         for word in keywords:
           keyword =  Keyword.get(word = word)
+
           if keyword is None:
             keyword = Keyword(word = word)
 
