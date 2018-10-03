@@ -524,7 +524,7 @@ def install( ctx, libnames, src, version, no_defaults \
       libname, version = libname.split("==")
 
     if github: 
-      if not libname.starswith(GITHUB_DOMAIN):
+      if not libname.startswith(GITHUB_DOMAIN):
         libname = GITHUB_DOMAIN + libname
       if not libname.endswith(".git"):
         libname = libname + ".git"
