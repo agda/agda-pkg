@@ -135,11 +135,11 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
   # logger.info("Library name: " + name)
 
   # -- Let's attach a version number
-  versionName = ""
+
+  versionName = version
+
   if versionName == "":
     versionName = str(info.get("version", ""))
-  if versionName == "": 
-    versionName = version
   if versionName == "" and pwd.joinpath(".git").exists():
     try:
       with open(os.devnull, 'w') as devnull:
@@ -167,7 +167,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
   if versionName == "": 
     versionName = str(uuid.uuid1())
 
-  # logger.info("Library version: " + versionName)
+  logger.info("Library version: " + versionName)
 
   # At this point we have the name from the local library
   library = Library.get(name=name)
@@ -217,7 +217,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
 
   try:
     info = versionLibrary.readInfoFromLibFile()
-    
+
     keywords = info.get("keywords", []) + info.get("category", [])
     keywords = list(set(keywords))
 
@@ -270,7 +270,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
 # ----------------------------------------------------------------------------
 def installFromGit(url, name, src, version, no_defaults, cache, branch):
 
-  # logger.info("Installing from git: %s" % url )
+  logger.info("Installing from git: %s" % url )
 
   if not isGit(url):
     logger.error("this is not a git repository")
@@ -287,6 +287,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 
       # To display a nice progress bar, we need the size of
       # the repository, so let's try to get that number
+
       # --
       size = 0
       if "github" in url:
@@ -348,15 +349,16 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 
         except Exception as e:
           logger.error(e)
-          logger.error(" version or tag not found it " + version)
+          logger.error(" version or tag not found ({})".format(version))
           return None
+
       # else:
         # version = REPO.head.commit.hexsha
 
       libVersion = installFromLocal(tmpdirname, name, src, version, no_defaults, cache)
 
       if libVersion is None:
-        raise ValueError(" we couldn't install the version specified")
+        raise ValueError(" we couldn't install the version you specified.")
 
       libVersion.fromGit = True
       libVersion.origin = url
@@ -365,7 +367,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 
       if version != "":
         # libVersion.name = version
-        libVersion.sha = REPO.head.commit.hexsha
+        libVersion.sha = REPO.commit()
 
       commit()
       writeAgdaDirFiles(False)
@@ -373,7 +375,8 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 
     except Exception as e:
       logger.error(e)
-      logger.error("Problems to install the library, may you want to run $ apkg init?")
+      logger.error("Problems to install the library,\n\
+                    May you want to run $ apkg init?")
       return None
 
 # ----------------------------------------------------------------------------
@@ -387,50 +390,51 @@ def installFromIndex(libname, src, version, no_defaults, cache):
   if library is not None:
 
     versionLibrary = None
-    
     if version == "":
       # we'll try to install the latest git version
       for v in library.getSortedVersions():
         if v.fromGit and v.fromIndex:
           versionLibrary = v
+          version = versionLibrary.name
           break
-      if versionLibrary is None:
-        logger.error("No versions for this library. Index may be corrupted. Try $ apkg init")
-        return None
     else:
-      versionLibrary = LibraryVersion( library=library
+      versionLibrary = LibraryVersion.get( library=library
                                      , name=version
                                      , fromIndex=True
                                      , fromGit=True
                                      )
+    
+    if versionLibrary is None:
+      logger.error(" no versions for this library.\n\
+                    Index may be corrupted. Try $ apkg init")
+      return None
+    
+    if versionLibrary.installed:
+      logger.info("Requirement already satisfied.")
+      return versionLibrary
 
-    if versionLibrary is not None:
-
-      if versionLibrary.installed:
-        logger.info("Requirement already satisfied.")
+    elif versionLibrary.cached and \
+      click.confirm('Do you want to install the cached version?'):
+        versionLibrary.install()
+        writeAgdaDirFiles()
         return versionLibrary
-      elif versionLibrary.cached and \
-        click.confirm('Do you want to install the cached version?'):
-          versionLibrary.install()
-          writeAgdaDirFiles()
-          return versionLibrary
-      else:
-        url = versionLibrary.library.url
-        versionLibrary = installFromGit(url, libname, src, version
-                                       , no_defaults, cache, "master")
-        if versionLibrary is not None:
-          versionLibrary.fromIndex = True
-          versionLibrary.cached    = True
 
-        return versionLibrary
+    else:
+      url = versionLibrary.library.url
+      versionLibrary = installFromGit(url, libname, src, version
+                                     , no_defaults, cache, "master")
+      if versionLibrary is not None:
+        versionLibrary.fromIndex = True
+        versionLibrary.cached    = True
+
+      return versionLibrary
   else:
-    logger.error("Librar no availabe.")
+    logger.error("Library not available.")
     return None
 
 # ----------------------------------------------------------------------------
 def installFromURL(url, name, src, version, no_defaults, cache):
-  logger.info("Not available yet")
-  # isURL(libname)
+  logger.info("Command not available yet")
   return None
 
 # ----------------------------------------------------------------------------
@@ -460,7 +464,8 @@ def installFromURL(url, name, src, version, no_defaults, cache):
 @click.option('--name'
              , type=str
              , default="*"
-             , help='Help to disambiguate when many lib files are present in the directory.')
+             , help='Help to disambiguate when many lib files are\
+                     present in the directory.')
 @click.option('--url'
              , type=bool
              , is_flag=True 
@@ -524,19 +529,19 @@ def install( ctx, libnames, src, version, no_defaults \
       if not libname.endswith(".git"):
         libname = libname + ".git"
 
-    pathlib = libname
-    url     = libname
+    pathlib  = libname
+    url      = libname
     vLibrary = None
 
     try:  
       if local:
-        vLibrary = installFromLocal(pathlib, name, src, version, no_defaults, cache)
+        vLibrary = installFromLocal(pathlib,name,src,version,no_defaults,cache)
       elif isIndexed(libname):
-        vLibrary = installFromIndex(libname, src, version, no_defaults, cache)
+        vLibrary = installFromIndex(libname,src,version,no_defaults,cache)
       elif git or isGit(libname):
-          Library = installFromGit(url, name, src, version, no_defaults, cache, branch)
+          Library = installFromGit(url,name,src,version,no_defaults,cache,branch)
       elif isLocal(pathlib):
-        vLibrary =  installFromLocal(pathlib, name, src, version, no_defaults, cache)
+        vLibrary =  installFromLocal(pathlib,name,src,version,no_defaults,cache)
 
     except Exception as e:
       logger.error("Unsuccessfully installation ({}@{})."
@@ -545,9 +550,9 @@ def install( ctx, libnames, src, version, no_defaults \
     
     if vLibrary is not None:
       logger.info("Successfully installed ({}@{})."
-                  .format(libname if name =="*" else name, vLibrary.name))
+                 .format(libname if name =="*" else name, vLibrary.name))
     else:
       logger.info("Unsuccessfully installation ({})."
-                  .format(libname if name =="*" else name))
+                 .format(libname if name =="*" else name))
 
   writeAgdaDirFiles()
