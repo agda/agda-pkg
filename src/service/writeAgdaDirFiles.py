@@ -8,36 +8,37 @@
 
 # ----------------------------------------------------------------------------
 
-from ..config import ( AGDA_DEFAULTS_PATH
-                     , AGDA_DIR_PATH
-                     , AGDA_LIBRARIES_PATH
-                     , AGDA_PKG_PATH
-                     , AGDA_VERSION
-                     , DATABASE_FILE_NAME
-                     , DATABASE_FILE_PATH
-                     , DATABASE_SEARCH_INDEXES_PATH
-                     , GITHUB_USER
-                     , PACKAGE_SOURCES_PATH
-                     , INDEX_REPOSITORY_BRANCH
-                     , INDEX_REPOSITORY_NAME
-                     , INDEX_REPOSITORY_PATH
-                     , INDEX_REPOSITORY_URL
-                     , REPO
-                     )
+import click
+
+from pprint    import pprint
+from pony.orm  import *
+from pathlib   import Path
+
+from ..config  import ( AGDA_DEFAULTS_PATH
+                      , AGDA_DIR_PATH
+                      , AGDA_LIBRARIES_PATH
+                      , AGDA_PKG_PATH
+                      , AGDA_VERSION
+                      , DATABASE_FILE_NAME
+                      , DATABASE_FILE_PATH
+                      , DATABASE_SEARCH_INDEXES_PATH
+                      , GITHUB_USER
+                      , PACKAGE_SOURCES_PATH
+                      , INDEX_REPOSITORY_BRANCH
+                      , INDEX_REPOSITORY_NAME
+                      , INDEX_REPOSITORY_PATH
+                      , INDEX_REPOSITORY_URL
+                      , REPO
+                      )
 
 from ..service.readLibFile import readLibFile
-from ..service.database import db
-from ..service.database import ( Library
-                               , LibraryVersion
-                               , Keyword
-                               , TestedWith
-                               , Dependency
-                               )
-from pprint   import pprint
-from pony.orm import *
-from pathlib  import Path
-
-import click
+from ..service.database    import db
+from ..service.database    import ( Library
+                                  , LibraryVersion
+                                  , Keyword
+                                  , TestedWith
+                                  , Dependency
+                                  )
 
 # ----------------------------------------------------------------------------
 
@@ -56,7 +57,7 @@ def writeAgdaDirFiles(debug = False):
   if debug: click.echo("Updating files for Agda...")
   # libraries file
   libVersions = getLibraries()
-  
+
   try:
     AGDA_LIBRARIES_PATH.write_text(header + \
       '\n'.join([v.agdaLibFilePath.as_posix() for v in libVersions])+'\n')

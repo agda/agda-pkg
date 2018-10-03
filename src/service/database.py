@@ -8,37 +8,37 @@
 
 # ----------------------------------------------------------------------------
 
-from ..config import ( AGDA_DEFAULTS_PATH
-                     , AGDA_DIR_PATH
-                     , AGDA_LIBRARIES_PATH
-                     , AGDA_PKG_PATH
-                     , AGDA_VERSION
-                     , DATABASE_FILE_NAME
-                     , DATABASE_FILE_PATH
-                     , DATABASE_SEARCH_INDEXES_PATH
-                     , GITHUB_USER
-                     , INDEX_REPOSITORY_BRANCH
-                     , INDEX_REPOSITORY_NAME
-                     , INDEX_REPOSITORY_PATH
-                     , INDEX_REPOSITORY_URL
-                     , PACKAGE_SOURCES_PATH
-                     , REPO
-                     , PKG_SUFFIX
-                     , LIB_SUFFIX
-                     )
-
-from pony.orm   import *
-from ponywhoosh import PonyWhoosh
-from pprint import pprint 
-
-from pathlib import Path
-from ..service.readLibFile import readLibFile
-from natsort import natsorted
-from operator import attrgetter, itemgetter
-import yaml
-
 import logging
 import shutil
+import yaml
+
+from pony.orm    import *
+from ponywhoosh  import PonyWhoosh
+from pprint      import pprint
+from pathlib     import Path
+
+from natsort     import natsorted
+from operator    import attrgetter, itemgetter
+
+from ..service.readLibFile  import readLibFile
+rom ..config                import ( AGDA_DEFAULTS_PATH
+                                  , AGDA_DIR_PATH
+                                  , AGDA_LIBRARIES_PATH
+                                  , AGDA_PKG_PATH
+                                  , AGDA_VERSION
+                                  , DATABASE_FILE_NAME
+                                  , DATABASE_FILE_PATH
+                                  , DATABASE_SEARCH_INDEXES_PATH
+                                  , GITHUB_USER
+                                  , INDEX_REPOSITORY_BRANCH
+                                  , INDEX_REPOSITORY_NAME
+                                  , INDEX_REPOSITORY_PATH
+                                  , INDEX_REPOSITORY_URL
+                                  , PACKAGE_SOURCES_PATH
+                                  , REPO
+                                  , PKG_SUFFIX
+                                  , LIB_SUFFIX
+                                  )
 
 # ----------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ class Library(db.Entity):
 
     def isIndexed(self):
       return self.indexPath.exist()
-      
+
     def getSortedVersions(self):
       versions = [v for v in self.versions]
       return natsorted(versions, key=attrgetter('name'))
@@ -215,13 +215,13 @@ class LibraryVersion(db.Entity):
       return (self.indexPath.joinpath(self.library.name + PKG_SUFFIX) \
               if (self.isIndexed() and not self.installed)
               else self.sourcePath.joinpath(self.library.name + PKG_SUFFIX))
-              
+
     @property
     def agdaLibFilePath(self):
       return (self.indexPath.joinpath(self.library.name + LIB_SUFFIX)\
              if (self.isIndexed() and not self.installed)
              else self.sourcePath.joinpath(self.library.name + LIB_SUFFIX))
-      
+
 
     def getLibFilePath(self):
       if self.agdaPkgFilePath.exists():
@@ -269,8 +269,8 @@ class LibraryVersion(db.Entity):
       raise ValueError(" " + format + " no supported")
 
     def readInfoFromLibFile(self):
-      return readLibFile(self.getLibFilePath())    
-  
+      return readLibFile(self.getLibFilePath())
+
     def removeSources(self):
       try:
         if self.sourcePath.exists():
@@ -299,7 +299,7 @@ class LibraryVersion(db.Entity):
 
       for v in self.library.versions:
         v.installed = False
-      
+
       self.installed = True
       self.cached = True
 
@@ -323,13 +323,13 @@ class Keyword(db.Entity):
 class TestedWith(db.Entity):
     agdaVersion = PrimaryKey(str)
     libraries = Set(LibraryVersion)
-    
+
     def __str__(self):
       return "agda-" + self.agdaVersion
 
     def __repr__(self):
       return "agda-" + self.agdaVersion
-        
+
 
 class Dependency(db.Entity):
     id         = PrimaryKey(int, auto=True)
@@ -344,7 +344,7 @@ class Dependency(db.Entity):
         + self.library.name \
         + ("<=" if self.maxVersion else "") \
         + self.maxVersion
-      return text 
+      return text
 
     def __repr__(self):
       return str(self)

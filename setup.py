@@ -28,11 +28,11 @@ def read(*names, **kwargs):
 
 setup(
     name='agda-pkg'
-  , version="0.1.21"
+  , version="0.1.22"
   , python_requires='>=3.6.0'
   , url='https://github.com/apkgbot/agda-pkg'
   , license='MIT'
-  , author='Jonathan Prieto-Cubides & Camilo Rodriguez'
+  , author='Jonathan Prieto-Cubides'
   , author_email='jcu043@uib.no'
   , description='The Agda Package Manager'
   , long_description='%s' % (read('README.md'))

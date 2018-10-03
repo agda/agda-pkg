@@ -1,3 +1,5 @@
+# no real tests now.
+
 import unittest
 
 class TestStringMethods(unittest.TestCase):

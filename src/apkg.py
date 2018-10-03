@@ -21,13 +21,6 @@ from .commands.uninstall  import uninstall
 from .commands.search     import search
 from .commands.update     import update
 from .commands.upgrade    import upgrade
-from .service.database    import db, pw
-from .service.database    import ( Library
-                                 , LibraryVersion
-                                 , Keyword
-                                 , TestedWith
-                                 , Dependency
-                                 )
 
 # ----------------------------------------------------------------------------
 

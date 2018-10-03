@@ -75,7 +75,6 @@ except:
     REPO = git.Repo.clone_from(INDEX_REPOSITORY_URL, INDEX_REPOSITORY_PATH)
   except Exception as e:
     print(e)
-  
 
 if not DATABASE_FILE_PATH.exists():
   DATABASE_FILE_PATH.touch()
