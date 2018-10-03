@@ -10,10 +10,6 @@
 
 import click
 
-from pprint               import pprint
-from pony.orm             import *
-
-
 from .commands            import *
 from .commands.clean      import clean
 from .commands.freeze     import freeze

@@ -56,23 +56,35 @@ def uninstall():
 @db_session
 def uninstallLibrary(libname, database=False, remove_cache=False):
   library = Library.get(name = libname)
-  if library is None: return 
+  logger.info("Uninstalling")
+  if library is None or not library.installed and not(remove_cache): 
+    logger.info("  Library not installed.")
+    logger.info("Nothing to uninstall.")
+    return 
+
   for version in library.versions:
-    try:
-      if database:
-        version.uninstall(True)
-        version.delete()
-      else:
-        version.uninstall(remove_cache)
-    except Exception as e:
-      logger.error(e)
-      
-  if database:
-    library.delete()
-  else:
-    library.uninstall()
+    if version.installed:
+      try:
+        vname = version.name
+        if database:
+          version.uninstall(True)
+          version.delete()
+        else:
+          version.uninstall(remove_cache)
+        logger.info("  Version removed ({}).".format(vname))
+      except Exception as e:
+        logger.error(e)
+  try:
+    if database:
+      library.delete()
+    else:
+      library.uninstall()
+  except Exception as e:
+    logger.error(e)
+
   commit()
-  writeAgdaDirFiles(True)
+  writeAgdaDirFiles()
+  logger.info("Successfully uninstallation ({}).".format(libname))
 
 # --
 
@@ -89,8 +101,9 @@ def uninstallLibrary(libname, database=False, remove_cache=False):
              , is_flag=True 
              , help='Remove all the files.')
 @clog.simple_verbosity_option(logger)
-@click.confirmation_option(prompt='Are you sure you want to uninstall it?')
+@click.confirmation_option(prompt='Proceed?')
 @db_session
 def uninstall(libname, database, remove_cache):
   """Uninstall a package."""
+
   uninstallLibrary(libname, database, remove_cache)

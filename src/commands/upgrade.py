@@ -25,11 +25,14 @@ def upgrade(): pass
 @click.pass_context
 def upgrade(ctx):
   """Update the list of available packages."""
-  origin = REPO.remotes["origin"]
-  click.echo("Updating Agda-Pkg from " + [url for url in REPO.remote().urls][0])
-  for pull_info in origin.pull():
-    click.echo("%s to %s" % (pull_info.ref, pull_info.commit))
-  ctx.invoke(init, drop_tables=False)
+  try:
+    origin = REPO.remotes["origin"]
+    click.echo("Updating Agda-Pkg from " + [url for url in REPO.remote().urls][0])
+    for pull_info in origin.pull():
+      click.echo("%s to %s" % (pull_info.ref, pull_info.commit))
+    ctx.invoke(init, drop_tables=False)
+  except Exception as e:
+    logger.error(e)
   
 
 

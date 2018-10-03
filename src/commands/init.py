@@ -18,6 +18,7 @@ from pony.orm           import *
 from ..config           import ( PACKAGE_SOURCES_PATH
                                , INDEX_REPOSITORY_PATH
                                , INDEX_REPOSITORY_URL
+                               , REPO
                                )
 
 from ..service.database import db
@@ -39,7 +40,7 @@ def init():	pass
 
 @init.command()
 @clog.simple_verbosity_option(logger)
-@click.option('--drop_tables', type=bool, default=True)
+@click.option('--drop-tables', type=bool, default=True)
 def init(drop_tables):
   """Initialize Agda-Pkg state."""
 
@@ -50,6 +51,7 @@ def init(drop_tables):
   f = INDEX_REPOSITORY_PATH
   src = f.joinpath("src")
   click.echo("Indexing libraries from " + INDEX_REPOSITORY_URL)
+  click.echo("  Current version of the index: " + str(REPO.head.commit))
 
   with db_session:
 

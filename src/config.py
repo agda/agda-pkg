@@ -34,11 +34,12 @@ except Exception as e:
 AGDA_PKG_PATH = Path().home().joinpath('.apkg' + \
                 ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
 GITHUB_USER   = "apkgbot"
+GITHUB_DOMAIN = "https://github.com/"
 
 # The github repository index of all agda packages
 INDEX_REPOSITORY_NAME = "package-index"
 INDEX_REPOSITORY_URL = \
-  "https://github.com/"+ GITHUB_USER + "/" + INDEX_REPOSITORY_NAME + ".git"
+ GITHUB_DOMAIN + GITHUB_USER + "/" + INDEX_REPOSITORY_NAME + ".git"
 INDEX_REPOSITORY_BRANCH = "master"
 INDEX_REPOSITORY_PATH   = AGDA_PKG_PATH.joinpath(INDEX_REPOSITORY_NAME)
 

@@ -31,6 +31,7 @@ from urllib.parse        import urlparse
 from ..config            import ( PACKAGE_SOURCES_PATH
                                 , INDEX_REPOSITORY_PATH
                                 , PKG_SUFFIX
+                                , GITHUB_DOMAIN 
                                 , LIB_SUFFIX
                                 )
 
@@ -75,7 +76,9 @@ def isLocal(path):
   return Path(path).exists()
 
 # -- Logger def.
+
 logger = logging.getLogger(__name__)
+
 clog.basic_config(logger)
 
 # ----------------------------------------------------------------------------
@@ -88,7 +91,7 @@ def install(): pass
 # ----------------------------------------------------------------------------
 @db_session
 def installFromLocal(pathlib, name, src, version, no_defaults, cache):
-  logger.info("Installing as a local package...")
+  # logger.info("Installing as a local package...")
 
   if len(pathlib) == 0 or pathlib == ".":
     pathlib = Path().cwd()
@@ -101,7 +104,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
     logger.error(pwd + " doesn't exist!")
     return None
   
-  logger.info("Library location: " + pwd.as_posix())
+  # logger.info("Library location: " + pwd.as_posix())
 
   agdaLibFiles = [ f for f in pwd.glob(name + LIB_SUFFIX) if f.is_file() ]
   agdaPkgFiles = [ f for f in pwd.glob(name + PKG_SUFFIX) if f.is_file() ]
@@ -129,7 +132,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
   name = info.get("name", "")
   if len(name) == 0:
     name = pathlib.name
-  logger.info("Library name: " + name)
+  # logger.info("Library name: " + name)
 
   # -- Let's attach a version number
   versionName = ""
@@ -164,10 +167,11 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
   if versionName == "": 
     versionName = str(uuid.uuid1())
 
-  logger.info("Library version: " + versionName)
+  # logger.info("Library version: " + versionName)
 
   # At this point we have the name from the local library
   library = Library.get(name=name)
+
   if library is None:
     library = Library(name=name)
 
@@ -199,7 +203,6 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
 
   try:
     if versionLibrary.sourcePath.exists():
-      logger.warning("[!] removing tree 2.")
       remove_tree(versionLibrary.sourcePath.as_posix())
 
     logger.info("Adding " + versionLibrary.sourcePath.as_posix())
@@ -265,7 +268,9 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
 
 # ----------------------------------------------------------------------------
 def installFromGit(url, name, src, version, no_defaults, cache, branch):
-  logger.info("Installing from git: %s" % url )
+
+  # logger.info("Installing from git: %s" % url )
+
   if not isGit(url):
     logger.error("this is not a git repository")
     return None
@@ -309,7 +314,6 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
         size = int(size)
       # --
 
-      logger.info("Collecting external library")
       logger.info("Downloading " + url  + " (%s)" % str(humanize.naturalsize(size, binary=True)))
       
       with click.progressbar(
@@ -376,7 +380,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 def installFromIndex(libname, src, version, no_defaults, cache):
 
   # Check first if the library is in the cache
-  logger.info("Installing from the index...")
+  # logger.info("Installing from the index...")
   library = Library.get(name=libname)
 
   if library is not None:
@@ -407,7 +411,7 @@ def installFromIndex(libname, src, version, no_defaults, cache):
           versionLibrary.install()
           writeAgdaDirFiles(False)
         else: 
-          logger.warning("This library is installed")
+          logger.info("Requirement already satisfied.")
         return versionLibrary
           
       else:
@@ -489,7 +493,7 @@ def install( ctx, libnames, src, version, no_defaults \
       libnames += rfile.read_text().split()
     except Exception as e:
       logger.error(e)
-      logger.error(" Installation failed.")
+      logger.error(" installation failed.")
       return
 
 
@@ -511,32 +515,33 @@ def install( ctx, libnames, src, version, no_defaults \
     elif "==" in libname:
       libname, version = libname.split("==")
 
-    if github: libname = "http://github.com/" + libname + ".git"
+    if github: 
+      if not libname.starswith(GITHUB_DOMAIN):
+        libname = GITHUB_DOMAIN + libname
+      if not libname.endswith(".git"):
+        libname = libname + ".git"
 
     pathlib = libname
     url     = libname
-
     vLibrary = None
-    
-    if local:
-      vLibrary = installFromLocal(pathlib, name, src, version, no_defaults, cache)
-    else:
-      try:
-        if git or isGit(libname):
-          if not (libname.endswith(".git")):
-            libname = libname + ".git"
-          vLibrary = installFromGit(url, name, src, version, no_defaults, cache, branch)
-        # elif url or isURL(libname):
-          # installFromURL(url, name, src, version, no_defaults, cache)
-        elif isLocal(pathlib):
-          vLibrary =  installFromLocal(pathlib, name, src, version, no_defaults, cache)
-        elif isIndexed(libname):
-          vLibrary = installFromIndex(libname, src, version, no_defaults, cache)
-      except Exception as e:
-        logger.error(e)
-        logger.info("Unsuccessfully installation of " + (libname if name =="*" else name))
-    if vLibrary is not None:
-      logger.info("Successfully installed " + (libname if name =="*" else name) + ".")
 
-  print()
-  writeAgdaDirFiles(True)
+    try:  
+      if local:
+        vLibrary = installFromLocal(pathlib, name, src, version, no_defaults, cache)
+      elif git or isGit(libname):
+          Library = installFromGit(url, name, src, version, no_defaults, cache, branch)
+      elif isIndexed(libname):
+        vLibrary = installFromIndex(libname, src, version, no_defaults, cache)
+      elif isLocal(pathlib):
+        vLibrary =  installFromLocal(pathlib, name, src, version, no_defaults, cache)
+
+    except Exception as e:
+      logger.error("Unsuccessfully installation ({}@{})."
+                  .format(libname if name =="*" else name, version))
+      continue
+    
+    if vLibrary is not None:
+      logger.info("Successfully installed ({}@{})."
+                  .format(libname if name =="*" else name, vLibrary.name))
+
+  writeAgdaDirFiles()
