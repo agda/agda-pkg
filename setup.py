@@ -8,15 +8,15 @@
 
 # ----------------------------------------------------------------------------
 
-from __future__ import absolute_import, print_function
+from __future__  import absolute_import, print_function
 
 
 import io
 import os
 import re
 
-from os.path    import basename, dirname, join
-from setuptools import find_packages, setup
+from os.path     import basename, dirname, join
+from setuptools  import find_packages, setup
 
 # ----------------------------------------------------------------------------
 
