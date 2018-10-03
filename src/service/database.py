@@ -21,7 +21,7 @@ from natsort     import natsorted
 from operator    import attrgetter, itemgetter
 
 from ..service.readLibFile  import readLibFile
-rom ..config                import ( AGDA_DEFAULTS_PATH
+from ..config               import ( AGDA_DEFAULTS_PATH
                                   , AGDA_DIR_PATH
                                   , AGDA_LIBRARIES_PATH
                                   , AGDA_PKG_PATH
