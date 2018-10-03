@@ -293,6 +293,6 @@ depend:
 # About
 
 This is a proof of concept of an Agda Package Manager.
-The Haskell version is an [very early stage](http://github.com/jonaprieto/agda-pkg).
+The Haskell version is a [very early stage](http://github.com/jonaprieto/agda-pkg).
 
 Any contribution or feedback to improve this work is very welcomed.
