@@ -14,22 +14,18 @@ import click_log
 
 from pony.orm             import db_session, select
 
-from ..service.database   import db
-from ..service.database   import ( Library , LibraryVersion )
-
+from ..service.database  import db
+from ..service.database  import ( Library , LibraryVersion )
+from ..service.logging   import logger, clog
 
 # ----------------------------------------------------------------------------
-
-# -- Logger def.
-logger = logging.getLogger(__name__)
-click_log.basic_config(logger)
 
 # -- Command def.
 @click.group()
 def freeze(): pass
 
 @freeze.command()
-@click_log.simple_verbosity_option(logger)
+@clog.simple_verbosity_option(logger)
 @db_session
 def freeze():
   """List of installed packages."""

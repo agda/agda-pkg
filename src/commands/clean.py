@@ -11,24 +11,19 @@
 import click
 import shutil
 
-from pathlib  import Path
-from ..config import AGDA_PKG_PATH,AGDA_DIR_PATH
+from pathlib             import Path
 
-import logging
-import click_log
+from ..config            import AGDA_PKG_PATH,AGDA_DIR_PATH
+from ..service.logging   import logger, clog
 
 # ----------------------------------------------------------------------------
-
-# -- Logger def.
-logger = logging.getLogger(__name__)
-click_log.basic_config(logger)
 
 # -- Command def.
 @click.group()
 def clean(): pass
 
 @clean.command()
-@click_log.simple_verbosity_option(logger)
+@clog.simple_verbosity_option(logger)
 def clean():
   """Remove the directories used by apkg."""
   rmdirs = [ AGDA_PKG_PATH , AGDA_DIR_PATH ]

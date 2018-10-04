@@ -1,0 +1,4 @@
+agda-metis==v0.2.1
+agda-prop==v0.1.2
+fotc==apia-1.0.0
+hott-core==937e227

@@ -10,33 +10,49 @@ clean:
 
 .PHONY : test
 test:
+	- @echo "=================================================="
 	- apkg clean
 	- apkg init
+	- rm -Rf /tmp/agda-stdlib
 	- cd /tmp/ && git clone http://github.com/agda/agda-stdlib
+	- rm -Rf /tmp/agda-prop
 	- cd /tmp/ && git clone http://github.com/jonaprieto/agda-prop
+	- rm -Rf /tmp/agda-metis
 	- cd /tmp/ && git clone http://github.com/jonaprieto/agda-metis
+	- @echo "=================================================="
 	- cd /tmp/agda-stdlib && apkg install
 	- cd /tmp/agda-prop && apkg install
 	- cd /tmp/agda-metis && apkg install
 	- cd /tmp/agda-metis && make test
-
+	- @echo "=================================================="
+	- apkg --help
+	- apkg
+	- @echo "=================================================="
+	- apkg list
+	- apkg list --short
+	- @echo "=================================================="
+	- apkg update fotc
+	- apkg freeze
+	- @echo "=================================================="
 	- apkg search agda
 	- apkg info agda-prop
 	- apkg freeze
+	- @echo "=================================================="
 	- apkg uninstall agda-metis --yes --remove-cache
 	- apkg freeze
-
+	- @echo "=================================================="
 	- apkg clean
 	- apkg init
 	- apkg install --github agda/agda-stdlib --version v0.16
 	- apkg install agda-prop
 	- apkg install --git http://github.com/jonaprieto/agda-metis.git
+	- @echo "=================================================="
 	- cd /tmp/agda-metis && make test
 
 
 .PHONY : TODO
 TODO :
-	find . -type d \( -path './.git' -o -path './dist' \) -prune -o -print \
+	@find src -type d \( -path './.git' -o -path './dist' -o -path './build' -o -path './venv' \) -prune -o -print \
 	| xargs grep -I 'TODO' \
 	| sort
 
@@ -51,8 +67,8 @@ pip-package:
 
 # pip install twine
 
-.PHONY : deploy 
-deploy : 
+.PHONY : deploy
+deploy :
 	$(eval VERSION := $(shell bash -c 'read -p "Version: " pwd; echo $$pwd'))
 	echo
 	$(eval MSG := $(shell bash -c 'read -p "Comment: " pwd; echo $$pwd'))

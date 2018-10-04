@@ -9,11 +9,9 @@
 # ----------------------------------------------------------------------------
 
 import click
-import click_log as clog
 
 import git
 import humanize
-import logging
 import os
 import random
 import requests
@@ -24,62 +22,31 @@ import uuid
 from distutils.dir_util  import copy_tree, remove_tree
 from pathlib             import Path
 from pony.orm            import *
-from tempfile            import *
-from urllib.parse        import urlparse
-
+from tempfile            import TemporaryDirectory
 
 from ..config            import ( PACKAGE_SOURCES_PATH
                                 , INDEX_REPOSITORY_PATH
                                 , PKG_SUFFIX
                                 , GITHUB_DOMAIN 
                                 , LIB_SUFFIX
+                                , GITHUB_API
                                 )
 
-from ..service.database  import db
-from ..service.database  import ( Library
-                                , LibraryVersion
-                                , Keyword
-                                , Dependency
-                                )
+from ..service.database           import db
+from ..service.database           import ( Library
+                                         , LibraryVersion
+                                         , Keyword
+                                         , Dependency
+                                         )
 
-from ..service.readLibFile       import readLibFile
-from ..service.writeAgdaDirFiles import writeAgdaDirFiles
-from .uninstall                  import uninstallLibrary
+from ..service.logging            import logger, clog
+from ..service.readLibFile        import readLibFile
+from ..service.writeAgdaDirFiles  import writeAgdaDirFiles
+from ..service.utils              import isURL, isGit, isIndexed, isLocal
+
+from .uninstall                   import uninstallLibrary
 
 # ----------------------------------------------------------------------------
-
-# -- Some tests -- TODO: move these to some util module outside.
-def isURL(url):
-  min_attr = ('scheme' , 'netloc')
-  try:
-    result = urlparse(url)
-    # -- TODO : improve this test checking if it's available
-    return all([result.scheme, result.netloc])
-  except:
-    return False
-
-def isGit(url):
-  min_attr = ('scheme' , 'netloc')
-  try:
-    result = urlparse(url)
-    netloc = result.netloc
-    # -- TODO : improve this test using gitpython
-    return all([result.scheme, result.netloc]) and result.path.endswith(".git")
-  except:
-    return False
-
-@db_session
-def isIndexed(libname):
-  return Library.get(name=libname) is not None
-
-def isLocal(path):
-  return Path(path).exists()
-
-# -- Logger def.
-
-logger = logging.getLogger(__name__)
-
-clog.basic_config(logger)
 
 # ----------------------------------------------------------------------------
 # -- Install command variants
@@ -90,7 +57,7 @@ def install(): pass
 
 # ----------------------------------------------------------------------------
 @db_session
-def installFromLocal(pathlib, name, src, version, no_defaults, cache):
+def installFromLocal(pathlib, name, src, version, no_defaults, cache, yes):
   logger.info("Installing as a local package...")
 
   if len(pathlib) == 0 or pathlib == ".":
@@ -110,7 +77,8 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
   agdaPkgFiles = [ f for f in pwd.glob(name + PKG_SUFFIX) if f.is_file() ]
 
   if len(agdaLibFiles) == 0 and len(agdaPkgFiles) == 0:
-    logger.error("No libraries ("+LIB_SUFFIX+" or "+PKG_SUFFIX+") files detected.")
+    logger.error("No libraries (" + LIB_SUFFIX + " or "\
+                + PKG_SUFFIX + ") files detected." )
     return None
 
   libFile = Path("")
@@ -149,8 +117,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
                                , cwd=pwd.as_posix()
                                )
         versionName = result.stdout.decode()
-    except:
-      pass
+    except: pass
 
   if versionName == "" and pwd.joinpath(".git").exists():
     try:
@@ -161,8 +128,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
                                , cwd=pwd.as_posix()
                                )
         versionName = result.stdout.decode()[:8]
-    except:
-      pass
+    except: pass
 
   if versionName == "": 
     versionName = str(uuid.uuid1())
@@ -182,23 +148,20 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
     if versionLibrary.installed:
       logger.warning("This version ({}) is already installed."
                       .format(versionLibrary.freezeName))
-      if click.confirm('Do you want to uninstall it first?'):
+      if yes or click.confirm('Do you want to uninstall it first?'):
         try:
           uninstallLibrary(libname=name, database=False, remove_cache=True)
         except Exception as e:
           logger.error(e)
           return None
       else:
-        versionNameProposed = str(info["version"]) + "-" + str(uuid.uuid1())
+        
+        versionNameProposed = "{}-{}".format(versionName, uuid.uuid1())
         logger.warning("Renaming version to " + name + "@" + versionNameProposed)
         if click.confirm('Do you want to install it using this version?', abort=True):
           versionLibrary = LibraryVersion( library=library
                                          , name=versionNameProposed
                                          )
-    else:
-      if versionLibrary.sourcePath.exists():
-        logger.warning("[!] removing tree 1.")
-        remove_tree(versionLibrary.sourcePath.as_posix())
   else:
     versionLibrary = LibraryVersion( library=library
                                    , name=versionName
@@ -228,7 +191,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
 
     for word in keywords:
 
-      keyword = Keyword.get_for_update(word = word)
+      keyword = Keyword.get_for_update(word=word)
 
       if keyword is None:
         keyword = Keyword(word = word)
@@ -240,12 +203,13 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
         keyword.libVersions.add(versionLibrary)
 
     for depend in info.get("depend",[]):
+
       if type(depend) == list:
         logger.info("no supported yet but the format is X.X <= name <= Y.Y")
       else:
-        dependency = Library.get(name = depend)
+        dependency = Library.get(name=depend)
         if dependency is not None:
-          versionLibrary.depend.add(Dependency(library = dependency))
+          versionLibrary.depend.add(Dependency(library=dependency))
         else:
           logger.warning(depend + " is not in the index")
     
@@ -264,12 +228,11 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache):
                   )
 
     logger.error(e)
-    logger.warning("[!] removing tree 3.")
     return None
 
 
 # ----------------------------------------------------------------------------
-def installFromGit(url, name, src, version, no_defaults, cache, branch):
+def installFromGit(url, name, src, version, no_defaults, cache, branch, yes):
 
   logger.info("Installing from git: %s" % url )
 
@@ -294,15 +257,19 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
       size = 0
       if "github" in url:
         reporef = url.split("github.com")[-1]
-        infourl = "https://api.github.com/repos" + reporef.split(".git")[0]
-        # print(url)
+        infourl = GITHUB_API + reporef.split(".git")[0]
+
         response = requests.get(infourl, stream=True)
+
         if not response.ok:
           logger.error("Request failed: %d" % response.status_code)
           return None
+
         info = response.json()
         size = int(info.get("size", 0))
+
       else:
+        
         response = requests.get(url, stream=True)
         if not response.ok:
           logger.error("Request failed: %d" % response.status_code)
@@ -359,7 +326,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
           logger.error(" version or tag not found ({})".format(version))
           return None
 
-      libVersion = installFromLocal(tmpdir,name,src,version,no_defaults,cache)
+      libVersion = installFromLocal(tmpdir,name,src,version,no_defaults,cache,yes)
 
       if libVersion is None:
         logger.error(" we couldn't install the version you specified.")
@@ -381,10 +348,11 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch):
 
 # ----------------------------------------------------------------------------
 @db_session
-def installFromIndex(libname, src, version, no_defaults, cache):
+def installFromIndex(libname, src, version, no_defaults, cache, yes):
 
   # Check first if the library is in the cache
   logger.info("Installing from the index...")
+
   library = Library.get(name=libname)
 
   if library is not None:
@@ -395,7 +363,7 @@ def installFromIndex(libname, src, version, no_defaults, cache):
       for v in library.getSortedVersions():
         if v.fromGit and v.fromIndex:
           versionLibrary = v
-          version = versionLibrary.name
+          version        = versionLibrary.name
           break
     else:
       versionLibrary = LibraryVersion.get( library=library
@@ -414,24 +382,25 @@ def installFromIndex(libname, src, version, no_defaults, cache):
       return versionLibrary
 
     elif versionLibrary.cached and \
-      click.confirm('Do you want to install the cached version?'):
+      (yes or click.confirm('Do you want to install the cached version?')):
         versionLibrary.install()
         return versionLibrary
 
     else:
       url = versionLibrary.library.url
       versionLibrary = installFromGit(url, libname, src, version
-                                     , no_defaults, cache, "master")
+                                     , no_defaults, cache, "master", yes)
       if versionLibrary is not None:
         versionLibrary.fromIndex = True
         versionLibrary.cached    = True
+
       return versionLibrary
   else:
     logger.error("Library not available.")
     return None
 
 # ----------------------------------------------------------------------------
-def installFromURL(url, name, src, version, no_defaults, cache):
+def installFromURL(url, name, src, version, no_defaults, cache, yes):
   logger.info("Command not available yet")
   return None
 
@@ -484,11 +453,15 @@ def installFromURL(url, name, src, version, no_defaults, cache):
              , '--requirement'
              , type=click.Path(exists=True)
              , help='Use a requirement file.')
+@click.option('--yes'
+             , type=bool
+             , is_flag=True 
+             , help='Yes for everything.')
 @clog.simple_verbosity_option(logger)
 @click.pass_context
 @db_session
 def install( ctx, libnames, src, version, no_defaults \
-           , cache, local, name, url, git, github, branch,requirement):
+           , cache, local, name, url, git, github, branch, requirement, yes):
   """Install packages."""
 
   libnames = list(set(libnames))
@@ -533,13 +506,13 @@ def install( ctx, libnames, src, version, no_defaults \
 
     try:  
       if local:
-        vLibrary = installFromLocal(pathlib,name,src,version,no_defaults,cache)
+        vLibrary = installFromLocal(pathlib,name,src,version,no_defaults,cache,yes)
       elif isIndexed(libname):
-        vLibrary = installFromIndex(libname,src,version,no_defaults,cache)
+        vLibrary = installFromIndex(libname,src,version,no_defaults,cache,yes)
       elif git or isGit(libname):
-        vLibrary = installFromGit(url,name,src,version,no_defaults,cache,branch)
+        vLibrary = installFromGit(url,name,src,version,no_defaults,cache,branch,yes)
       elif isLocal(pathlib):
-        vLibrary  = installFromLocal(pathlib,name,src,version,no_defaults,cache)
+        vLibrary  = installFromLocal(pathlib,name,src,version,no_defaults,cache,yes)
 
     except Exception as e:
       logger.error("Unsuccessfully installation {}."

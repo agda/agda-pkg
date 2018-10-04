@@ -9,30 +9,25 @@
 # ----------------------------------------------------------------------------
 
 import click
-import logging
-import click_log as clog
 
-from pathlib            import Path
-from pony.orm           import *
+from pathlib   import Path
+from pony.orm  import *
 
-from ..config           import ( PACKAGE_SOURCES_PATH
-                               , INDEX_REPOSITORY_PATH
-                               , INDEX_REPOSITORY_URL
-                               , REPO
-                               )
+from ..config            import ( PACKAGE_SOURCES_PATH
+                                , INDEX_REPOSITORY_PATH
+                                , INDEX_REPOSITORY_URL
+                                , REPO
+                                )
 
-from ..service.database import db
-from ..service.database import ( Library
+from ..service.database  import db
+from ..service.database  import ( Library
                                , LibraryVersion
                                , Keyword
                                , Dependency
                                )
+from ..service.logging   import logger, clog
 
 # ----------------------------------------------------------------------------
-
-# -- Logger def.
-logger = logging.getLogger(__name__)
-clog.basic_config(logger)
 
 # -- Command def.
 @click.group()

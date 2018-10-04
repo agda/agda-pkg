@@ -139,7 +139,24 @@ Install a library is now easy. We have multiple ways to install a package.
     $ apkg install http://github.com/jonaprieto/agda-prop.git
 ```
 
-- from a tar ball file (coming soon).
+In addition, a common flag might be `--version` to specify
+which version of a library we want to install.
+
+```
+    $ apkg install standard-library --version v0.16.1
+```
+
+Alternative, we can do the same by using `@` or `==`.
+
+```
+    $ apkg install standard-library@v0.16.1
+```
+
+or
+
+```
+    $ apkg install standard-library==v0.16.1
+```
 
 ### Installation of multiple packages at once
 
@@ -151,6 +168,9 @@ so we have two options:
 ```
     $ apkg install standard-library agda-prop agda-metis
 ```
+
+Use `@` or `==` if you need a specific version, see above
+examples.
 
 2. Using a requirement file:
 
@@ -191,6 +211,25 @@ remove-cache flag.
 
 ```
     $ apkg uninstall standard-library --remove-cache
+```
+
+## Update a package to latest version
+
+We can get the latest version of a package from
+the versions registered in the package-index.
+
+- Update all the installed libraries:
+
+```
+    $ apkg update
+```
+
+- Update a specific list of libraries. If some
+library is not installed, this command will installed
+the latest version of it.
+
+```
+    $ apkg update standard-library agdarsec
 ```
 
 ## See packages installed

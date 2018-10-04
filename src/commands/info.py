@@ -11,6 +11,9 @@
 import click
 import logging
 
+from pprint                 import pprint
+from pony.orm               import *
+
 from ..service.readLibFile  import readLibFile
 from ..service.database     import db, pw
 from ..service.database     import ( Library
@@ -19,16 +22,9 @@ from ..service.database     import ( Library
                                    , TestedWith
                                    , Dependency
                                    )
-from pprint                 import pprint
-from pony.orm               import *
-
-import click_log as clog
+from ..service.logging      import logger, clog
 
 # ----------------------------------------------------------------------------
-
-# -- Logger def.
-logger = logging.getLogger(__name__)
-clog.basic_config(logger)
 
 # -- Command def.
 @click.group()

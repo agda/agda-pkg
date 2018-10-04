@@ -12,19 +12,15 @@ import click
 import logging
 import click_log as clog
 
+from operator            import attrgetter, itemgetter
 from pony.orm            import db_session, select
+from natsort             import natsorted
 
 from ..service.database  import db
 from ..service.database  import ( Library , LibraryVersion )
-from natsort             import natsorted
-from operator            import attrgetter, itemgetter
-
+from ..service.logging   import logger, clog
 
 # ----------------------------------------------------------------------------
-
-# -- Logger def.
-logger = logging.getLogger(__name__)
-clog.basic_config(logger)
 
 # -- Command def.
 @click.group()
@@ -35,7 +31,8 @@ def list(): pass
 @click.option('--short'
              , type=bool
              , is_flag=True 
-             , help='Show name, version and description per package.')
+             , help='Show name, version and description per package.'
+             )
 @db_session
 def list(short):
   """List of installed packages."""
@@ -70,8 +67,9 @@ def list(short):
   i  = 0
   if short:
     logger.info("{:<20.20} {:<20.20} {:.42}"
-                    .format("Name", "Last version", "Description"))
+                    .format("Name", "Latest version", "Description"))
     logger.info("-"*53)
+
   for library in libraries:
     v = library.getLatestVersion()    
     if v is not None:
@@ -90,12 +88,12 @@ def list(short):
         vs = ','.join(str(ver) for ver in v.library.versions)
        
         if len(vs) > 0:
-          print("Versions: ", vs)
+          print("Versions:", vs)
       
       else:
         print("{:<20.20} {:<20.20} {:.42}"
-                    .format(v.library.name,v.name,v.description))
+              .format(v.library.name,v.name,v.description))
 
       i += 1
-      if i < len(libraries):
+      if not short and i < len(libraries):
         logger.info("")

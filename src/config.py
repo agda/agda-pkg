@@ -8,8 +8,6 @@
 
 # ----------------------------------------------------------------------------
 
-
-import click
 import git
 import subprocess
 
@@ -33,8 +31,10 @@ except Exception as e:
 
 AGDA_PKG_PATH = Path().home().joinpath('.apkg' + \
                 ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
+
 GITHUB_USER   = "apkgbot"
 GITHUB_DOMAIN = "https://github.com/"
+GITHUB_API    = "https://api.github.com/repos"
 
 # The github repository index of all agda packages
 INDEX_REPOSITORY_NAME = "package-index"

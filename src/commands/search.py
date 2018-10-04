@@ -38,12 +38,12 @@ from ..service.database     import ( Library
                                    , TestedWith
                                    , Dependency
                                    )
+from ..service.logging      import logger, clog
 
 # ----------------------------------------------------------------------------
 
 @click.group()
-def search():
-  pass
+def search(): pass
 
 
 @search.command()
@@ -70,13 +70,15 @@ def search(term, field):
       )
 
   if len(libraries) > 0:
-    click.echo( "matches: " + str(results['matched_terms']))
-    click.echo("")
+    logger.info( "matches: " + str(results['matched_terms']))
+    logger.info("")
 
     for result in libraries:
-      click.echo(result["entity"]["name"])
-      click.echo("="*len(result["entity"]["name"]))
+      
+      logger.info(result["entity"]["name"])
+      logger.info("="*len(result["entity"]["name"]))
       del result["entity"]["name"]
+
       for k, v in result["entity"].items():
         if  v != None:
           click.echo("{0}: {1}".format(k,v))

@@ -21,6 +21,7 @@ from natsort     import natsorted
 from operator    import attrgetter, itemgetter
 
 from ..service.readLibFile  import readLibFile
+from ..service.logging      import logger, clog
 from ..config               import ( AGDA_DEFAULTS_PATH
                                   , AGDA_DIR_PATH
                                   , AGDA_LIBRARIES_PATH
@@ -41,9 +42,6 @@ from ..config               import ( AGDA_DEFAULTS_PATH
                                   )
 
 # ----------------------------------------------------------------------------
-
-# -- Logger def.
-logger = logging.getLogger(__name__)
 
 # -- Search index
 pw = PonyWhoosh()
@@ -105,6 +103,8 @@ class Library(db.Entity):
     def getLatestCachedVersion(self):
       versions = [v for v in self.versions if v.cached]
       versions = natsorted(versions, key=attrgetter('name'))
+      print(self.name)
+      print(versions)
       if len(versions) > 0: return versions[-1]
       return None
 
@@ -139,7 +139,7 @@ class LibraryVersion(db.Entity):
     library      = Required(Library)
     name         = Optional(str, nullable=True, default="")
     sha          = Optional(str)
-    description  = Optional(str, default="Missing.")
+    description  = Optional(str, default="")
     license      = Optional(str)
     include      = Optional(str, default="src/")
     depend       = Set('Dependency')
@@ -228,8 +228,6 @@ class LibraryVersion(db.Entity):
         return self.agdaPkgFilePath
       if self.agdaLibFilePath.exists():
         return self.agdaLibFilePath
-      # print(self.agdaPkgFilePath, self.agdaPkgFilePath.exists())
-      # print(self.agdaLibFilePath,  self.agdaLibFilePath.exists())
       raise ValueError(" No file descriptor for the version {} of {}."
                        .format(self.name, self.library.name))
 
@@ -340,10 +338,10 @@ class Dependency(db.Entity):
 
     def __str__(self):
       text = self.minVersion \
-        + ("<=" if self.minVersion else "") \
-        + self.library.name \
-        + ("<=" if self.maxVersion else "") \
-        + self.maxVersion
+           + ("<=" if self.minVersion else "") \
+           + self.library.name \
+           + ("<=" if self.maxVersion else "") \
+           + self.maxVersion
       return text
 
     def __repr__(self):
