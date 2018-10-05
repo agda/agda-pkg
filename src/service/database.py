@@ -273,10 +273,9 @@ class LibraryVersion(db.Entity):
       try:
         if self.sourcePath.exists():
           shutil.rmtree(self.sourcePath.as_posix())
-        logger.info("  Version removed ({}).".format(self.name))
       except Exception as e:
-        # logger.error(e)
-        logger.error("Unsuccessfully to remove " \
+        logger.error(e)
+        logger.error("Failed to remove " \
                     + self.sourcePath.as_posix())
 
 
@@ -286,12 +285,15 @@ class LibraryVersion(db.Entity):
 
       self.library.installed = False
       self.library.default = False
-
-      if remove_cache:
-        self.cached = False
-        self.removeSources()
-
-      logger.info("  Version removed ({}).".format(self.name))
+      try:
+        if remove_cache:
+          self.cached = False
+          self.removeSources()
+          logger.info("  Version removed ({}).".format(self.name))
+      except Exception as e:
+        logger.error(e)
+        logger.error("Unsuccessfully to remove ({})"
+                      .format(self.name))
 
     def install(self, defaults=True):
 

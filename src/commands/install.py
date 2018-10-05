@@ -55,17 +55,38 @@ from .uninstall                   import uninstallLibrary
 @click.group()
 def install(): pass
 
+# -- Defaults
+
+option = { 'branch'      : "master"
+         , 'cache'       : False
+         , 'git'         : False
+         , 'github'      : False
+         , 'libnames'    : ()
+         , 'libname'     : None
+         , 'local'       : False
+         , 'name'        : '*'
+         , 'no_defaults' : False
+         , 'requirement' : None
+         , 'src'         : ''
+         , 'url'         : None
+         , 'version'     : ''
+         , 'yes'         : False
+         }
+
 # ----------------------------------------------------------------------------
 @db_session
-def installFromLocal(pathlib, name, src, version, no_defaults, cache, yes):
-  logger.info("Installing as a local package...")
+def installFromLocal():
 
-  if len(pathlib) == 0 or pathlib == ".":
-    pathlib = Path().cwd()
+  global option
+
+  # pathlib, option["name"], src, version, no_defaults, cache, yes
+
+  if len(option["pathlib"]) == 0 or option["pathlib"] == ".":
+    option["pathlib"] = Path().cwd()
   else:
-    pathlib = Path(pathlib)
+    option["pathlib"] = Path(option["pathlib"])
 
-  pwd = pathlib.joinpath(Path(src))
+  pwd = option["pathlib"].joinpath(Path(option["src"]))
 
   if not Path(pwd).exists():
     logger.error(pwd + " doesn't exist!")
@@ -73,8 +94,8 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache, yes):
   
   # logger.info("Library location: " + pwd.as_posix())
 
-  agdaLibFiles = [ f for f in pwd.glob(name + LIB_SUFFIX) if f.is_file() ]
-  agdaPkgFiles = [ f for f in pwd.glob(name + PKG_SUFFIX) if f.is_file() ]
+  agdaLibFiles = [ f for f in pwd.glob(option["name"] + LIB_SUFFIX) if f.is_file() ]
+  agdaPkgFiles = [ f for f in pwd.glob(option["name"] + PKG_SUFFIX) if f.is_file() ]
 
   if len(agdaLibFiles) == 0 and len(agdaPkgFiles) == 0:
     logger.error("No libraries (" + LIB_SUFFIX + " or "\
@@ -95,18 +116,21 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache, yes):
     return None
 
   logger.info("Library file detected: " + libFile.name)
+
   info = readLibFile(libFile)
 
-  name = info.get("name", "")
-  if len(name) == 0:
-    name = pathlib.name
+  option["name"] = info.get("name", "")
+
+  if len(option["name"]) == 0:
+    option["name"] = option["pathlib"].name
+
   # logger.info("Library name: " + name)
 
   # -- Let's attach a version number
 
-  versionName = version
+  versionName = option["version"]
 
-  if versionName == "":
+  if versionName == "" :
     versionName = str(info.get("version", ""))
   if versionName == "" and pwd.joinpath(".git").exists():
     try:
@@ -136,10 +160,10 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache, yes):
   logger.info("Library version: " + versionName)
 
   # At this point we have the name from the local library
-  library = Library.get(name=name)
+  library = Library.get(name=option["name"])
 
   if library is None:
-    library = Library(name=name)
+    library = Library(name=option["name"])
 
   versionLibrary = LibraryVersion.get(library=library, name=versionName)
 
@@ -148,16 +172,19 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache, yes):
     if versionLibrary.installed:
       logger.warning("This version ({}) is already installed."
                       .format(versionLibrary.freezeName))
-      if yes or click.confirm('Do you want to uninstall it first?'):
+      if option["yes"] or click.confirm('Do you want to uninstall it first?'):
         try:
-          uninstallLibrary(libname=name, database=False, remove_cache=True)
+          uninstallLibrary( libname=option["name"]
+                          , database=False
+                          , remove_cache=True
+                          )
         except Exception as e:
           logger.error(e)
           return None
       else:
         
         versionNameProposed = "{}-{}".format(versionName, uuid.uuid1())
-        logger.warning("Renaming version to " + name + "@" + versionNameProposed)
+        logger.warning("Renaming version to " + option["name"] + "@" + versionNameProposed)
         if click.confirm('Do you want to install it using this version?', abort=True):
           versionLibrary = LibraryVersion( library=library
                                          , name=versionNameProposed
@@ -213,7 +240,7 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache, yes):
         else:
           logger.warning(depend + " is not in the index")
     
-    versionLibrary.install(not(no_defaults))
+    versionLibrary.install(not(option["no_defaults"]))
 
     commit()
     return versionLibrary
@@ -232,20 +259,20 @@ def installFromLocal(pathlib, name, src, version, no_defaults, cache, yes):
 
 
 # ----------------------------------------------------------------------------
-def installFromGit(url, name, src, version, no_defaults, cache, branch, yes):
+def installFromGit():
 
-  logger.info("Installing from git: %s" % url )
+  global option
 
-  if not isGit(url):
+  if not isGit(option.get("url", "")):
     logger.error("this is not a git repository")
     return None
+  
+  logger.info("Installing from git: %s" % option["url"] )
 
-  # tmpdir = "/tmp/qwerty"
-  # if True:
   with TemporaryDirectory() as tmpdir:
     print("Using temporal directory:", tmpdir)
     try:
-      if branch is None: branch = "master"
+      
       if Path(tmpdir).exists():
         remove_tree(tmpdir)
 
@@ -255,8 +282,9 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch, yes):
       # -- SIZE Repo
 
       size = 0
-      if "github" in url:
-        reporef = url.split("github.com")[-1]
+      if "github" in option["url"]:
+
+        reporef = option["url"].split("github.com")[-1]
         infourl = GITHUB_API + reporef.split(".git")[0]
 
         response = requests.get(infourl, stream=True)
@@ -270,7 +298,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch, yes):
 
       else:
         
-        response = requests.get(url, stream=True)
+        response = requests.get(option["url"], stream=True)
         if not response.ok:
           logger.error("Request failed: %d" % response.status_code)
           return None
@@ -286,7 +314,7 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch, yes):
 
       # --
 
-      logger.info("Downloading " + url  \
+      logger.info("Downloading " + option["url"]  \
             + " (%s)" % str(humanize.naturalsize(size, binary=True)))
       
       with click.progressbar(
@@ -310,34 +338,36 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch, yes):
 
             bar.update(self.total)
 
-        REPO = git.Repo.clone_from( url
+        REPO = git.Repo.clone_from( option["url"]
                                   , tmpdir
-                                  , branch=branch
+                                  , branch=option["branch"]
                                   , progress=Progress()
                                   )
 
-      if version != "":
+      if option["version"] != "":
         try:
           # Seen on https://goo.gl/JVs8jJ
-          REPO.git.checkout(version)
+          REPO.git.checkout(option["version"])
 
         except Exception as e:
           logger.error(e)
-          logger.error(" version or tag not found ({})".format(version))
+          logger.error(" version or tag not found ({})".format(option["version"]))
           return None
 
-      libVersion = installFromLocal(tmpdir,name,src,version,no_defaults,cache,yes)
+      option["pathlib"] = tmpdir
+
+      libVersion = installFromLocal()
 
       if libVersion is None:
         logger.error(" we couldn't install the version you specified.")
         return None
 
       libVersion.fromGit = True
-      libVersion.origin = url
-      libVersion.library.url = url
-      libVersion.library.default = not(no_defaults)
+      libVersion.origin = option["url"]
+      libVersion.library.url = option["url"]
+      libVersion.library.default = not(option["no_defaults"])
 
-      if version != "": libVersion.sha = REPO.head.commit.hexsha
+      if option["version"] != "": libVersion.sha = REPO.head.commit.hexsha
       commit()
       return libVersion
 
@@ -348,29 +378,32 @@ def installFromGit(url, name, src, version, no_defaults, cache, branch, yes):
 
 # ----------------------------------------------------------------------------
 @db_session
-def installFromIndex(libname, src, version, no_defaults, cache, yes):
+def installFromIndex():
+
+  global option
 
   # Check first if the library is in the cache
   logger.info("Installing from the index...")
 
-  library = Library.get(name=libname)
+  library = Library.get(name=option["libname"])
 
   if library is not None:
 
     versionLibrary = None
-    if version == "":
+
+    if option["version"] == "":
       # we'll try to install the latest git version
       for v in library.getSortedVersions():
         if v.fromGit and v.fromIndex:
-          versionLibrary = v
-          version        = versionLibrary.name
+          versionLibrary    = v
+          option["version"] = versionLibrary.name
           break
     else:
       versionLibrary = LibraryVersion.get( library=library
-                                     , name=version
-                                     , fromIndex=True
-                                     , fromGit=True
-                                     )
+                                         , name=option["version"]
+                                         , fromIndex=True
+                                         , fromGit=True
+                                         )
     
     if versionLibrary is None:
       logger.error(" no versions for this library.\n\
@@ -387,9 +420,11 @@ def installFromIndex(libname, src, version, no_defaults, cache, yes):
         return versionLibrary
 
     else:
-      url = versionLibrary.library.url
-      versionLibrary = installFromGit(url, libname, src, version
-                                     , no_defaults, cache, "master", yes)
+      option["url"]    = versionLibrary.library.url
+      option["branch"] = "master"
+
+      versionLibrary = installFromGit()
+
       if versionLibrary is not None:
         versionLibrary.fromIndex = True
         versionLibrary.cached    = True
@@ -400,8 +435,10 @@ def installFromIndex(libname, src, version, no_defaults, cache, yes):
     return None
 
 # ----------------------------------------------------------------------------
-def installFromURL(url, name, src, version, no_defaults, cache, yes):
-  logger.info("Command not available yet")
+def installFromURL():
+  global option
+  from pprint import pprint
+  pprint(option)
   return None
 
 # ----------------------------------------------------------------------------
@@ -409,11 +446,11 @@ def installFromURL(url, name, src, version, no_defaults, cache, yes):
 @click.argument('libnames', nargs=-1)
 @click.option('--src'
              , type=str
-             , default=""
+             , default=option["src"]
              , help='Directory to the source.')
 @click.option('--version'
              , type=str
-             , default=""
+             , default=option["version"]
              , help='Version, tag or commit.')
 @click.option('--no-defaults'
              , type=bool
@@ -422,7 +459,7 @@ def installFromURL(url, name, src, version, no_defaults, cache, yes):
 @click.option('--cache'
              , type=bool
              , is_flag=True
-             , default=True
+             , default=option["cache"]
              , help='Cache available.')
 @click.option('--local'
              , type=bool
@@ -430,7 +467,6 @@ def installFromURL(url, name, src, version, no_defaults, cache, yes):
              , help='Force to install just local packages.')
 @click.option('--name'
              , type=str
-             , default="*"
              , help='Help to disambiguate when many lib files are\
                      present in the directory.')
 @click.option('--url'
@@ -464,65 +500,80 @@ def install( ctx, libnames, src, version, no_defaults \
            , cache, local, name, url, git, github, branch, requirement, yes):
   """Install packages."""
 
-  libnames = list(set(libnames))
+  global option 
+
+  option.update({k : v for k, v in ctx.__dict__["params"].items()
+                     if v is not None} )
+
+  option["libnames"] = list(set(libnames))
 
   if requirement:
     try:
-      rfile = Path(requirement)
-      libnames += rfile.read_text().split()
+      option["libnames"] += Path(requirement).read_text().split()
     except Exception as e:
       logger.error(e)
       logger.error(" installation failed.")
       return
 
 
-  if len(libnames) > 1 and version != "":
+  if len(option["libnames"]) > 1 and option["version"] != "":
     return logger.error("--version only works with one library.\n\
       Consider using nameLibrary@versionNumber instead.")
   
-  if (git or github) and url:
+  if (option["git"] or option["github"]) and option["url"]:
     return logger.error("--git and --url are incompatible")
 
-  if len(libnames) == 0: libnames = ["."]
+  if len(option["libnames"]) == 0:
+    option["libnames"] = ["."]
 
-  if github: git = True
+  if option["github"]: 
+    option["git"]    = True
+    option["github"] = True
 
-  for libname in libnames:
+  for libname in option["libnames"]:
 
     if "@" in libname:
-      libname, version = libname.split("@")
+      option["libname"], option["version"] = libname.split("@")
     elif "==" in libname:
-      libname, version = libname.split("==")
+      option["libname"], option["version"] = libname.split("==")
+    else:
+      option["libname"] = libname
 
-    if github: 
-      if not libname.startswith(GITHUB_DOMAIN):
-        libname = GITHUB_DOMAIN + libname
-      if not libname.endswith(".git"):
-        libname = libname + ".git"
+    if option["github"]: 
+      if not option["libname"].startswith(GITHUB_DOMAIN):
+        option["libname"] = GITHUB_DOMAIN + option["libname"]
+      if not option["libname"].endswith(".git"):
+        option["libname"] = option["libname"] + ".git"
 
-    pathlib  = libname
-    url      = libname
+    option["pathlib"] = option["libname"]
+    option["url"]     = option["libname"]
+
     vLibrary = None
 
     try:  
-      if local:
-        vLibrary = installFromLocal(pathlib,name,src,version,no_defaults,cache,yes)
-      elif isIndexed(libname):
-        vLibrary = installFromIndex(libname,src,version,no_defaults,cache,yes)
-      elif git or isGit(libname):
-        vLibrary = installFromGit(url,name,src,version,no_defaults,cache,branch,yes)
-      elif isLocal(pathlib):
-        vLibrary  = installFromLocal(pathlib,name,src,version,no_defaults,cache,yes)
+
+      if option["local"]:
+        vLibrary = installFromLocal()
+
+      elif isIndexed(option["libname"]):
+        vLibrary = installFromIndex()
+
+      elif git or isGit(option["libname"]):
+        vLibrary = installFromGit()
+
+      elif isLocal(option["pathlib"]):
+        vLibrary = installFromLocal()
 
     except Exception as e:
       logger.error("Unsuccessfully installation {}."
-                  .format(libname if name =="*" else name))
+                  .format(option["libname"] if name =="*" else name))
       continue
     
     if vLibrary is not None:
       logger.info("Successfully installed ({}@{})."
-                 .format(libname if name =="*" else name, vLibrary.name))
+        .format(option["libname"] if name =="*" else name, vLibrary.name))
     else:
       logger.info("Unsuccessfully installation ({})."
-                 .format(libname if name =="*" else name))
+        .format(option["libname"] if name =="*" else name))
+
   writeAgdaDirFiles()
