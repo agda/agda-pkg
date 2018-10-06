@@ -27,7 +27,7 @@ the official documentation [here](https://agda.readthedocs.io/en/v2.5.4.1/tools/
 	- [See packages installed](#see-packages-installed)
 	- [Approximate search of packages](#approximate-search-of-packages)
 	- [Get all the information of a package](#get-all-the-information-of-a-package)
-- [Creating a library for Agda-Pkg](#creating-a-library-for-agda-pkg)
+- [Creating a library with Agda-Pkg](#creating-a-library-for-agda-pkg)
 	- [Directory structure of an agda library](#directory-structure-of-an-agda-library)
 	- [.agda-lib library file](#agda-lib-library-file)
 	- [.agda-pkg library file](#agda-pkg-library-file)
@@ -311,6 +311,19 @@ example:
 
 # Creating a library for Agda-Pkg
 
+In this section, we describe how to build a library.
+
+To build a project using `agda-pkg`, we just run the following command:
+
+```
+    $ apkg create
+```
+
+Some questions are going to be prompted in order to create
+the necessary files for Agda and for Agda-Pkg.
+
+The output is a folder like the following showed below.
+
 ## Directory structure of an agda library
 
 A common Agda library has the following structure:
@@ -351,9 +364,11 @@ This file has priority over its version `.agda-lib`.
 ```yaml
 $ cat mylibrary.agda-pkg
 name:              mylibrary
-version:           0.0.1
-author:            AuthorName
-category:          [ classic, logic, theorems ]
+version:           v0.0.1
+author:            
+    - AuthorName1
+    - AuthorName2
+category:          cat1, cat2, cat3
 homepage:          http://github.com/user/mylibrary
 license:           MIT
 license-file:      LICENSE.md
@@ -370,7 +385,6 @@ depend:
     - LIB2
     - LIB3
     - LIB4
-
 ```
 
   [the package index]: https://github.com/apkgbot/package-index

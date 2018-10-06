@@ -32,12 +32,12 @@ from ..config            import ( PACKAGE_SOURCES_PATH
                                 , GITHUB_API
                                 )
 
-from ..service.database           import db
-from ..service.database           import ( Library
-                                         , LibraryVersion
-                                         , Keyword
-                                         , Dependency
-                                         )
+from ..service.database  import db
+from ..service.database  import ( Library
+                                , LibraryVersion
+                                , Keyword
+                                , Dependency
+                                )
 
 from ..service.logging            import logger, clog
 from ..service.readLibFile        import readLibFile
