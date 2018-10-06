@@ -10,16 +10,22 @@
 
 import git
 import subprocess
+import os
 
 from pathlib import Path
 
 # -----------------------------------------------------------------------------
 
-# -- AGDA DIRECTORIES:
+# -- AGDA DIR:
 AGDA_DIR_PATH = Path().home().joinpath(".agda")
+if Path().cwd().joinpath(".agda").exists():
+  AGDA_DIR_PATH = Path().cwd().joinpath(".agda")
+if os.environ.get("AGDA_DIR", None) is not None:
+  AGDA_DIR_PATH = os.environ["AGDA_DIR"]
+
 AGDA_DEFAULTS_PATH = AGDA_DIR_PATH.joinpath("defaults")
 AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries")
-AGDA_VERSION = ""
+AGDA_VERSION = os.environ.get("AGDA_VERSION","")
 
 try:
   result = subprocess.run(["agda", "--version"], stdout=subprocess.PIPE)

@@ -65,6 +65,18 @@ the database please run the following command:
     Indexing libraries from https://github.com/apkgbot/package-index.git
 ```
 
+**Note**.
+To use a different location for the files `defaults` and `libraries` for Agda,
+you can set up the environment variable `AGDA_DIR` as fallows.
+
+```
+    $ export AGDA_DIR=$HOME/.agda
+```
+
+Other way is to create a directory `.agda` in your directory and run
+`agda-pkg` from that directory. `agda-pkg` will prioritize the `.agda`
+directory in the current directory.
+
 ## Help command
 
 Check all the options of a command or subcommand by using the flag `--help`.
@@ -161,7 +173,7 @@ Or simpler by using `@` or `==` as it follows.
     $ apkg install standard-library==v0.16.1
 ```
 
-### Installation of multiple packages at once
+### Multiple packages at once
 
 To install multiple libraries at once, we have two options:
 
