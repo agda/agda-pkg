@@ -52,8 +52,8 @@ test:
 	- apkg clean
 	- apkg init
 	- apkg install agda-metis
-	- cd /tmp/agda-metis && make test
 
+	- cd /tmp/agda-metis && make test
 
 .PHONY : TODO
 TODO :
@@ -82,3 +82,9 @@ deploy :
 	git commit -am "[ v$(VERSION) ] $(MSG)"
 	make pip-package
 	git push origin master --tags
+
+.PHONY : downloads
+downloads:
+	pypinfo agda-pkg country
+	pypinfo agda-pkg
+	pypinfo agda-pkg version
