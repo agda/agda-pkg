@@ -12,6 +12,7 @@ import click
 
 from .commands            import *
 from .commands.clean      import clean
+from .commands.create     import create
 from .commands.freeze     import freeze
 from .commands.list       import list
 from .commands.info       import info
@@ -36,6 +37,7 @@ cli.add_command(freeze)
 cli.add_command(list)
 cli.add_command(info)
 cli.add_command(clean)
+cli.add_command(create)
 cli.add_command(search)
 cli.add_command(update)
 cli.add_command(upgrade)
