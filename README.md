@@ -21,8 +21,9 @@ the official documentation [here](https://agda.readthedocs.io/en/v2.5.4.1/tools/
 	- [Upgrade the package index](#upgrade-the-package-index)
 	- [List all the packages available](#list-all-the-packages-available)
 	- [Installation of packages](#installation-of-packages)
-		- [Installation of multiple packages at once](#installation-of-multiple-packages-at-once)
+		- [Multiple packages at once](#multiple-packages-at-once)
 	- [Uninstalling a package](#uninstalling-a-package)
+	- [Update a package to latest version](#update-a-package-to-latest-version)
 	- [See packages installed](#see-packages-installed)
 	- [Approximate search of packages](#approximate-search-of-packages)
 	- [Get all the information of a package](#get-all-the-information-of-a-package)
@@ -160,7 +161,7 @@ or simpler:
     $ apkg install http://github.com/jonaprieto/agda-prop.git
 ```
 
-To specify the version of a library, we use the flag `--version` 
+To specify the version of a library, we use the flag `--version`
 
 ```
     $ apkg install standard-library --version v0.16.1
