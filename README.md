@@ -2,7 +2,7 @@ agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.
 ========
 
 The Agda package manager that we all have been waiting for. This
-tool do not modify `Agda` at all, it will just manage systematically the directory
+tool does not modify `Agda` at all, it will just manage systematically the directory
 `.agda` and its files: `.agda/defaults` and `.agda/libraries`.
 For more information about how the Agda package system works, read
 the official documentation [here](https://agda.readthedocs.io/en/v2.5.4.1/tools/package-system.html).
