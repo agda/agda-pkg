@@ -131,7 +131,6 @@ class Library(db.Entity):
       self.installed = True
       self.default   = defaults
 
-
 # ----
 
 @pw.register_model('name', 'description')

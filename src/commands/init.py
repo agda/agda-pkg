@@ -103,7 +103,7 @@ def init(drop_tables):
             if dependency is not None:
               version.depend.add(Dependency(library = dependency))
             else:
-              logger.warning(depend + " is not in the index")
+              logger.warning(depend + " is not in the index.")
 
         info = version.readInfoFromLibFile()
 
@@ -116,11 +116,13 @@ def init(drop_tables):
           if keyword is None:
             keyword = Keyword(word = word)
 
-          keyword.libraries.clear()
-          keyword.libraries.add(library)
+          if not library in keyword.libraries:
+            keyword.libraries.clear()
+            keyword.libraries.add(library)
 
-          keyword.libVersions.clear()
-          keyword.libVersions.add(version)
+          if not version in keyword.libVersions:
+            keyword.libVersions.clear()
+            keyword.libVersions.add(version)
 
 
     libraries = select(l for l in Library)[:]

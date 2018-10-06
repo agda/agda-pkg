@@ -158,9 +158,6 @@ Or simpler by using `@` or `==` as it follows.
 
 ```
     $ apkg install standard-library@v0.16.1
-```
-
-```
     $ apkg install standard-library==v0.16.1
 ```
 

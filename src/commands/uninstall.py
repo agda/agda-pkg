@@ -76,8 +76,6 @@ def uninstallLibrary(libname, database=False, remove_cache=False):
     logger.error(e)
     logger.error(" Unsuccessfully uninstallation.")
 
-
-
 # --
 
 @uninstall.command()

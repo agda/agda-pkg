@@ -57,21 +57,23 @@ def install(): pass
 
 # -- Defaults
 
-option = { 'branch'      : "master"
-         , 'cache'       : False
-         , 'git'         : False
-         , 'github'      : False
-         , 'libnames'    : ()
-         , 'libname'     : None
-         , 'local'       : False
-         , 'name'        : '*'
-         , 'no_defaults' : False
-         , 'requirement' : None
-         , 'src'         : ''
-         , 'url'         : None
-         , 'version'     : ''
-         , 'yes'         : False
+option = { 'branch'          : "master"
+         , 'cache'           : False
+         , 'git'             : False
+         , 'github'          : False
+         , 'libnames'        : ()
+         , 'libname'         : None
+         , 'local'           : False
+         , 'name'            : '*'
+         , 'no_defaults'     : False
+         , 'no_dependencies' : False
+         , 'requirement'     : None
+         , 'src'             : ''
+         , 'url'             : None
+         , 'version'         : ''
+         , 'yes'             : False
          }
+
 
 # ----------------------------------------------------------------------------
 @db_session
@@ -184,7 +186,8 @@ def installFromLocal():
       else:
         
         versionNameProposed = "{}-{}".format(versionName, uuid.uuid1())
-        logger.warning("Renaming version to " + option["name"] + "@" + versionNameProposed)
+        logger.warning("Version suggested: " + option["name"] + "@" + versionNameProposed)
+
         if click.confirm('Do you want to install it using this version?', abort=True):
           versionLibrary = LibraryVersion( library=library
                                          , name=versionNameProposed
@@ -229,14 +232,26 @@ def installFromLocal():
       if not versionLibrary in keyword.libVersions:
         keyword.libVersions.add(versionLibrary)
 
+    versionLibrary.depend.clear()
     for depend in info.get("depend",[]):
 
       if type(depend) == list:
-        logger.info("no supported yet but the format is X.X <= name <= Y.Y")
+        logger.info("no supported yet.")
       else:
         dependency = Library.get(name=depend)
         if dependency is not None:
           versionLibrary.depend.add(Dependency(library=dependency))
+
+          if not option["no_dependencies"] and not dependency.installed:
+
+            oldOption          = option
+            option["libname"]  = dependency.name
+            option["version"]  = ""
+            option["name"]     = "*"
+            option["libnames"] = ()
+            installFromIndex()
+            option             = oldOption
+
         else:
           logger.warning(depend + " is not in the index")
     
@@ -317,14 +332,12 @@ def installFromGit():
       logger.info("Downloading " + option["url"]  \
             + " (%s)" % str(humanize.naturalsize(size, binary=True)))
       
-      with click.progressbar(
-                    length=10*size
-                  # , label = ""
-                  , bar_template='|%(bar)s| %(info)s %(label)s'
-                  , fill_char=click.style('█', fg='cyan')
-                  , empty_char=' '
-                  , width=30
-                  ) as bar:
+      with click.progressbar( length=10*size
+                            , bar_template='|%(bar)s| %(info)s %(label)s'
+                            , fill_char=click.style('█', fg='cyan')
+                            , empty_char=' '
+                            , width=30
+                            ) as bar:
 
         class Progress(git.remote.RemoteProgress):
           
@@ -382,9 +395,12 @@ def installFromIndex():
 
   global option
 
-  # Check first if the library is in the cache
-  logger.info("Installing from the index...")
+  if len(option["libname"]) == 0:
+    logger.info("Nothing to install.")
+    return
 
+  # Check first if the library is in the cache
+  logger.info("Installing ({}) from the index...".format(option["libname"]))
   library = Library.get(name=option["libname"])
 
   if library is not None:
@@ -393,11 +409,9 @@ def installFromIndex():
 
     if option["version"] == "":
       # we'll try to install the latest git version
-      for v in library.getSortedVersions():
-        if v.fromGit and v.fromIndex:
-          versionLibrary    = v
-          option["version"] = versionLibrary.name
-          break
+      versionLibrary = library.getLatestVersion()
+      option["version"] = versionLibrary.name
+
     else:
       versionLibrary = LibraryVersion.get( library=library
                                          , name=option["version"]
@@ -436,9 +450,6 @@ def installFromIndex():
 
 # ----------------------------------------------------------------------------
 def installFromURL():
-  global option
-  from pprint import pprint
-  pprint(option)
   return None
 
 # ----------------------------------------------------------------------------
@@ -485,6 +496,10 @@ def installFromURL():
              , type=bool
              , is_flag=True 
              , help='From a git repository.')
+@click.option('--no-dependencies'
+             , type=bool
+             , is_flag=True 
+             , help='Do not install dependencies.')
 @click.option('-r'
              , '--requirement'
              , type=click.Path(exists=True)
@@ -496,8 +511,10 @@ def installFromURL():
 @clog.simple_verbosity_option(logger)
 @click.pass_context
 @db_session
-def install( ctx, libnames, src, version, no_defaults \
-           , cache, local, name, url, git, github, branch, requirement, yes):
+def install( ctx, libnames, src, version, no_defaults
+           , cache, local, name, url, git, github, branch
+           , no_dependencies,requirement, yes):
+
   """Install packages."""
 
   global option 
@@ -571,9 +588,8 @@ def install( ctx, libnames, src, version, no_defaults \
     
     if vLibrary is not None:
       logger.info("Successfully installed ({}@{})."
-        .format(option["libname"] if name =="*" else name, vLibrary.name))
+        .format(vLibrary.library.name, vLibrary.name))
     else:
-      logger.info("Unsuccessfully installation ({})."
-        .format(option["libname"] if name =="*" else name))
+      logger.info("Unsuccessfully installation ({}).".format(option["libname"]))
 
   writeAgdaDirFiles()

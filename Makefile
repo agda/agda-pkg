@@ -20,10 +20,10 @@ test:
 	- rm -Rf /tmp/agda-metis
 	- cd /tmp/ && git clone http://github.com/jonaprieto/agda-metis
 	- @echo "=================================================="
-	- cd /tmp/agda-stdlib && apkg install
-	- cd /tmp/agda-prop && apkg install
-	- cd /tmp/agda-metis && apkg install
-	- cd /tmp/agda-metis && make test
+	- cd /tmp/agda-stdlib && apkg install --no-dependencies
+	- cd /tmp/agda-prop && apkg install --no-dependencies
+	- cd /tmp/agda-metis && apkg install --no-dependencies
+	- cd /tmp/agda-metis && make test 
 	- @echo "=================================================="
 	- apkg --help
 	- apkg
@@ -47,6 +47,11 @@ test:
 	- apkg install agda-prop
 	- apkg install --git http://github.com/jonaprieto/agda-metis.git
 	- @echo "=================================================="
+	- cd /tmp/agda-metis && make test
+	- @echo "=================================================="
+	- apkg clean
+	- apkg init
+	- apkg install agda-metis
 	- cd /tmp/agda-metis && make test
 
 
@@ -74,6 +79,6 @@ deploy :
 	$(eval MSG := $(shell bash -c 'read -p "Comment: " pwd; echo $$pwd'))
 	git add .
 	git tag v$(VERSION)
-	git commit -am "[ v$(VERSION) ] new version: $(MSG)"
+	git commit -am "[ v$(VERSION) ] $(MSG)"
 	make pip-package
 	git push origin master --tags
