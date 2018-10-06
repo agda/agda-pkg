@@ -54,9 +54,11 @@ shorter just `apkg`.
 
 ## Initialisation of the package index
 
-The easiest way to get some libraries s by using [the package index]. We will use this index to download and to install
-the libraries. In addition, `agda-pkg` use a local database to
-maintain a register of all libraries available in your system. To initialise the index and the database run the following command:
+The easiest way to get some libraries is by using [the package index].
+We will use this index to download and to install the libraries. In
+addition, `agda-pkg` uses a local database to maintain a register of
+all libraries available in your system. To initialise the index and
+the database please run the following command:
 
 ```
     $ apkg init
@@ -69,18 +71,19 @@ Check all the options of a command or subcommand by using the flag `--help`.
 
 ```
     $ apkg --help
+    $ apkg install --help
 ```
 
 ## Upgrade the package index
 
-Recall updating the index every once in a while
+Recall updating the index every once in a while using `upgrade`.
 
 ```
     $ apkg upgrade
     Updating Agda-Pkg from https://github.com/apkgbot/package-index.git
 ```
 
-If you want to index your library make a [PR] in [the package index]
+If you want to index your library go to [the package index] and make [PR].
 
 ## List all the packages available
 
@@ -91,21 +94,21 @@ To see all the package available run the following command:
 ```
 
 This command also has the flag `--short` to display a short version of the
-same list. For instance,
+same list.
 
 ```
     $ apkg list --short
     Name                 Last version         Description
     -----------------------------------------------------
-    agda-metis           v0.2.1               Missing.
-    agda-prelude         4e0caf0              Missing.
-    agda-prop            v0.1.2               Missing.
-    agdarsec             v0.1.1               Missing.
-    alga-theory          0fdb96c              Missing.
-    fotc                 apia-1.0.2           Missing.
-    hott-core            937e227              Missing.
-    hott-theorems        937e227              Missing.
-    standard-library     v0.16.1              Missing.
+    agda-metis           v0.2.1               
+    agda-prelude         4e0caf0              
+    agda-prop            v0.1.2               
+    agdarsec             v0.1.1               
+    alga-theory          0fdb96c              
+    fotc                 apia-1.0.2           
+    hott-core            937e227              
+    hott-theorems        937e227              
+    standard-library     v0.16.1              
 ```
 
 ## Installation of packages
@@ -127,6 +130,12 @@ Install a library is now easy. We have multiple ways to install a package.
     $ apkg install .
 ```
 
+or simpler:
+
+```
+    $ apkg install
+```
+
 -   from a github repository
 
 ```
@@ -139,20 +148,17 @@ Install a library is now easy. We have multiple ways to install a package.
     $ apkg install http://github.com/jonaprieto/agda-prop.git
 ```
 
-In addition, a common flag might be `--version` to specify
-which version of a library we want to install.
+To specify the version of a library, we use the flag `--version` 
 
 ```
     $ apkg install standard-library --version v0.16.1
 ```
 
-Alternative, we can do the same by using `@` or `==`.
+Or simpler by using `@` or `==` as it follows.
 
 ```
     $ apkg install standard-library@v0.16.1
 ```
-
-or
 
 ```
     $ apkg install standard-library==v0.16.1
@@ -160,8 +166,7 @@ or
 
 ### Installation of multiple packages at once
 
-We may want to install multiple libraries at once,
-so we have two options:
+To install multiple libraries at once, we have two options:
 
 1. Using the inline method
 
@@ -191,7 +196,7 @@ in this file:
 ```
 
 
-Lastly, to see all the options, pleasee check out the help information:
+Check all the options of this command with the help information:
 
 ```
     $ apkg install --help
@@ -199,15 +204,14 @@ Lastly, to see all the options, pleasee check out the help information:
 
 ## Uninstalling a package
 
-Uninstall a package by default, just hide the library for Agda but no
-remove the sources:
+Uninstalling a package will remove the library from the visible libraries for Agda.
 
 ```
     $ apkg uninstall standard-library
 ```
 
-If you want to remove completely the source and everything, use
-remove-cache flag.
+But if you want to remove the library completely (the sources and everything) you
+should use the flag `--remove-cache`.
 
 ```
     $ apkg uninstall standard-library --remove-cache
@@ -237,16 +241,20 @@ the latest version of it.
 
 ```
     $ apkg freeze
+    agda-metis==v0.2.1
+    agda-prop==v0.1.2
+    standard-library==v0.16
 ```
 
-Useful to save the versions used for each library:
+This command is useful to keep in a file the versions used for your project
+to install them later.
 
 
 ```
     $ apkg freeze > requirements.txt
 ```
 
-You may want to install from the requirements file:
+To install from this requirement file run this command.
 
 
 ```
@@ -256,7 +264,7 @@ You may want to install from the requirements file:
 ## Approximate search of packages
 
 We make a search (approximate) by using keywords and title of the
-packages in the index. To perform such a search, see the following
+packages from the index. To perform such a search, see the following
 example:
 
 
@@ -275,8 +283,20 @@ example:
 
 ```
     $ apkg info agda-prop
-    library: agda-prop
-    sha: 6b2ea8e099ac6968004ec57d96f19b46bcb081ff
+    library: standard-library
+    sha: a1a10b39d35b8fc40e87723a89f5682252d46380
+    include: src/
+    depend: []
+    installed: True
+    cached: True
+    fromIndex: False
+    fromUrl: False
+    fromGit: True
+    origin: https://github.com/agda/agda-stdlib.git
+    version: v0.16
+    default: True
+    --------------------------------------------------
+    versions: v0.16.1,v0.16
 ```
 
 # Creating a library for Agda-Pkg
