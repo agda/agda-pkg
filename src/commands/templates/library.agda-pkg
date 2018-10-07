@@ -10,7 +10,7 @@ author:            {% if authors|length == 1 -%}{{authors[0]}}
   {%- endif %}
 {%- endif %}
 {% if categories|length > 0 -%}
-category:          {{categories|join(',')}}
+category:          {{categories|join(', ')}}
 {%- endif %}
 {% if homepage|length > 0 -%}
 homepage:          {{homepage}}
@@ -23,7 +23,7 @@ license-file:      LICENSE.md
 source-repository: {{sourceRepository}}
 {%- endif %}
 {% if testedWith|length > 0 -%}
-tested-with:       {{testedWith|join('|')}}
+tested-with:       {{testedWith|join(', ')}}
 {%- endif %}
 {% if description|length > 0 -%}
 description:       {{description}}

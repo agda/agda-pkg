@@ -1,0 +1,8 @@
+### Agda ###
+*.agdai
+*.hi
+*.o
+*.agda#
+*.agda~
+.#*.agda
+./agda-stdlib

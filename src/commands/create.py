@@ -44,7 +44,7 @@ def create(yes):
 
   # name = "lib"
   # depend = ["sta1", "sta2"]
-  # include = ["src"]
+  # include = ["src", "src2", "src3"]
   # authors = ["Jonathan", "NadieMas"]
   # version = "v2123"
   # homepage = "http:////////"
@@ -52,7 +52,7 @@ def create(yes):
   # sourceRepository = "htgithub..."
   # description = "joderjoder"
   # categories = ["cat1", "cat2"]
-  # testedWith = ["2.5.4"]
+  # testedWith = ["2.5.4", "2.5.4"]
 
 
   name = click.prompt('Library name'
@@ -114,20 +114,26 @@ def create(yes):
       click.info("Saving on ({})".format(newDirName))
       libPath = pwd.joinpath(newDirName)
 
+  templates = Path(basedir).joinpath('templates')
+
   libPath.mkdir()
   libPath.joinpath("README.md").touch()
   libPath.joinpath("LICENSE.md").touch()
-  libPath.joinpath(".gitignore").touch()
   
+  libPath.joinpath(".gitignore")\
+         .write_text(templates.joinpath("gitignore.template").read_text())
+
   for dir in include:
     libPath.joinpath(dir).mkdir()
 
-  env = Environment( loader=FileSystemLoader(Path(basedir).joinpath('templates').as_posix())
+  
+  env = Environment( loader=FileSystemLoader(templates.as_posix())
                     , trim_blocks=False
                     , lstrip_blocks=False)
 
-  libFile = env.get_template('library.agda-lib')
-  pkgFile = env.get_template('library.agda-pkg')
+  libFile   = env.get_template('library.agda-lib')
+  pkgFile   = env.get_template('library.agda-pkg')
+
 
   output = libFile.render(name=name, depend=depend, include=include)
 
