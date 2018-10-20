@@ -1,2 +1,2 @@
-__version__ = "0.1.36"
-__message__ = "[ closes #28 ] apkg install --editable ."
+__version__ = "0.1.37"
+__message__ = "Do not verify version if there is no connection"
