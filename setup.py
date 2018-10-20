@@ -18,6 +18,8 @@ import re
 from os.path     import basename, dirname, join
 from setuptools  import find_packages, setup
 
+from src.__version__  import __version__
+
 # ----------------------------------------------------------------------------
 
 def read(*names, **kwargs):
@@ -26,9 +28,10 @@ def read(*names, **kwargs):
     , encoding=kwargs.get('encoding', 'utf8')
   ).read()
 
+
 setup(
     name='agda-pkg'
-  , version="0.1.31"
+  , version=__version__
   , python_requires='>=3.6.0'
   , url='https://github.com/apkgbot/agda-pkg'
   , license='MIT'

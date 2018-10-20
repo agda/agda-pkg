@@ -71,12 +71,15 @@ pip-package:
 	twine upload dist/*
 
 # pip install twine
+# $(eval VERSION := $(shell bash -c 'read -p "Version: " pwd; echo $$pwd'))
 
 .PHONY : deploy
 deploy :
-	$(eval VERSION := $(shell bash -c 'read -p "Version: " pwd; echo $$pwd'))
-	echo
-	$(eval MSG := $(shell bash -c 'read -p "Comment: " pwd; echo $$pwd'))
+	@$(eval VERSION := $(shell bash -c -s 'python version.py'))
+	@$(eval GITVERSION := $(shell bash -c -s 'git describe --abbrev=0 --tags'))
+	@$(eval MSG := $(shell bash -c -s'read -p "Comment: " pwd; echo $$pwd'))
+	@echo "Current-Version: $(GITVERSION)"
+	@echo "Source-Version:  v$(VERSION)"
 	git add .
 	git tag v$(VERSION)
 	git commit -am "[ v$(VERSION) ] $(MSG)"
