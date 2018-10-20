@@ -12,6 +12,6 @@ before_install:
   # - brew install tree
 
 script:
-  - pip3 install --editable .
   - pip3 install -r requirements.txt
+  - pip3 install .
   - make test
