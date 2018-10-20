@@ -75,19 +75,10 @@ pip-package:
 
 .PHONY : deploy
 deploy :
-	@$(eval VERSION := $(shell bash -c -s 'python version.py'))
-	@$(eval GITVERSION := $(shell bash -c -s 'git describe --abbrev=0 --tags'))
-	@$(eval MSG := $(shell bash -c -s'read -p "Comment: " pwd; echo $$pwd'))
-	@echo "Current-Version: $(GITVERSION)"
-	@echo "Source-Version:  v$(VERSION)"
-	git add .
-	git tag v$(VERSION)
-	git commit -am "[ v$(VERSION) ] $(MSG)"
-	make pip-package
-	git push origin master --tags
+	@python deploy.py
 
 .PHONY : downloads
 downloads:
 	pypinfo agda-pkg country
-	pypinfo agda-pkg
 	pypinfo agda-pkg version
+	pypinfo agda-pkg

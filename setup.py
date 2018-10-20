@@ -62,6 +62,7 @@ setup(
     , 'requests'
     , 'humanize'
     , 'Jinja2'
+    , 'distlib'
     ]
   , entry_points='''
       [console_scripts]
