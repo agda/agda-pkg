@@ -77,6 +77,12 @@ pip-package:
 deploy :
 	@python deploy.py
 
+
+.PHONY: push
+push:
+	make pip-package 
+	git push origin master --tags
+	
 .PHONY : downloads
 downloads:
 	pypinfo agda-pkg country

@@ -13,4 +13,4 @@ if click.confirm("Proceed"):
   subprocess.run(["git", "commit" , "-am", "[ v{} ] {}".format(__version__, __message__)]
                 , stdout=subprocess.PIPE)
   subprocess.run(["make", "pip-package"], stdout=subprocess.PIPE)
-  subprocess.run(["git", "push" , "origin", " master", "--tags"], stdout=subprocess.PIPE)
+  # subprocess.run(["git", "push" , "origin", " master", "--tags"], stdout=subprocess.PIPE)
