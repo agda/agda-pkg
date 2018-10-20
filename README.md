@@ -227,12 +227,20 @@ Check all the options of this command with the help information:
 
 Uninstalling a package will remove the library from the visible libraries for Agda.
 
+- using the name of the library
+
 ```
     $ apkg uninstall standard-library
 ```
 
-But if you want to remove the library completely (the sources and everything) you
-should use the flag `--remove-cache`.
+- infering the library name from the current directory
+
+```
+    $ apkg uninstall .
+```
+
+And if we want to remove the library completely (the sources and
+everything), we use the flag `--remove-cache`.
 
 ```
     $ apkg uninstall standard-library --remove-cache

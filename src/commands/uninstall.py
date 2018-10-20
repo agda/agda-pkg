@@ -27,6 +27,8 @@ from ..config   import ( AGDA_DEFAULTS_PATH
                        , INDEX_REPOSITORY_PATH
                        , INDEX_REPOSITORY_URL
                        , REPO
+                       , LIB_SUFFIX
+                       , PKG_SUFFIX
                        )
 
 from ..service.readLibFile        import readLibFile
@@ -95,5 +97,42 @@ def uninstallLibrary(libname, database=False, remove_cache=False):
 @db_session
 def uninstall(libname, database, remove_cache):
   """Uninstall a package."""
+
+  if libname == ".":
+    pwd = Path().cwd()
+
+    if not Path(pwd).exists():
+      logger.error(pwd + " doesn't exist!")
+      return None
+    
+    agdaLibFiles = [ f for f in pwd.glob("*" + LIB_SUFFIX) if f.is_file() ]
+    agdaPkgFiles = [ f for f in pwd.glob("*" + PKG_SUFFIX) if f.is_file() ]
+
+    if len(agdaLibFiles) == 0 and len(agdaPkgFiles) == 0:
+      logger.error("No libraries (" + LIB_SUFFIX + " or "\
+                  + PKG_SUFFIX + ") files detected." )
+      return None
+
+    libFile = Path("")
+    
+    # -- TODO: offer the posibility to create a file agda-pkg!
+    if len(agdaPkgFiles) == 1:
+      libFile = agdaPkgFiles[0]
+    elif len(agdaLibFiles) == 1:
+      # -- TODO: offer the posibility ssto create a file agda-pkg!
+      libFile = agdaLibFiles[0]
+    else:
+      logger.error("None or many agda libraries files.")
+      logger.info("[!] Use --name to specify the library name.")
+      return None
+
+    logger.info("Library file detected: " + libFile.name)
+    info = readLibFile(libFile)
+
+    libname = info.get("name", "")
+
+  if libname == "." or libname == "":
+    logger.error(" we could not know the name of the library to uninstall.")
+    return
 
   uninstallLibrary(libname, database, remove_cache)
