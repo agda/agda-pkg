@@ -149,6 +149,17 @@ or simpler:
     $ apkg install
 ```
 
+The command above will make a copy of the current version of the local library and
+it will keep that copy in the package directory, thus changes in your local copy won't be
+change for Agda.
+
+Therefore, if we want to install a library in which we are writing, we
+should consider to use `--editable` flag, as fallows.
+
+```
+    $ apkg install --editable .
+```
+
 -   from a github repository
 
 ```

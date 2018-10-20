@@ -151,6 +151,7 @@ class LibraryVersion(db.Entity):
     fromUrl      = Optional(bool, default=False)
     fromGit      = Optional(bool, default=False)
     origin       = Optional(str) # path, url, git
+    editable     = Optional(bool, default=False)
 
     composite_key(library, name)
 
@@ -207,18 +208,20 @@ class LibraryVersion(db.Entity):
 
     @property
     def sourcePath(self):
-      return PACKAGE_SOURCES_PATH.joinpath(self.locationName)
+      return (PACKAGE_SOURCES_PATH.joinpath(self.locationName)
+              if not self.editable else Path(self.origin)
+            )
 
     @property
     def agdaPkgFilePath(self):
       return (self.indexPath.joinpath(self.library.name + PKG_SUFFIX) \
-              if (self.isIndexed() and not self.installed)
+              if (self.isIndexed() and not self.installed and not(self.editable))
               else self.sourcePath.joinpath(self.library.name + PKG_SUFFIX))
 
     @property
     def agdaLibFilePath(self):
       return (self.indexPath.joinpath(self.library.name + LIB_SUFFIX)\
-             if (self.isIndexed() and not self.installed)
+             if (self.isIndexed() and not self.installed and not(self.editable))
              else self.sourcePath.joinpath(self.library.name + LIB_SUFFIX))
 
 
@@ -269,13 +272,14 @@ class LibraryVersion(db.Entity):
       return readLibFile(self.getLibFilePath())
 
     def removeSources(self):
-      try:
-        if self.sourcePath.exists():
-          shutil.rmtree(self.sourcePath.as_posix())
-      except Exception as e:
-        logger.error(e)
-        logger.error("Failed to remove " \
-                    + self.sourcePath.as_posix())
+      if not(self.editable):
+        try:
+          if self.sourcePath.exists():
+            shutil.rmtree(self.sourcePath.as_posix())
+        except Exception as e:
+          logger.error(e)
+          logger.error("Failed to remove " \
+                      + self.sourcePath.as_posix())
 
 
     def uninstall(self, remove_cache=True):

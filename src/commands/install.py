@@ -59,6 +59,7 @@ def install(): pass
 
 option = { 'branch'          : "master"
          , 'cache'           : False
+         , 'editable'        : False
          , 'git'             : False
          , 'github'          : False
          , 'libnames'        : ()
@@ -191,20 +192,28 @@ def installFromLocal():
         if click.confirm('Do you want to install it using this version?', abort=True):
           versionLibrary = LibraryVersion( library=library
                                          , name=versionNameProposed
+                                         , cached=True
+                                         , editable=option["editable"]
                                          )
   else:
     versionLibrary = LibraryVersion( library=library
                                    , name=versionName
                                    , cached=True
+                                   , editable=option["editable"]
                                    )
 
+  if option["editable"]:
+    versionLibrary.origin   = pwd.as_posix()
+    versionLibrary.editable = True
+    option["editable"]      = False  # Just used editable once
+
   try:
+    if not(versionLibrary.editable):
+      if versionLibrary.sourcePath.exists():
+        remove_tree(versionLibrary.sourcePath.as_posix())
 
-    if versionLibrary.sourcePath.exists():
-      remove_tree(versionLibrary.sourcePath.as_posix())
-
-    logger.info("Adding " + versionLibrary.sourcePath.as_posix())
-    copy_tree(pwd.as_posix(), versionLibrary.sourcePath.as_posix())
+      logger.info("Adding " + versionLibrary.sourcePath.as_posix())
+      copy_tree(pwd.as_posix(), versionLibrary.sourcePath.as_posix())
 
   except Exception as e:
     logger.error(e)
@@ -262,7 +271,7 @@ def installFromLocal():
 
   except Exception as e:
     try:
-      if versionLibrary.sourcePath.exists():
+      if not(versionLibrary.editable) and versionLibrary.sourcePath.exists():
         remove_tree(versionLibrary.sourcePath.as_posix())
     except:
       logger.error(" fail to remove the sources: {}"
@@ -285,6 +294,7 @@ def installFromGit():
   logger.info("Installing from git: %s" % option["url"] )
 
   with TemporaryDirectory() as tmpdir:
+
     print("Using temporal directory:", tmpdir)
     try:
       
@@ -472,6 +482,11 @@ def installFromURL():
              , is_flag=True
              , default=option["cache"]
              , help='Cache available.')
+@click.option('--editable'
+             , type=bool
+             , is_flag=True
+             , default=option["editable"]
+             , help='Install a local library in editable mode')
 @click.option('--local'
              , type=bool
              , is_flag=True 
@@ -512,7 +527,7 @@ def installFromURL():
 @click.pass_context
 @db_session
 def install( ctx, libnames, src, version, no_defaults
-           , cache, local, name, url, git, github, branch
+           , cache, editable, local, name, url, git, github, branch
            , no_dependencies,requirement, yes):
 
   """Install one or more packages."""

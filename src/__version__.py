@@ -1,2 +1,2 @@
-__version__ = "0.1.35"
-__message__ = "Fixed help messages"
+__version__ = "0.1.36"
+__message__ = "[ closes #28 ] apkg install --editable ."
