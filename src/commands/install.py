@@ -515,7 +515,7 @@ def install( ctx, libnames, src, version, no_defaults
            , cache, local, name, url, git, github, branch
            , no_dependencies,requirement, yes):
 
-  """Install packages."""
+  """Install one or more packages."""
 
   global option 
 

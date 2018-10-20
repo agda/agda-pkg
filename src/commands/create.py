@@ -40,7 +40,7 @@ def create(): pass
              , help='Yes for everything.')
 @clog.simple_verbosity_option(logger)
 def create(yes):
-  """Created a skeleton of a library."""
+  """Help to create an Agda Library from a skeleton."""
 
   # name = "lib"
   # depend = ["sta1", "sta2"]
@@ -53,7 +53,6 @@ def create(yes):
   # description = "joderjoder"
   # categories = ["cat1", "cat2"]
   # testedWith = ["2.5.4", "2.5.4"]
-
 
   name = click.prompt('Library name'
               , default="test"

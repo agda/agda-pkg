@@ -35,7 +35,7 @@ def list(): pass
              )
 @db_session
 def list(short):
-  """List of installed packages."""
+  """List all installed packages."""
 
   libraries = select(l for l in Library if l)[:]
   libraries = natsorted(libraries, key=attrgetter('name'))
