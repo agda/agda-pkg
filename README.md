@@ -104,25 +104,26 @@ To see all the package available run the following command:
 
 ```
     $ apkg list
+    Name                 Latest version       Description
+    -----------------------------------------------------
+    agda-metis           v0.2.1
+    agda-prelude         64b0eb2
+    agda-prop            v0.1.2
+    agdarsec             v0.1.1
+    alga-theory          0fdb96c
+    ataca                f12efee
+    cat                  v1.6.0
+    cubical              0b8372d
+    fotc                 apia-1.0.2
+    hott-core            7e62770
+    hott-theorems        7e62770
+    standard-library     v0.17
+
 ```
 
-This command also has the flag `--short` to display a short version of the
+This command also has the flag `--full` to display a full version of the
 same list.
 
-```
-    $ apkg list --short
-    Name                 Last version         Description
-    -----------------------------------------------------
-    agda-metis           v0.2.1               
-    agda-prelude         4e0caf0              
-    agda-prop            v0.1.2               
-    agdarsec             v0.1.1               
-    alga-theory          0fdb96c              
-    fotc                 apia-1.0.2           
-    hott-core            937e227              
-    hott-theorems        937e227              
-    standard-library     v0.16.1              
-```
 
 ## Installation of packages
 
@@ -143,18 +144,21 @@ Install a library is now easy. We have multiple ways to install a package.
     $ apkg install .
 ```
 
-or simpler:
+or even much simpler:
 
 ```
     $ apkg install
 ```
 
-The command above will make a copy of the current version of the local library and
-it will keep that copy in the package directory, thus changes in your local copy won't be
-change for Agda.
+The command above will make a copy of the library that will keep it in
+the package directory, thus any change in your local copy is not taken
+into account by Agda. You must install the library again. Nevertheless,
+if you are working on a library the following option could be what you're
+looking for.
 
-Therefore, if we want to install a library in which we are writing, we
-should consider to use `--editable` flag, as fallows.
+
+If you want to install a library in which you are working on, we
+should use `--editable` flag, as fallows.
 
 ```
     $ apkg install --editable .

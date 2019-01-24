@@ -250,7 +250,9 @@ def installFromLocal():
         logger.info("no supported yet.")
       else:
 
-        dependency = Library.get(name=depend)
+        dname, _ = depend.split("@")
+        dependency = Library.get(name=dname)
+
         if dependency is not None:
           versionLibrary.depend.add(Dependency(library=dependency))
 
@@ -451,7 +453,7 @@ def installFromIndex():
     
     if versionLibrary is None:
       if option["version"] != "":
-        logger.error(" the version is not available in the index.")
+        logger.error(" the version (" + option["version"] +") is not available in the index.")
       else:
         logger.error(" no versions for this library. Please initialize the index.")
       return None
