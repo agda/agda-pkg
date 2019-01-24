@@ -28,14 +28,16 @@ def list(): pass
 
 @list.command()
 @clog.simple_verbosity_option(logger)
-@click.option('--short'
+@click.option('--full'
              , type=bool
              , is_flag=True 
              , help='Show name, version and description per package.'
              )
 @db_session
-def list(short):
+def list(full):
   """List all installed packages."""
+
+  short = not full 
 
   libraries = select(l for l in Library if l)[:]
   libraries = natsorted(libraries, key=attrgetter('name'))

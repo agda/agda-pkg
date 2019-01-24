@@ -18,6 +18,7 @@ import requests
 import subprocess
 import time
 import uuid
+import re
 
 from distutils.dir_util  import copy_tree, remove_tree
 from pathlib             import Path
@@ -57,22 +58,23 @@ def install(): pass
 
 # -- Defaults
 
-option = { 'branch'          : "master"
-         , 'cache'           : False
-         , 'editable'        : False
-         , 'git'             : False
-         , 'github'          : False
-         , 'libnames'        : ()
-         , 'libname'         : None
-         , 'local'           : False
-         , 'name'            : '*'
-         , 'no_defaults'     : False
-         , 'no_dependencies' : False
-         , 'requirement'     : None
-         , 'src'             : ''
-         , 'url'             : None
-         , 'version'         : ''
-         , 'yes'             : False
+option = { 'branch'            : "master"
+         , 'cache'             : False
+         , 'editable'          : False
+         , 'git'               : False
+         , 'github'            : False
+         , 'libnames'          : ()
+         , 'libname'           : None
+         , 'local'             : False
+         , 'name'              : '*'
+         , 'no_defaults'       : False
+         , 'no_dependencies'   : False
+         , 'requirement'       : None
+         , 'src'               : ''
+         , 'url'               : None
+         , 'version'           : ''
+         , 'yes'               : False
+         , 'installing_depend' : False
          }
 
 
@@ -247,6 +249,7 @@ def installFromLocal():
       if type(depend) == list:
         logger.info("no supported yet.")
       else:
+
         dependency = Library.get(name=depend)
         if dependency is not None:
           versionLibrary.depend.add(Dependency(library=dependency))
@@ -409,6 +412,11 @@ def installFromIndex():
     logger.info("Nothing to install.")
     return
 
+  if "@" in option["libname"]:
+    option["libname"], option["version"] = option["libname"].split("@")
+  elif "==" in option["libname"]:
+    option["libname"], option["version"] = option["libname"].split("==")
+
   # Check first if the library is in the cache
   logger.info("Installing ({}) from the index...".format(option["libname"]))
   library = Library.get(name=option["libname"])
@@ -428,10 +436,24 @@ def installFromIndex():
                                          , fromIndex=True
                                          , fromGit=True
                                          )
+      if versionLibrary is None and \
+        option["version"] != "" and \
+        not(option["version"].startswith("v")):
+        # try with 
+
+        versionLibrary = LibraryVersion.get( library=library
+                                   , name= "v" + option["version"]
+                                   , fromIndex=True
+                                   , fromGit=True
+                                   )
+        if versionLibrary is not None:
+          versionLibrary.name = "v" + option["version"]
     
     if versionLibrary is None:
-      logger.error(" no versions for this library.\n\
-                    Index may be corrupted. Try $ apkg init")
+      if option["version"] != "":
+        logger.error(" the version is not available in the index.")
+      else:
+        logger.error(" no versions for this library. Please initialize the index.")
       return None
     
     if versionLibrary.installed:
@@ -439,7 +461,7 @@ def installFromIndex():
       return versionLibrary
 
     elif versionLibrary.cached and \
-      (yes or click.confirm('Do you want to install the cached version?')):
+      (option["yes"] or click.confirm('Do you want to install the cached version?')):
         versionLibrary.install()
         return versionLibrary
 
