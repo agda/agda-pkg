@@ -1,11 +1,37 @@
 agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg)
 ========
 
-The Agda package manager that we all have been waiting for. This
-tool does not modify `Agda` at all, it will just manage systematically the directory
-`.agda` and its files: `.agda/defaults` and `.agda/libraries`.
-For more information about how the Agda package system works, read
-the official documentation [here](https://agda.readthedocs.io/en/v2.5.4.1/tools/package-system.html).
+Agda-Pkg is a tool to install Agda libraries with extra features like
+installing from Github, installing of dependencies, update all
+libraries at once and much more. This tool does not modify `Agda` at
+all, it manages systematically the directory `.agda` and its files:
+`.agda/defaults` and `.agda/libraries`. For more information about how
+the Agda package system works, read the official documentation
+[here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-
+system.html).
+
+For example, you can install libraries like the following without
+taking care too much. Read more if you wanna put your library in this
+list.
+
+
+```
+$ apkg list
+Name                 Latest version 
+------------------------------------
+agda-metis           v0.2.1
+agda-prelude         64b0eb2
+agda-prop            v0.1.2
+agdarsec             v0.1.1
+alga-theory          0fdb96c
+ataca                f12efee
+cat                  v1.6.0
+cubical              0b8372d
+fotc                 apia-1.0.2
+hott-core            7e62770
+hott-theorems        7e62770
+standard-library     v0.17
+```
 
 <img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/demo.gif"
  alt="agda package manager installation" height=500 align="right" />
