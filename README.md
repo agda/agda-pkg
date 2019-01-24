@@ -6,13 +6,11 @@ installing from Github, installing of dependencies, update all
 libraries at once and much more. This tool does not modify `Agda` at
 all, it manages systematically the directory `.agda` and its files:
 `.agda/defaults` and `.agda/libraries`. For more information about how
-the Agda package system works, read the official documentation
-[here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-
-system.html).
+the Agda package system works, read the official
+documentation [here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-system.html).
 
-For example, you can install libraries like the following without
-taking care too much. Read more if you wanna put your library in this
-list.
+We indexed some popular libraries found on Github. See more below about
+how to install libraries.
 
 
 ```
