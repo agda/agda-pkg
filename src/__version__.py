@@ -1,2 +1,2 @@
-__version__ = "0.1.38"
-__message__ = "[ closes #25 ] easy way to uninstall a local package"
+__version__ = "0.1.39"
+__message__ = "[ closes #31 ] dependency issue"

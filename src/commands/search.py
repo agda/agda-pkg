@@ -74,12 +74,15 @@ def search(term, field):
     logger.info("")
 
     for result in libraries:
+      if result["model"] == "Library":
+
+        # click.echo(result)
+        click.echo(result["entity"]["name"])
       
-      logger.info(result["entity"]["name"])
-      logger.info("="*len(result["entity"]["name"]))
-      del result["entity"]["name"]
+      # logger.info("="*len(result["entity"]["name"]))
+      # del result["entity"]["name"]
 
       for k, v in result["entity"].items():
-        if  v != None:
+        if v != None and k not in [ "name" , "default" ]:
           click.echo("{0}: {1}".format(k,v))
       click.echo("")

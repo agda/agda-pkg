@@ -48,7 +48,7 @@ def info(libname, version, field):
   library = Library.get(name = libname)
   
   if library is None:
-    logger.error(" The library does not exist.")
+    logger.error(" The library does not exist. Try $ apkg search "+ libname)
     return
 
   libVersion = LibraryVersion.get(library = library, name = version)
@@ -60,7 +60,7 @@ def info(libname, version, field):
     libVersion = library.getLatestVersion()
   
   if libVersion is None:
-    logger.error("The version does not exist.")
+    logger.error("The version does not exist. Try $ apkg search "+ libname)
     return
 
   info = libVersion.info
