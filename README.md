@@ -7,8 +7,7 @@ not modify `Agda` at all, it just manages systematically the directory
 `.agda` and the files: `.agda/defaults` and `.agda/libraries` used by
 Agda to locate libraries. For more information about how Agda package
 system works, please read the official documentation
-[here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-
-system.html).
+[here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-system.html).
 
 
 One of the main points with Agda-Pkg is to keep track developments on
@@ -441,6 +440,4 @@ depend:
 # About
 
 This is a proof of concept of an Agda Package Manager.
-The Haskell version is in a [very early stage](http://github.com/jonaprieto/agda-pkg).
-
 Any contribution or feedback to improve this work is very welcomed.
