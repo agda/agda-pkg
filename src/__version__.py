@@ -1,2 +1,2 @@
-__version__ = "0.1.39"
-__message__ = "[ closes #31 ] dependency issue"
+__version__ = "0.1.40"
+__message__ = "New owner: agda community"

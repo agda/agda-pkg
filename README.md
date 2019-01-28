@@ -1,16 +1,21 @@
 agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/agda/agda-pkg.svg?branch=master)](https://travis-ci.org/agda/agda-pkg)
 ========
 
-Agda-Pkg is a tool to install Agda libraries with extra features like
-installing from Github, installing of dependencies, update all
-libraries at once and much more. This tool does not modify `Agda` at
-all, it manages systematically the directory `.agda` and its files:
-`.agda/defaults` and `.agda/libraries`. For more information about how
-the Agda package system works, read the official
-documentation [here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-system.html).
+Agda-Pkg is a tool to manage Agda libraries with extra features like
+installing libraries from different kind of sources. This tool does
+not modify `Agda` at all, it just manages systematically the directory
+`.agda` and the files: `.agda/defaults` and `.agda/libraries` used by
+Agda to locate libraries. For more information about how Agda package
+system works, please read the official documentation
+[here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-
+system.html).
 
-We indexed some popular libraries found on Github. See more below about
-how to install libraries.
+
+One of the main points with Agda-Pkg is to keep track developments on
+agda, so we've indexed in [the package index] some popular libraries
+found on Github. This list of developments can be retrieved using
+the command option `list` for `agda-pkg`. See more below about how to
+install libraries.
 
 
 ```
@@ -174,15 +179,10 @@ or even much simpler:
     $ apkg install
 ```
 
-The command above will make a copy of the library that will keep it in
-the package directory, thus any change in your local copy is not taken
-into account by Agda. You must install the library again. Nevertheless,
-if you are working on a library the following option could be what you're
-looking for.
+Installing a library creates a copy for agda in the directory assigned
+by agda-pkg. If you want your current directory to be taken into
+account for any changes use the `--editable` option.  as shown below.
 
-
-If you want to install a library in which you are working on, we
-should use `--editable` flag, as fallows.
 
 ```
     $ apkg install --editable .
