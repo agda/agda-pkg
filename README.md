@@ -1,4 +1,4 @@
-agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/apkgbot/agda-pkg.svg?branch=master)](https://travis-ci.org/apkgbot/agda-pkg)
+agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/agda/agda-pkg.svg?branch=master)](https://travis-ci.org/agda/agda-pkg)
 ========
 
 Agda-Pkg is a tool to install Agda libraries with extra features like
@@ -31,7 +31,7 @@ hott-theorems        7e62770
 standard-library     v0.17
 ```
 
-<img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/demo.gif"
+<img src="https://github.com/agda/agda-pkg/raw/master/assets/demo.gif"
  alt="agda package manager installation" height=500 align="right" />
 
 **Table of contents**
@@ -87,7 +87,7 @@ the database please run the following command:
 
 ```
     $ apkg init
-    Indexing libraries from https://github.com/apkgbot/package-index.git
+    Indexing libraries from https://github.com/agda/package-index.git
 ```
 
 **Note**.
@@ -117,14 +117,14 @@ Recall updating the index every once in a while using `upgrade`.
 
 ```
     $ apkg upgrade
-    Updating Agda-Pkg from https://github.com/apkgbot/package-index.git
+    Updating Agda-Pkg from https://github.com/agda/package-index.git
 ```
 
 If you want to index your library go to [the package index] and make [PR].
 
 ## List all the packages available
 
-To see all the package available run the following command:
+To see all the packages available run the following command:
 
 ```
     $ apkg list
@@ -145,18 +145,18 @@ To see all the package available run the following command:
 
 ```
 
-This command also has the flag `--full` to display a full version of the
-same list.
+This command also has the flag `--full` to display a version of the
+this list with more details.
 
 
 ## Installation of packages
 
 Install a library is now easy. We have multiple ways to install a package.
 
-<img src="https://github.com/apkgbot/agda-pkg/raw/master/assets/index-stdlib.gif"
+<img src="https://github.com/agda/agda-pkg/raw/master/assets/index-stdlib.gif"
  alt="agda package manager installation" width=350 align="right" />
 
- -   from the [package-index](http://github.com/apkgbot/package-index)
+ -   from the [package-index](http://github.com/agda/package-index)
 
  ```
      $ apkg install standard-library
@@ -332,7 +332,7 @@ example:
 
     agda-metis
     ==========
-    url: https://github.com/jonaprieto/test-agdapkgbot.git
+    url: https://github.com/jonaprieto/test-agdagda.git
 ```
 
 ## Get all the information of a package
@@ -434,9 +434,9 @@ depend:
     - LIB4
 ```
 
-  [the package index]: https://github.com/apkgbot/package-index
+  [the package index]: https://github.com/agda/package-index
   [local directory]: https://agda.readthedocs.io/en/v2.5.4/tools/package-system.html
-  [PR]: https://github.com/apkgbot/package-index/pull/new/master
+  [PR]: https://github.com/agda/package-index/pull/new/master
 
 # About
 

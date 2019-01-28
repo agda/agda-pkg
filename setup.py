@@ -33,7 +33,7 @@ setup(
     name='agda-pkg'
   , version=__version__
   , python_requires='>=3.6.0'
-  , url='https://github.com/apkgbot/agda-pkg'
+  , url='https://github.com/agda/agda-pkg'
   , license='MIT'
   , author='Jonathan Prieto-Cubides'
   , author_email='jcu043@uib.no'

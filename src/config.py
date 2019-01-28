@@ -38,7 +38,7 @@ except Exception as e:
 AGDA_PKG_PATH = Path().home().joinpath('.apkg' + \
                 ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
 
-GITHUB_USER   = "apkgbot"
+GITHUB_USER   = "agda"
 GITHUB_DOMAIN = "https://github.com/"
 GITHUB_API    = "https://api.github.com/repos"
 
