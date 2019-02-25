@@ -57,7 +57,7 @@ test:
 
 .PHONY : TODO
 TODO :
-	@find src -type d \( -path './.git' -o -path './dist' -o -path './build' -o -path './venv' \) -prune -o -print \
+	@find agda-pkg -type d \( -path './.git' -o -path './dist' -o -path './build' -o -path './venv' \) -prune -o -print \
 	| xargs grep -I 'TODO' \
 	| sort
 

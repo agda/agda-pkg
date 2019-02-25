@@ -95,7 +95,7 @@ def create(yes):
 
     homepage = click.prompt('Homepage/website', default="None", type=str)
     license = click.prompt('license', default="MIT", type=str)
-    sourceRepository = click.prompt('source repository (e.g., http://github.com/pepito/'+name, default="", type=str)
+    sourceRepository = click.prompt('source repository (e.g., http://...'+name, default="", type=str)
 
     testedWith = set()
     testedWith.add( click.prompt('Tested with Agda version (X.X.X)', default=AGDA_VERSION, type=str) )

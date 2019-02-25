@@ -18,7 +18,7 @@ import re
 from os.path     import basename, dirname, join
 from setuptools  import find_packages, setup
 
-from src.__version__  import __version__
+from apkg.__version__  import __version__
 
 # ----------------------------------------------------------------------------
 
@@ -43,7 +43,8 @@ setup(
   , packages=find_packages()
   , zip_safe=False
   , include_package_data=True
-  , package_data = {'agda_pkg': ['README.md']}
+  , package_dir={'apkg': 'apkg'}
+  , package_data={'apkg': ['commands/templates/*']}
   , platforms='any'
   , keywords=
     [ 'agda'
@@ -66,8 +67,8 @@ setup(
     ]
   , entry_points='''
       [console_scripts]
-      agda-pkg=src.apkg:cli
-      apkg=src.apkg:cli
+      agda-pkg=apkg.apkg:cli
+      apkg=apkg.apkg:cli
       '''
   , classifiers=
     [ 'Intended Audience :: Developers'

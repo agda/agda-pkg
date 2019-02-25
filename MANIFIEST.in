@@ -1,6 +1,10 @@
-recursive-include src *
+recursive-include apkg *
 
-include LICENSE.md
 include README.md
+include LICENSE.md
+
+include apkg/commands/templates/gitignore.template
+include apkg/commands/templates/library.agda-lib
+include apkg/commands/templates/library.agda-pkg
 
 global-exclude *.py[co] __pycache__ *.so *.pyd
