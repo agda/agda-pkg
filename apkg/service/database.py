@@ -172,6 +172,8 @@ class LibraryVersion(db.Entity):
       d["version"] = self.name
       d["default"] = self.library.default
       d["description"] = self.library.description
+      d["index_path"]  = self.indexPath
+      d["source_path"] = self.sourcePath
 
       return d
 

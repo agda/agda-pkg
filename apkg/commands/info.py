@@ -67,15 +67,10 @@ def info(libname, version, field):
   if field != "":
     if field in info.keys():
       click.echo(info[field])
+      return
     else:
       logger.error(" the field ("+ field + ") does not exist.")
-  else:
-    for k, v in info.items():
-      if v is not None or v != "":
-        click.echo("{0}: {1}".format(k,v))
+      return 
+  
+  pprint(info, indent=2)
 
-    # versions available
-    logger.info("-"*50)
-    vs = ','.join(v.name for v in library.versions)
-    if len(vs) > 0:
-      logger.info("versions: " + vs)  
