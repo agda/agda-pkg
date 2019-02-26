@@ -12,7 +12,7 @@ from pathlib import Path
 import click
 import subprocess
 
-from src.__version__ import __version__, __message__
+from apkg.__version__ import __version__, __message__
 
 # ----------------------------------------------------------------------------
 
