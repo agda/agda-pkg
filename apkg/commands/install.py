@@ -628,6 +628,8 @@ def install( ctx, libnames, src, version, no_defaults
     if vLibrary is not None:
       logger.info("Successfully installed ({}@{})."
         .format(vLibrary.library.name, vLibrary.name))
+      logger.info("\tSource code available on: {}"
+        .format(vLibrary.sourcePath))
     else:
       logger.info("Unsuccessfully installation ({}).".format(option["libname"]))
 

@@ -7,7 +7,7 @@ not modify `Agda` at all, it just manages systematically the directory
 `.agda` and the files: `.agda/defaults` and `.agda/libraries` used by
 Agda to locate libraries. For more information about how Agda package
 system works, please read the official documentation
-[here](https://agda.readthedocs.io/en/v2.5.4.2/tools/package-system.html).
+[here](https://agda.readthedocs.io/en/v2.6.0/tools/package-system.html).
 
 
 One of the main points with Agda-Pkg is to keep track developments on
@@ -19,20 +19,23 @@ install libraries.
 
 ```
 $ apkg list
-Name                 Latest version 
-------------------------------------
+Name                 Latest version
+-----------------------------------
+HoTT-UF-Agda         26a3086
 agda-metis           v0.2.1
 agda-prelude         64b0eb2
 agda-prop            v0.1.2
+agda-ring-solver     d1ed21c
 agdarsec             v0.1.1
 alga-theory          0fdb96c
-ataca                f12efee
+ataca                a9a7c06
 cat                  v1.6.0
-cubical              0b8372d
+cubical              0249030
 fotc                 apia-1.0.2
-hott-core            7e62770
-hott-theorems        7e62770
-standard-library     v0.17
+hott-core            1037d82
+hott-theorems        1037d82
+plfa                 1dfd02f
+standard-library     v1.0
 ```
 
 <img src="https://github.com/agda/agda-pkg/raw/master/assets/demo.gif"
@@ -132,20 +135,23 @@ To see all the packages available run the following command:
 
 ```
     $ apkg list
-    Name                 Latest version       Description
-    -----------------------------------------------------
+    Name                 Latest version
+    -----------------------------------
+    HoTT-UF-Agda         26a3086
     agda-metis           v0.2.1
     agda-prelude         64b0eb2
     agda-prop            v0.1.2
+    agda-ring-solver     d1ed21c
     agdarsec             v0.1.1
     alga-theory          0fdb96c
-    ataca                f12efee
+    ataca                a9a7c06
     cat                  v1.6.0
-    cubical              0b8372d
+    cubical              0249030
     fotc                 apia-1.0.2
-    hott-core            7e62770
-    hott-theorems        7e62770
-    standard-library     v0.17
+    hott-core            1037d82
+    hott-theorems        1037d82
+    plfa                 1dfd02f
+    standard-library     v1.0
 
 ```
 
@@ -202,14 +208,14 @@ account for any changes use the `--editable` option.  as shown below.
 To specify the version of a library, we use the flag `--version`
 
 ```
-    $ apkg install standard-library --version v0.16.1
+    $ apkg install standard-library --version v1.0
 ```
 
 Or simpler by using `@` or `==` as it follows.
 
 ```
-    $ apkg install standard-library@v0.16.1
-    $ apkg install standard-library==v0.16.1
+    $ apkg install standard-library@v1.0
+    $ apkg install standard-library==v1.0
 ```
 
 ### Multiple packages at once
@@ -339,20 +345,25 @@ example:
 
 ```
     $ apkg info agda-prop
-    library: standard-library
-    sha: a1a10b39d35b8fc40e87723a89f5682252d46380
-    include: src/
-    depend: []
-    installed: True
-    cached: True
-    fromIndex: False
-    fromUrl: False
-    fromGit: True
-    origin: https://github.com/agda/agda-stdlib.git
-    version: v0.16
-    default: True
-    --------------------------------------------------
-    versions: v0.16.1,v0.16
+    { 'cached': False,
+      'default': True,
+      'depend': [],
+      'description': None,
+      'editable': False,
+      'fromGit': True,
+      'fromIndex': True,
+      'fromUrl': False,
+      'include': 'src/',
+      'index_path': PosixPath('/Users/jonaprieto/.apkg@agda-2.6.0/package-index/src/standard-library/versions/v1.0'),
+      'installed': False,
+      'keywords': [],
+      'library': 'standard-library',
+      'license': '',
+      'origin': 'https://github.com/agda/agda-stdlib.git',
+      'sha': '505cc141596afd966705904576bbfea1151a07fc',
+      'source_path': PosixPath('/Users/jonaprieto/.apkg@agda-2.6.0/package-sources/standard-library@v1.0'),
+      'testedWith': [],
+      'version': 'v1.0'}
 ```
 
 # Creating a library for Agda-Pkg
@@ -419,7 +430,7 @@ homepage:          http://github.com/user/mylibrary
 license:           MIT
 license-file:      LICENSE.md
 source-repository: http://github.com/user/mylibrary.git
-tested-with:       2.5.6
+tested-with:       2.6.0
 description:       Put here a description.
 
 include:
