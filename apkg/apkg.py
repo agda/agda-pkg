@@ -2,7 +2,7 @@
   apkg
   ~~~~
 
-  The Agda Package Manager.
+  A package manager for Agda.
 
 '''
 
@@ -28,7 +28,7 @@ from .commands.upgrade    import upgrade
 @click.group()
 @click.version_option()
 def cli():
-  """The Agda Package manager."""
+  """A package manager for Agda."""
 
 cli.add_command(init)
 cli.add_command(install)

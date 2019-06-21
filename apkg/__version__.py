@@ -1,2 +1,2 @@
-__version__ = "0.1.42"
-__message__ = "Show the path of a library after being installed."
+__version__ = "0.1.43"
+__message__ = "Improvements for the command list: show url and sorting of libraries"

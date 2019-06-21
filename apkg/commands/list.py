@@ -2,7 +2,7 @@
   apkg
   ~~~~
 
-  The Agda Package Manager.
+  A package manager for Agda.
 
 '''
 
@@ -40,7 +40,7 @@ def list(full):
   short = not full 
 
   libraries = select(l for l in Library if l)[:]
-  libraries = natsorted(libraries, key=attrgetter('name'))
+  libraries = natsorted(libraries, key=lambda x : attrgetter('name')(x).lower())
 
   if len(libraries) == 0:
     logger.info("[!] No libraries available to list.")  
@@ -68,9 +68,9 @@ def list(full):
 
   i  = 0
   if short:
-    logger.info("{:<20.20} {:<20.20} {:.42}"
-                    .format("Name", "Latest version", "Description"))
-    logger.info("-"*53)
+    logger.info("{:<20.20} {:<15.20} {:.72}"
+                    .format("Library name", "Latest version", "URL"))
+    logger.info("-"*105)
 
   for library in libraries:
     v = library.getLatestVersion()    
@@ -82,7 +82,7 @@ def list(full):
 
         info = v.info
 
-        for k in orderFields:
+        for k in orderFields: 
           val = info.get(k, None)
           if val is not None or val != "" or len(val) > 0:
             click.echo("{0}: {1}".format(k,val))
@@ -93,8 +93,8 @@ def list(full):
           print("Versions:", vs)
       
       else:
-        print("{:<20.20} {:<20.20} {:.42}"
-              .format(v.library.name,v.name,v.description))
+        print("{:<20.20} {:<15.20} {:.72}"
+              .format(v.library.name,v.name,v.library.url))
 
       i += 1
       if not short and i < len(libraries):

@@ -2,7 +2,7 @@
   apkg
   ~~~~
 
-  The Agda Package Manager.
+  A package manager for Agda.
 
 '''
 
@@ -37,7 +37,7 @@ setup(
   , license='MIT'
   , author='Jonathan Prieto-Cubides'
   , author_email='jcu043@uib.no'
-  , description='The Agda Package Manager'
+  , description='A package manager for Agda'
   , long_description='%s' % (read('README.md'))
   , long_description_content_type='text/markdown'
   , packages=find_packages()

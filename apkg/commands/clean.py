@@ -2,7 +2,7 @@
   apkg
   ~~~~
 
-  The Agda Package Manager.
+  A package manager for Agda.
 
 '''
 

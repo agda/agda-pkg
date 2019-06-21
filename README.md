@@ -18,24 +18,28 @@ install libraries.
 
 
 ```
-$ apkg list
-Name                 Latest version
------------------------------------
-HoTT-UF-Agda         26a3086
-agda-metis           v0.2.1
-agda-prelude         64b0eb2
-agda-prop            v0.1.2
-agda-ring-solver     d1ed21c
-agdarsec             v0.1.1
-alga-theory          0fdb96c
-ataca                a9a7c06
+Name                 Latest version   URL
+-------------------------------------------------
+FiniteSets           c8c2600          https://github.com/L-TChen/FiniteSets.git
+HoTT-UF-Agda         3bdfe5c          https://github.com/martinescardo/HoTT-UF-A
+MtacAR               mtac1            https://github.com/L-TChen/MtacAR.git
+agda-categories      026658c          https://github.com/agda/agda-categories.gi
+agda-metis           v0.2.1           https://github.com/jonaprieto/agda-metis.g
+agda-prelude         64b0eb2          https://github.com/UlfNorell/agda-prelude.
+agda-prop            v0.1.2           https://github.com/jonaprieto/agda-prop.gi
+agda-ring-solver     d1ed21c          https://github.com/oisdk/agda-ring-solver.
+agdarsec             v0.1.1           https://github.com/gallais/agdarsec.git
+alga-theory          0fdb96c          https://github.com/algebraic-graphs/agda.g
+ataca                a9a7c06          https://github.com/jespercockx/ataca.git
 cat                  v1.6.0
-cubical              0249030
-fotc                 apia-1.0.2
-hott-core            1037d82
-hott-theorems        1037d82
-plfa                 1dfd02f
-standard-library     v1.0
+cubical              v0.1             https://github.com/agda/cubical.git
+fotc                 apia-1.0.2       https://github.com/asr/fotc.git
+hott-core            1037d82          https://github.com/HoTT/HoTT-Agda.git
+hott-theorems        1037d82          https://github.com/HoTT/HoTT-Agda.git
+lightweight-prelude  b2d440a          https://github.com/L-TChen/agda-lightweigh
+plfa                 1dfd02f          https://github.com/plfa/plfa.github.io.git
+routing-library      sigcomm2018      https://github.com/MatthewDaggitt/agda-rou
+standard-library     v1.0.1           https://github.com/agda/agda-stdlib.git
 ```
 
 <img src="https://github.com/agda/agda-pkg/raw/master/assets/demo.gif"
