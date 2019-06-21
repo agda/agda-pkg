@@ -26,7 +26,7 @@ def readLibLegacyFile(fname):
   with libraryfile.open('r') as f:
     content = sum([ line.strip().split() for line in f.readlines()],[])
 
-    # name field
+    # 'name' field
     try:
       indexName = content.index("name:")
       name = content[indexName + 1]
@@ -35,7 +35,7 @@ def readLibLegacyFile(fname):
       # print("[!] 'name' field not found ==> using filename instead.")
       info["name"] = libraryfile.name.split(libraryfile.suffix)[0]
 
-    # version field
+    # 'version' field
     try:
       versionName = content.index("version:")
       version = content[versionName + 1]
@@ -43,7 +43,7 @@ def readLibLegacyFile(fname):
     except Exception as e:
       info["version"] = ""
 
-    # include field
+    # 'include' field
     indexInclude = content.index("include:")
     i = indexInclude + 1
     while i < len(content) and \
@@ -54,7 +54,7 @@ def readLibLegacyFile(fname):
       i += 1
     info["include"] = list(set(info["include"]))
 
-    # depend field
+    # 'depend' field
     try:
       indexDepend = content.index("depend:")
       i = indexDepend + 1
@@ -77,10 +77,9 @@ def readPkgFile(fname):
   assert libraryfile.suffix == ".agda-pkg"
 
   stream = libraryfile.open("r")
-  docs = yaml.load_all(stream)
-  info = [ doc for doc in docs ][0]
-  assert "name" in info.keys() and "include" in info.keys()
-  return info
+  docs = yaml.load(stream, Loader=yaml.FullLoader)
+  assert "name" in docs.keys() and "include" in docs.keys()
+  return docs
 
 def readLibFile(fname):
   libraryfile = Path(fname)
