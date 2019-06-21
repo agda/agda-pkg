@@ -10,36 +10,35 @@ system works, please read the official documentation
 [here](https://agda.readthedocs.io/en/v2.6.0/tools/package-system.html).
 
 
-One of the main points with Agda-Pkg is to keep track developments on
-agda, so we've indexed in [the package index] some popular libraries
-found on Github. This list of developments can be retrieved using
-the command option `list` for `agda-pkg`. See more below about how to
-install libraries.
+We have indexed in
+[agda/package-index](http://github.com/agda/package-index) some agda
+libraries available on Github. We can install them with `agda-pkg install LibraryName`.
 
 
 ```
-Name                 Latest version   URL
--------------------------------------------------
-FiniteSets           c8c2600          https://github.com/L-TChen/FiniteSets.git
-HoTT-UF-Agda         3bdfe5c          https://github.com/martinescardo/HoTT-UF-A
-MtacAR               mtac1            https://github.com/L-TChen/MtacAR.git
-agda-categories      026658c          https://github.com/agda/agda-categories.gi
-agda-metis           v0.2.1           https://github.com/jonaprieto/agda-metis.g
-agda-prelude         64b0eb2          https://github.com/UlfNorell/agda-prelude.
-agda-prop            v0.1.2           https://github.com/jonaprieto/agda-prop.gi
-agda-ring-solver     d1ed21c          https://github.com/oisdk/agda-ring-solver.
-agdarsec             v0.1.1           https://github.com/gallais/agdarsec.git
-alga-theory          0fdb96c          https://github.com/algebraic-graphs/agda.g
-ataca                a9a7c06          https://github.com/jespercockx/ataca.git
-cat                  v1.6.0
-cubical              v0.1             https://github.com/agda/cubical.git
-fotc                 apia-1.0.2       https://github.com/asr/fotc.git
-hott-core            1037d82          https://github.com/HoTT/HoTT-Agda.git
-hott-theorems        1037d82          https://github.com/HoTT/HoTT-Agda.git
-lightweight-prelude  b2d440a          https://github.com/L-TChen/agda-lightweigh
-plfa                 1dfd02f          https://github.com/plfa/plfa.github.io.git
-routing-library      sigcomm2018      https://github.com/MatthewDaggitt/agda-rou
-standard-library     v1.0.1           https://github.com/agda/agda-stdlib.git
+$ apkg list 
+Library name         Latest version  URL
+-----------------------------------------------------------------------------------------------------
+agda-categories      026658c         https://github.com/agda/agda-categories.git
+agda-metis           v0.2.1          https://github.com/jonaprieto/agda-metis.git
+agda-prelude         64b0eb2         https://github.com/UlfNorell/agda-prelude.git
+agda-prop            v0.1.2          https://github.com/jonaprieto/agda-prop.git
+agda-ring-solver     d1ed21c         https://github.com/oisdk/agda-ring-solver.git
+agdarsec             v0.1.1          https://github.com/gallais/agdarsec.git
+alga-theory          0fdb96c         https://github.com/algebraic-graphs/agda.git
+ataca                a9a7c06         https://github.com/jespercockx/ataca.git
+cat                  v1.6.0          https://github.com/fredefox/cat.git
+cubical              v0.1            https://github.com/agda/cubical.git
+FiniteSets           c8c2600         https://github.com/L-TChen/FiniteSets.git
+fotc                 apia-1.0.2      https://github.com/asr/fotc.git
+hott-core            1037d82         https://github.com/HoTT/HoTT-Agda.git
+hott-theorems        1037d82         https://github.com/HoTT/HoTT-Agda.git
+HoTT-UF-Agda         3bdfe5c         https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes.git
+lightweight-prelude  b2d440a         https://github.com/L-TChen/agda-lightweight-prelude.git
+MtacAR               mtac1           https://github.com/L-TChen/MtacAR.git
+plfa                 1dfd02f         https://github.com/plfa/plfa.github.io.git
+routing-library      thesis          https://github.com/MatthewDaggitt/agda-routing.git
+standard-library     v1.0.1          https://github.com/agda/agda-stdlib.git
 ```
 
 <img src="https://github.com/agda/agda-pkg/raw/master/assets/demo.gif"
@@ -139,24 +138,6 @@ To see all the packages available run the following command:
 
 ```
     $ apkg list
-    Name                 Latest version
-    -----------------------------------
-    HoTT-UF-Agda         26a3086
-    agda-metis           v0.2.1
-    agda-prelude         64b0eb2
-    agda-prop            v0.1.2
-    agda-ring-solver     d1ed21c
-    agdarsec             v0.1.1
-    alga-theory          0fdb96c
-    ataca                a9a7c06
-    cat                  v1.6.0
-    cubical              0249030
-    fotc                 apia-1.0.2
-    hott-core            1037d82
-    hott-theorems        1037d82
-    plfa                 1dfd02f
-    standard-library     v1.0
-
 ```
 
 This command also has the flag `--full` to display a version of the
@@ -242,8 +223,7 @@ Generate a requirement file using `apkg freeze`:
 ```
     $ apkg freeze > requirements.txt
     $ cat requirements.txt
-    agda-metis==0.1
-    agda-prop==0.1.1
+    standard-library==v0.16
 ````
 
 Now, use the flag `-r` to install all the listed libraries
@@ -307,8 +287,6 @@ the latest version of it.
 
 ```
     $ apkg freeze
-    agda-metis==v0.2.1
-    agda-prop==v0.1.2
     standard-library==v0.16
 ```
 
@@ -336,38 +314,18 @@ example:
 
 ```
     $ apkg search metis
-    1 result in 0.0026731969992397353seg
-    matches: {'name': [b'agda-metis']}
-
-    agda-metis
-    ==========
-    url: https://github.com/jonaprieto/test-agdagda.git
+    1 result in 0.0012656739999998834seg
+    cubical
+    url: https://github.com/agda/cubical.git
+    installed: False
 ```
 
 ## Get all the information of a package
 
 
 ```
-    $ apkg info agda-prop
-    { 'cached': False,
-      'default': True,
-      'depend': [],
-      'description': None,
-      'editable': False,
-      'fromGit': True,
-      'fromIndex': True,
-      'fromUrl': False,
-      'include': 'src/',
-      'index_path': PosixPath('/Users/jonaprieto/.apkg@agda-2.6.0/package-index/src/standard-library/versions/v1.0'),
-      'installed': False,
-      'keywords': [],
-      'library': 'standard-library',
-      'license': '',
-      'origin': 'https://github.com/agda/agda-stdlib.git',
-      'sha': '505cc141596afd966705904576bbfea1151a07fc',
-      'source_path': PosixPath('/Users/jonaprieto/.apkg@agda-2.6.0/package-sources/standard-library@v1.0'),
-      'testedWith': [],
-      'version': 'v1.0'}
+    $ apkg info cubical
+   
 ```
 
 # Creating a library for Agda-Pkg
