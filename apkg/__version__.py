@@ -1,2 +1,2 @@
-__version__ = "0.1.43"
-__message__ = "Improvements for the command list: show url and sorting of libraries"
+__version__ = "0.1.44"
+__message__ = "Fixed YAML library warning."
