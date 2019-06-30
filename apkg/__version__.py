@@ -1,2 +1,2 @@
-__version__ = "0.1.44"
-__message__ = "Fixed YAML library warning."
+__version__ = "0.1.45"
+__message__ = "Fixed install with --git and added warning for outdated index"

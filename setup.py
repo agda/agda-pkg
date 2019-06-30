@@ -54,7 +54,6 @@ setup(
   , install_requires=
     [ 'click'
     , 'gitpython'
-    , 'pyyaml'
     , 'pony'
     , 'whoosh'
     , 'ponywhoosh'
@@ -64,6 +63,7 @@ setup(
     , 'humanize'
     , 'Jinja2'
     , 'distlib'
+    , 'PyYAML>=5.1.1'
     ]
   , entry_points='''
       [console_scripts]

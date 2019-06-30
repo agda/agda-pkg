@@ -113,7 +113,7 @@ def installFromLocal():
   if len(agdaPkgFiles) == 1:
     libFile = agdaPkgFiles[0]
   elif len(agdaLibFiles) == 1:
-    # -- TODO: offer the posibility ssto create a file agda-pkg!
+    # -- TODO: offer the posibility to create a file agda-pkg!
     libFile = agdaLibFiles[0]
   else:
     logger.error("None or many agda libraries files.")
@@ -249,8 +249,10 @@ def installFromLocal():
       if type(depend) == list:
         logger.info("no supported yet.")
       else:
-
-        dname, _ = depend.split("@")
+        if "@" in depend:
+          dname, _ = depend.split("@")
+        else:
+          dname = depend
         dependency = Library.get(name=dname)
 
         if dependency is not None:
@@ -293,7 +295,8 @@ def installFromGit():
   global option
 
   if not isGit(option.get("url", "")):
-    logger.error("this is not a git repository")
+    logger.error("This is not a git repository.\
+                  You may want to add '.git' at the end of your URL.")
     return None
   
   logger.info("Installing from git: %s" % option["url"] )

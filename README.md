@@ -10,21 +10,24 @@ system works, please read the official documentation
 [here](https://agda.readthedocs.io/en/v2.6.0/tools/package-system.html).
 
 
-We have indexed in
-[agda/package-index](http://github.com/agda/package-index) some agda
-libraries available on Github. We can install them with `agda-pkg install LibraryName`.
+On [agda/package-index](http://github.com/agda/package-index), we are
+indexing some Agda libraries. To install a library run this command
+`agda-pkg install LibraryName`. Below, you will find other ways to
+install libraries.
 
 
 ```
 $ apkg list 
 Library name         Latest version  URL
------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+agda-base            v0.2            https://github.com/pcapriotti/agda-base.git
 agda-categories      026658c         https://github.com/agda/agda-categories.git
 agda-metis           v0.2.1          https://github.com/jonaprieto/agda-metis.git
 agda-prelude         64b0eb2         https://github.com/UlfNorell/agda-prelude.git
 agda-prop            v0.1.2          https://github.com/jonaprieto/agda-prop.git
+agda-real            70b739a0        https://gitlab.com/pbruin/agda-real.git
 agda-ring-solver     d1ed21c         https://github.com/oisdk/agda-ring-solver.git
-agdarsec             v0.1.1          https://github.com/gallais/agdarsec.git
+agdarsec             v0.3.0          https://github.com/gallais/agdarsec.git
 alga-theory          0fdb96c         https://github.com/algebraic-graphs/agda.git
 ataca                a9a7c06         https://github.com/jespercockx/ataca.git
 cat                  v1.6.0          https://github.com/fredefox/cat.git
@@ -38,7 +41,7 @@ lightweight-prelude  b2d440a         https://github.com/L-TChen/agda-lightweight
 MtacAR               mtac1           https://github.com/L-TChen/MtacAR.git
 plfa                 1dfd02f         https://github.com/plfa/plfa.github.io.git
 routing-library      thesis          https://github.com/MatthewDaggitt/agda-routing.git
-standard-library     v1.0.1          https://github.com/agda/agda-stdlib.git
+standard-library     v1.1            https://github.com/agda/agda-stdlib.git
 ```
 
 <img src="https://github.com/agda/agda-pkg/raw/master/assets/demo.gif"
@@ -72,11 +75,11 @@ standard-library     v1.0.1          https://github.com/agda/agda-stdlib.git
 # Quick Start
 
 To install `agda-pkg`, you must have installed `Python 3.6+` or a latter version
-on your machine. In addition, the python package manager `pip 18.0+`.
+on your machine. In addition, the python package manager `pip3 18.0+` (for python 3).
 
 We have tested `agda-pkg` with `Agda v2.5.4+`.
 
-Installing using `pip`:
+To install this tool run the following command:
 
 ```
     $ pip install agda-pkg
@@ -89,20 +92,19 @@ shorter just `apkg`.
 
 ## Initialisation of the package index
 
-The easiest way to get some libraries is by using [the package index].
-We will use this index to download and to install the libraries. In
-addition, `agda-pkg` uses a local database to maintain a register of
-all libraries available in your system. To initialise the index and
-the database please run the following command:
+The easiest way to install libraries is by using [the package index].
+`agda-pkg` uses a local database to maintain a register of all
+libraries available in your system. To initialize the index and the
+database please run the following command:
 
 ```
     $ apkg init
     Indexing libraries from https://github.com/agda/package-index.git
 ```
 
-**Note**.
-To use a different location for the files `defaults` and `libraries` for Agda,
-you can set up the environment variable `AGDA_DIR` as fallows.
+**Note**. To use a different location for your agda files `defaults`
+and `libraries`, you can set up the environment variable `AGDA_DIR`
+before run `apkg` as follows:
 
 ```
     $ export AGDA_DIR=$HOME/.agda
@@ -181,7 +183,7 @@ account for any changes use the `--editable` option.  as shown below.
 -   from a github repository
 
 ```
-    $ apkg install --github agda/agda-stdlib --version v0.16
+    $ apkg install --github agda/agda-stdlib --version v1.1
 ```
 
 -   from a git repository
@@ -210,7 +212,7 @@ To install multiple libraries at once, we have two options:
 1. Using the inline method
 
 ```
-    $ apkg install standard-library agda-prop agda-metis
+    $ apkg install standard-library agda-base
 ```
 
 Use `@` or `==` if you need a specific version, see above
@@ -223,7 +225,7 @@ Generate a requirement file using `apkg freeze`:
 ```
     $ apkg freeze > requirements.txt
     $ cat requirements.txt
-    standard-library==v0.16
+    standard-library==v1.1
 ````
 
 Now, use the flag `-r` to install all the listed libraries
@@ -287,7 +289,7 @@ the latest version of it.
 
 ```
     $ apkg freeze
-    standard-library==v0.16
+    standard-library==v1.1
 ```
 
 This command is useful to keep in a file the versions used for your project
