@@ -39,7 +39,7 @@ test:
 	&& echo "T.search +++++++++++++++++++++++++++++++++++++++++++++++++" \
 	&& apkg search standard  \
 	&& echo "T.install ++++++++++++++++++++++++++++++++++++++++++++++++" \
-	&& apkg install standard-library --version v1.1 \
+	&& apkg install agda-base --version v0.2 \
 	&& echo "T.freeze +++++++++++++++++++++++++++++++++++++++++++++++++" \
 	&& apkg freeze
 
@@ -51,7 +51,7 @@ test-install-github:
 	&& apkg init  \
 	&& apkg install --github jonaprieto/agda-prop \
 	&& apkg install --github agda/agda-stdlib --version v0.16 \
-	&& apkg install --git http://github.com/jonaprieto/agda-metis.git
+	&& apkg install --git https://github.com/pcapriotti/agda-base.git \
 	&& apkg freeze
 
 
@@ -70,9 +70,7 @@ test-local:
 	&& cd /tmp/agda-stdlib && apkg install --no-dependencies \
 	&& cd /tmp/agda-prop && apkg install --no-dependencies \
 	&& cd /tmp/agda-metis && apkg install --no-dependencies \
-	&& cd /tmp/agda-metis && make test
-	&& apkg freeze
-
+	&& cd /tmp/agda-metis && make test && apkg freeze
 
 .PHONY : test-local-with-dependencies
 test-local-with-dependencies:
@@ -83,15 +81,14 @@ test-local-with-dependencies:
 	&& cd /tmp/ && git clone http://github.com/jonaprieto/agda-metis \
 	&& echo "++++++++++++++++++++++++++++++++++++++++++++++++" \
 	&& cd /tmp/agda-metis && apkg install \
-	&& cd /tmp/agda-metis && make test \
-	&& apkg freeze
+	&& cd /tmp/agda-metis && make test && apkg freeze  
 
 
 .PHONY : all-tests
 all-tests:
-	   make test 
-	&& make test-local
-	&& make test-local-with-dependencies
+	   make test \
+	&& make test-local \
+	&& make test-local-with-dependencies \
 	&& make test-install-github
 
 .PHONY : TODO
@@ -121,9 +118,3 @@ deploy :
 push:
 	make pip-package 
 	git push origin master --tags
-	
-.PHONY : downloads
-downloads:
-	pypinfo agda-pkg country
-	pypinfo agda-pkg version
-	pypinfo agda-pkg

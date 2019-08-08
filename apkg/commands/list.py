@@ -83,7 +83,8 @@ def list(full, field):
     logger.info("-"*105)
 
   for library in libraries:
-    v = library.getLatestVersion()    
+    v = library.getLatestVersion()
+
     if v is not None:
       if not short:
 
@@ -103,16 +104,19 @@ def list(full, field):
           print("Versions:", vs)
       
       else:
-        if field in listFields:
-          if field == "name":
-            print(v.library.name)
-          elif field == "version":
-            print(v.name)
+        if field !="":
+          if field in listFields:
+            if field == "name":
+              print(v.library.name)
+            elif field == "version":
+              print(v.name)
+            else:
+              print(v.library.URL)
           else:
-            print(v.library.url)
+            logger.error("Fieldname unkwown. E.g: name, version, url.")
         else:
           print("{:<20.20} {:<15.20} {:.72}"
-                .format(v.library.name,v.name,v.library.url))
+                .format(v.library.name,v.name,v.library.URL))
 
       i += 1
       if not short and i < len(libraries):

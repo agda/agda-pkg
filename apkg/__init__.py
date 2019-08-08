@@ -22,7 +22,8 @@ from .__version__   import __version__
 # ----------------------------------------------------------------------------
 
 
-try:
+try :
+
   index    = PackageIndex()
   info     = index.search('agda-pkg')
   versions = natsorted([e["version"] for e in info if e["name"] == "agda-pkg"])
@@ -30,29 +31,41 @@ try:
 
   if len(versions) > 0:
     lastversion = versions[-1]
-    msg = "Your Agda-Pkg version is {cversion}, however version {lversion} is available.\n" + \
-          "Consider upgrading via 'pip install --upgrade agda-pkg'."
-    msg = msg.format(cversion = __version__ , lversion = lastversion)
+    msg   = "Your Agda-Pkg version is {cversion}, however version {lversion} is available.\n" + \
+            "Consider upgrading via 'pip install --upgrade agda-pkg'."
+    msg   = msg.format(cversion = __version__ , lversion = lastversion)
     orden = [lastversion, __version__]
+
     if orden != natsorted(orden):
       click.echo(click.style(msg, fg='yellow', bold=True))
 
+except : pass
+
   # Check if the index is updated.
 
+try : 
+
   from .config           import REPO
+  
   origin = REPO.remotes["origin"]
-  repo = REPO.git
+  repo   = REPO.git
   origin.fetch()
+
   status = repo.status()
+
   if "is behind" in status:
-    packageURL = [url for url in REPO.remote().urls][0]
-    msg = "Your package-index database is outdated with:\n" + \
-          "  " + packageURL + "\n" +\
-          "Consider upgrading it by running the command:\n" +\
-          "  $ apkg upgrade\n"
+    pURL = [url for url in REPO.remote().urls][0]
+    msg  = "Your package-index database is outdated with:\n" + \
+           "  " + pURL + "\n" +\
+           "Consider upgrading it by running the command:\n" +\
+           "  $ apkg upgrade\n"
           
     click.echo(click.style(msg, fg='yellow', bold=True))
-except:
-  pass
+
+except :
+
+  msg = "You might need run 'apkg init'."
+  click.echo(click.style(msg, fg='yellow', bold=True))
+
 
 

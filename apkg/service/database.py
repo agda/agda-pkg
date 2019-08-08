@@ -63,7 +63,7 @@ class Library(db.Entity):
     description  = Optional(str, nullable=True)
     url          = Optional(str, nullable=True)
     versions     = Set('LibraryVersion')
-    appearson    = Set('Dependency')
+    appearson    = Set('Dependency') 
     keywords     = Set('Keyword')
     installed    = Optional(bool, default=False)
     default      = Optional(bool, default=True)
@@ -73,6 +73,15 @@ class Library(db.Entity):
 
     def __repr__(self):
       return self.name
+
+
+    @property
+    def URL(self):
+      return "None" if self.url is None else self.url
+
+    @property 
+    def Description(self):
+      return "None" if self.description is None else self.description
 
     @property
     def info(self):
