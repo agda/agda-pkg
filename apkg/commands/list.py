@@ -26,6 +26,10 @@ from ..service.logging   import logger, clog
 @click.group()
 def list(): pass
 
+
+listFields = ["name", "version", "url"]
+
+
 @list.command()
 @clog.simple_verbosity_option(logger)
 @click.option('--full'
@@ -33,8 +37,12 @@ def list(): pass
              , is_flag=True 
              , help='Show name, version and description per package.'
              )
+@click.option('--field'
+             , type=str
+             , default=""
+             , help='Show a specific field e.g.: name, version, url')
 @db_session
-def list(full):
+def list(full, field):
   """List all installed packages."""
 
   short = not full 
@@ -47,6 +55,8 @@ def list(full):
     logger.info("    Consider run the following command:")
     logger.info("      $ apkg init")
     return 
+
+
 
   orderFields = [  
                 #, "library"
@@ -67,7 +77,7 @@ def list(full):
                 ]
 
   i  = 0
-  if short:
+  if short and field == "":
     logger.info("{:<20.20} {:<15.20} {:.72}"
                     .format("Library name", "Latest version", "URL"))
     logger.info("-"*105)
@@ -93,8 +103,16 @@ def list(full):
           print("Versions:", vs)
       
       else:
-        print("{:<20.20} {:<15.20} {:.72}"
-              .format(v.library.name,v.name,v.library.url))
+        if field in listFields:
+          if field == "name":
+            print(v.library.name)
+          elif field == "version":
+            print(v.name)
+          else:
+            print(v.library.url)
+        else:
+          print("{:<20.20} {:<15.20} {:.72}"
+                .format(v.library.name,v.name,v.library.url))
 
       i += 1
       if not short and i < len(libraries):
