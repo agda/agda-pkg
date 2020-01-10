@@ -80,7 +80,7 @@ if not PACKAGE_SOURCES_PATH.exists():
   PACKAGE_SOURCES_PATH.mkdir()
 
 try:
-  REPO = git.Repo(INDEX_REPOSITORY_PATH, search_parent_directories=True)
+  REPO = git.Repo(INDEX_REPOSITORY_PATH, search_parent_directories=False)
 except:
   try:
     REPO = git.Repo.clone_from(INDEX_REPOSITORY_URL, INDEX_REPOSITORY_PATH)
