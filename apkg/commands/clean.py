@@ -13,7 +13,7 @@ import shutil
 
 from pathlib             import Path
 
-from ..config            import AGDA_PKG_PATH,AGDA_DIR_PATH
+from ..config            import AGDA_PKG_PATH, AGDA_DIR_PATH
 from ..service.logging   import logger, clog
 
 # ----------------------------------------------------------------------------
@@ -28,8 +28,10 @@ def clean():
   """Remove the directories used by Agda-Pkg."""
   rmdirs = [ AGDA_PKG_PATH , AGDA_DIR_PATH ]
   for dir in rmdirs:
-    try:
-      shutil.rmtree(dir)
-      logger.info(dir.as_posix() + " (deleted)")
-    except Exception as e:
-      logger.error(e)
+    namedir = dir.as_posix()
+    if click.confirm('Do you really want to remove the directory tree'):
+      try:
+        shutil.rmtree(dir)
+        logger.info(dir.as_posix() + " (deleted)")
+      except Exception as e:
+        logger.error(e)

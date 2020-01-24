@@ -31,6 +31,6 @@ def freeze():
   """List of installed packages."""
 
   for library in select(l for l in Library if l.installed):
-    installedVersion = library.getInstalledVersion()    
+    installedVersion = library.getInstalledVersion()
     if installedVersion is not None:
       click.echo(installedVersion.freezeName)

@@ -9,11 +9,16 @@ Agda to locate libraries. For more information about how Agda package
 system works, please read the official documentation
 [here](https://agda.readthedocs.io/en/v2.6.0/tools/package-system.html).
 
+*Some common usages of Agda-Pkg*
 
-On [agda/package-index](http://github.com/agda/package-index), we are
-indexing some Agda libraries. To install a library run this command
-`agda-pkg install LibraryName`. Below, you will find other ways to
-install libraries.
+-   `$ apkg install standard-library`
+-   `$ apkg install --github agda/agda-stdlib --version v1.2`
+-   `$ apkg install --editable .` (for your own library)
+-   `$ apkg uninstall  standard-library`
+
+After running `apkg init`, Agda-pkg can install some libraries from the index
+[agda/package-index](http://github.com/agda/package-index), below you'll see
+the list.
 
 
 **Library name**         | **Latest version** | **URL**

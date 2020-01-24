@@ -41,7 +41,7 @@ try:
 
   from .config           import REPO
   origin = REPO.remotes["origin"]
-  repo = REPO.git
+  repo   = REPO.git
   origin.fetch()
   status = repo.status()
   if "is behind" in status:
@@ -50,7 +50,7 @@ try:
           "  " + packageURL + "\n" +\
           "Consider upgrading it by running the command:\n" +\
           "  $ apkg upgrade\n"
-          
+
     click.echo(click.style(msg, fg='yellow', bold=True))
 except:
   pass

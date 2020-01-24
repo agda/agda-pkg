@@ -46,19 +46,19 @@ def info(libname, version, field):
   """Show information about installed packages."""
 
   library = Library.get(name = libname)
-  
+
   if library is None:
     logger.error(" The library does not exist. Try $ apkg search "+ libname)
     return
 
   libVersion = LibraryVersion.get(library = library, name = version)
-  
+
   if libVersion is None:
     libVersion = library.getInstalledVersion()
-  
+
   if libVersion is None:
     libVersion = library.getLatestVersion()
-  
+
   if libVersion is None:
     logger.error("The version does not exist. Try $ apkg search "+ libname)
     return
@@ -70,7 +70,7 @@ def info(libname, version, field):
       return
     else:
       logger.error(" the field ("+ field + ") does not exist.")
-      return 
-  
+      return
+
   pprint(info, indent=2)
 

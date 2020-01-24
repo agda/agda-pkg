@@ -19,7 +19,7 @@ from pathlib             import Path
 from distutils.dir_util  import copy_tree, remove_tree
 from jinja2              import Environment, FileSystemLoader
 
-from ..config            import ( AGDA_PKG_PATH, AGDA_DIR_PATH, AGDA_VERSION 
+from ..config            import ( AGDA_PKG_PATH, AGDA_DIR_PATH, AGDA_VERSION
                                 , LIB_SUFFIX, PKG_SUFFIX
                                 )
 from ..service.logging   import logger, clog
@@ -36,7 +36,7 @@ def create(): pass
 @create.command()
 @click.option('--yes'
              , type=bool
-             , is_flag=True 
+             , is_flag=True
              , help='Yes for everything.')
 @clog.simple_verbosity_option(logger)
 def create(yes):
@@ -59,7 +59,7 @@ def create(yes):
               , type=str)
 
   include = set()
-  if click.confirm('Do you want to add a include path?'):
+  if click.confirm('Do you want to add an include path?'):
     include.add(click.prompt('PATH', default="src", type=str))
     while click.confirm('Another include?'):
       include.add(click.prompt('PATH', type=str))
@@ -71,7 +71,7 @@ def create(yes):
       depend.add(click.prompt('Dependency name', type=str))
 
   moreInfo = click.confirm(
-    "Do you want add other information?\n"+
+    "Do you want add more information?\n"+
     "This will create an Agda-Pkg file (.agda-pkg) more verbose.")
 
   if moreInfo:
@@ -102,7 +102,7 @@ def create(yes):
     while click.confirm('Add another Agda version?'):
       testedWith.add( click.prompt('Agda version', type=str) )
 
-  
+
   pwd = Path().cwd()
   libPath = pwd.joinpath(name)
   if libPath.exists():
@@ -118,14 +118,14 @@ def create(yes):
   libPath.mkdir()
   libPath.joinpath("README.md").touch()
   libPath.joinpath("LICENSE.md").touch()
-  
+
   libPath.joinpath(".gitignore")\
          .write_text(templates.joinpath("gitignore.template").read_text())
 
   for dir in include:
     libPath.joinpath(dir).mkdir()
 
-  
+
   env = Environment( loader=FileSystemLoader(templates.as_posix())
                     , trim_blocks=False
                     , lstrip_blocks=False)
@@ -161,6 +161,6 @@ def create(yes):
 
 
 
-  
+
 
 
