@@ -23,30 +23,31 @@ the list.
 
 **Library name**         | **Latest version** | **URL**
 -----|-----|-----
-agda-base            | v0.2             | https://github.com/pcapriotti/agda-base.git
-agda-categories      | v0.1             | https://github.com/agda/agda-categories.git
-agda-metis           | v0.2.1           | https://github.com/jonaprieto/agda-metis.git
-agda-prelude         | df679cf          | https://github.com/UlfNorell/agda-prelude.git
-agda-prop            | v0.1.2           | https://github.com/jonaprieto/agda-prop.git
-agda-real            | e1558b62         | https://gitlab.com/pbruin/agda-real.git
-agda-ring-solver     | d1ed21c          | https://github.com/oisdk/agda-ring-solver.git
-agdarsec             | v0.3.0           | https://github.com/gallais/agdarsec.git
-alga-theory          | 0fdb96c          | https://github.com/algebraic-graphs/agda.git
-ataca                | a9a7c06          | https://github.com/jespercockx/ataca.git
-cat                  | v1.6.0           | https://github.com/fredefox/cat.git
-cubical              | v0.1             | https://github.com/agda/cubical.git
-FiniteSets           | c8c2600          | https://github.com/L-TChen/FiniteSets.git
-fotc                 | apia-1.0.2       | https://github.com/asr/fotc.git
-hott-core            | 1037d82          | https://github.com/HoTT/HoTT-Agda.git
-hott-theorems        | 1037d82          | https://github.com/HoTT/HoTT-Agda.git
-HoTT-UF-Agda         | 9d0f38e          | https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes.git
-ial                  | v1.5.0           | https://github.com/cedille/ial.git
-lightweight-prelude  | b2d440a          | https://github.com/L-TChen/agda-lightweight-prelude.git
-mini-hott            | d9b4a7b          | https://github.com/jonaprieto/mini-hott.git
-MtacAR               |5,417,230| https://github.com/L-TChen/MtacAR.git
-plfa                 | stable-web-2019.09  | https://github.com/plfa/plfa.github.io.git
-routing-library      | thesis           | https://github.com/MatthewDaggitt/agda-routing.git
-standard-library     | v1.2             | https://github.com/agda/agda-stdlib.git
+agda-base            | v0.2            		 | https://github.com/pcapriotti/agda-base.git
+agda-categories      | v0.1            		 | https://github.com/agda/agda-categories.git
+agda-metis           | v0.2.1          		 | https://github.com/jonaprieto/agda-metis.git
+agda-prelude         | df679cf         		 | https://github.com/UlfNorell/agda-prelude.git
+agda-prop            | v0.1.2          		 | https://github.com/jonaprieto/agda-prop.git
+agda-real            | e1558b62        		 | https://gitlab.com/pbruin/agda-real.git
+agda-ring-solver     | d1ed21c         		 | https://github.com/oisdk/agda-ring-solver.git
+agdarsec             | v0.3.0          		 | https://github.com/gallais/agdarsec.git
+alga-theory          | 0fdb96c         		 | https://github.com/algebraic-graphs/agda.git
+ataca                | a9a7c06         		 | https://github.com/jespercockx/ataca.git
+cat                  | v1.6.0          		 | https://github.com/fredefox/cat.git
+cubical              | v0.1            		 | https://github.com/agda/cubical.git
+FiniteSets           | c8c2600         		 | https://github.com/L-TChen/FiniteSets.git
+fotc                 | apia-1.0.2      		 | https://github.com/asr/fotc.git
+generic              | f448ab3         		 | https://github.com/effectfully/Generic.git
+hott-core            | 1037d82         		 | https://github.com/HoTT/HoTT-Agda.git
+hott-theorems        | 1037d82         		 | https://github.com/HoTT/HoTT-Agda.git
+HoTT-UF-Agda         | 9d0f38e         		 | https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes.git
+ial                  | v1.5.0          		 | https://github.com/cedille/ial.git
+lightweight-prelude  | b2d440a         		 | https://github.com/L-TChen/agda-lightweight-prelude.git
+mini-hott            | d9b4a7b         		 | https://github.com/jonaprieto/mini-hott.git
+MtacAR               | 5417230         		 | https://github.com/L-TChen/MtacAR.git
+plfa                 | stable-web-2019.09        | https://github.com/plfa/plfa.github.io.git
+routing-library      | thesis          		 | https://github.com/MatthewDaggitt/agda-routing.git
+standard-library     | v1.2            		 | https://github.com/agda/agda-stdlib.git
 
 
 <img src="https://github.com/agda/agda-pkg/raw/master/assets/demo.gif"
