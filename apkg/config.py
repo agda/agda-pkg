@@ -31,14 +31,14 @@ try:
   result = subprocess.run(["agda", "--version"], stdout=subprocess.PIPE)
   AGDA_VERSION = result.stdout.split()[2].decode()
   # # So far, Agda doesn't consider the commit, so we remove it.
-  # AGDA_VERSION = AGDA_VERSION.split('-')[0]  
+  # AGDA_VERSION = AGDA_VERSION.split('-')[0]
   # AGDA_LIBRARIES_PATH = AGDA_DIR_PATH.joinpath("libraries-%s"%AGDA_VERSION)
   # # TODO : I should report that agda is having problems reading libraries
   # #        from a file like "libraries-VERSION". Read the documentation.
 
 except Exception as e:
   print("[!] Agda may not be installed on this machine!")
-  print("    Please consider to install Agda v2.5.4+")
+  print("    Please consider to install Agda v2.6.0.1+")
 
 AGDA_PKG_PATH = Path().home().joinpath('.apkg' + \
                 ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))
