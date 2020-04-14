@@ -84,8 +84,6 @@ def installFromLocal():
 
   global option
 
-  # pathlib, option["name"], src, version, no_defaults, cache, yes
-
   if len(option["pathlib"]) == 0 or option["pathlib"] == ".":
     option["pathlib"] = Path().cwd()
   else:
@@ -97,13 +95,11 @@ def installFromLocal():
     logger.error(pwd + " doesn't exist!")
     return None
   
-  # logger.info("Library location: " + pwd.as_posix())
-
   agdaLibFiles = [ f for f in pwd.glob(option["name"] + LIB_SUFFIX) if f.is_file() ]
   agdaPkgFiles = [ f for f in pwd.glob(option["name"] + PKG_SUFFIX) if f.is_file() ]
 
   if len(agdaLibFiles) == 0 and len(agdaPkgFiles) == 0:
-    logger.error("No libraries (" + LIB_SUFFIX + " or "\
+    logger.error(" no libraries (" + LIB_SUFFIX + " or "\
                 + PKG_SUFFIX + ") files detected." )
     return None
 
@@ -369,6 +365,9 @@ def installFromGit():
 
             bar.update(self.total)
 
+        click.echo("....")
+        click.echo(option["branch"])
+
         REPO = git.Repo.clone_from( option["url"]
                                   , tmpdir
                                   , branch=option["branch"]
@@ -404,7 +403,7 @@ def installFromGit():
 
     except Exception as e:
       logger.error(e)
-      logger.error("Problems to install the library, may you want to run init?")
+      logger.error("There was an error when installing the library. May you want to run init?")
       return None
 
 # ----------------------------------------------------------------------------
@@ -520,8 +519,8 @@ def installFromURL():
              , help='Force to install just local packages.')
 @click.option('--name'
              , type=str
-             , help='Help to disambiguate when many lib files are\
-                     present in the directory.')
+             , help='Help to disambiguate when many library files exist\
+                    in the same directory.')
 @click.option('--url'
              , type=bool
              , is_flag=True 
@@ -535,8 +534,8 @@ def installFromURL():
              , is_flag=True 
              , help='From a github repository.')
 @click.option('--branch'
-             , type=bool
-             , is_flag=True 
+             , type=str
+             , default="master"
              , help='From a git repository.')
 @click.option('--no-dependencies'
              , type=bool
@@ -576,9 +575,9 @@ def install( ctx, libnames, src, version, no_defaults
 
 
   if len(option["libnames"]) > 1 and option["version"] != "":
-    return logger.error("--version only works with one library.\n\
-      Consider using nameLibrary@versionNumber instead.")
-  
+    return logger.error("--version option only works for one library.\n\
+      Please consider to use nameLibrary@versionNumber.")
+
   if (option["git"] or option["github"]) and option["url"]:
     return logger.error("--git and --url are incompatible")
 
@@ -608,6 +607,8 @@ def install( ctx, libnames, src, version, no_defaults
     option["url"]     = option["libname"]
 
     vLibrary = None
+
+    # click.echo(option)
 
     try:  
 

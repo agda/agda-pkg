@@ -38,7 +38,7 @@ try:
 
 except Exception as e:
   print("[!] Agda may not be installed on this machine!")
-  print("    Please consider to install Agda v2.6.0.1+")
+  print("    Please consider to install Agda v2.6.1+")
 
 AGDA_PKG_PATH = Path().home().joinpath('.apkg' + \
                 ("@agda-" + AGDA_VERSION if len(AGDA_VERSION) > 0 else ""))

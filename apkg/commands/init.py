@@ -21,17 +21,17 @@ from ..config            import ( PACKAGE_SOURCES_PATH
 
 from ..service.database  import db
 from ..service.database  import ( Library
-                               , LibraryVersion
-                               , Keyword
-                               , Dependency
-                               )
+                                , LibraryVersion
+                                , Keyword
+                                , Dependency
+                                )
 from ..service.logging   import logger, clog
 
 # ----------------------------------------------------------------------------
 
 # -- Command def.
 @click.group()
-def init():	pass
+def init(): pass
 
 @init.command()
 @clog.simple_verbosity_option(logger)
