@@ -36,7 +36,7 @@ setup(
   , url='https://github.com/agda/agda-pkg'
   , license='MIT'
   , author='Jonathan Prieto-Cubides'
-  , author_email='jcu043@uib.no'
+  , author_email='jonathan.cubides@uib.no'
   , description='A package manager for Agda'
   , long_description='%s' % (read('README.md'))
   , long_description_content_type='text/markdown'
@@ -50,6 +50,7 @@ setup(
     [ 'agda'
     , 'package-manager'
     , 'agda-pkg'
+    , 'apkg'
     ]
   , install_requires=
     [ 'click'

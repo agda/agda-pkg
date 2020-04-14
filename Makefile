@@ -104,9 +104,9 @@ TODO :
 pip-package:
 	rm -Rf dist
 	rm -Rf build
-	python setup.py build
-	python setup.py sdist
-	python setup.py bdist_wheel --universal
+	python3 setup.py build
+	python3 setup.py sdist
+	python3 setup.py bdist_wheel --universal
 	twine upload dist/*
 
 # pip install twine

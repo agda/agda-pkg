@@ -27,7 +27,7 @@ from ..config             import ( AGDA_DEFAULTS_PATH
                                    , LIB_SUFFIX
                                    )
 from pathlib             import *
-from ..service.logging   import clog
+from ..service.logging   import logger, clog
 
 
 # ----------------------------------------------------------------------------

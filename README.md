@@ -1,7 +1,7 @@
 agda-pkg [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/agda/agda-pkg.svg?branch=master)](https://travis-ci.org/agda/agda-pkg)
 ========
 
-Agda-Pkg is a tool to manage Agda libraries with extra features like
+This is a tool to manage Agda libraries with extra features like
 installing libraries from different kind of sources. This tool does
 not modify `Agda` at all, it just manages systematically the directory
 `.agda` and the files: `.agda/defaults` and `.agda/libraries` used by
@@ -12,13 +12,14 @@ system works, please read the official documentation
 *Some common usages of Agda-Pkg*
 
 -   `$ apkg install standard-library`
--   `$ apkg install --github agda/agda-stdlib --version v1.2`
--   `$ apkg install --editable .` (for your own library)
--   `$ apkg uninstall  standard-library`
+-   `$ apkg install --github agda/agda-stdlib --version v1.3`
+-   `$ apkg install --github plfa/plfa.github.io --branch dev --name plfa`
+-   `$ apkg install --editable .` (to use a library current in development)
+-   `$ apkg uninstall standard-library`
 
 After running `apkg init`, Agda-pkg can install some libraries from the index
 [agda/package-index](http://github.com/agda/package-index), below you'll see
-the list.
+a list.
 
 
 **Library name**         | **Latest version** | **URL**
@@ -47,7 +48,7 @@ mini-hott            | d9b4a7b         		 | https://github.com/jonaprieto/mini-h
 MtacAR               | 5417230         		 | https://github.com/L-TChen/MtacAR.git
 plfa                 | stable-web-2019.09        | https://github.com/plfa/plfa.github.io.git
 routing-library      | thesis          		 | https://github.com/MatthewDaggitt/agda-routing.git
-standard-library     | v1.2            		 | https://github.com/agda/agda-stdlib.git
+standard-library     | v1.3            		 | https://github.com/agda/agda-stdlib.git
 
 
 <img src="https://github.com/agda/agda-pkg/raw/master/assets/demo.gif"
@@ -62,6 +63,7 @@ standard-library     | v1.2            		 | https://github.com/agda/agda-stdlib.
 	- [Initialisation of the package index](#initialisation-of-the-package-index)
 	- [Help command](#help-command)
 	- [Upgrade the package index](#upgrade-the-package-index)
+    - [Environmental variables](#environmental-variables)
 	- [List all the packages available](#list-all-the-packages-available)
 	- [Installation of packages](#installation-of-packages)
 		- [Multiple packages at once](#multiple-packages-at-once)
@@ -139,6 +141,16 @@ Recall updating the index every once in a while using `upgrade`.
 ```
 
 If you want to index your library go to [the package index] and make [PR].
+
+## Environmental variables
+
+If there is an issue with your installation or you suspect something
+is going wrong. You might want to see the environmental variables used by apkg.
+
+```
+    $ apkg environment
+```
+
 
 ## List all the packages available
 

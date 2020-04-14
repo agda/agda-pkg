@@ -365,8 +365,7 @@ def installFromGit():
 
             bar.update(self.total)
 
-        click.echo("....")
-        click.echo(option["branch"])
+        click.echo("branch: " + option["branch"])
 
         REPO = git.Repo.clone_from( option["url"]
                                   , tmpdir
