@@ -96,6 +96,10 @@ To install this tool run the following command:
 Now, we can run the package manager using the command `agda-pkg` or even
 shorter just `apkg`.
 
+## Using with Nix or NixOS
+
+A third-party [example repository](https://github.com/bbarker/LearningAgda) is available to create a `nix-shell` environment that loads `agda-pkg` as well as `agda` and `agda-mode` for emacs. 
+
 # Usage
 
 ## Initialisation of the package index
