@@ -100,7 +100,11 @@ shorter just `apkg`.
 
 ## Using with Nix or NixOS
 
-A third-party [example repository](https://github.com/bbarker/LearningAgda) is available to create a `nix-shell` environment that loads `agda-pkg` as well as `agda` and `agda-mode` for emacs. To use, just run `nix-shell` from the directory of the cloned repository.
+
+A `nix-shell` environment that loads `agda-pkg` as well as `agda` and `agda-mode` for emacs is available. To use,
+just run `nix-shell` from this repository. The files are also avaiable in a third-party
+[example repository](https://github.com/bbarker/LearningAgda) to give an idea of exactly which files need
+to be copied to your project.
 
 To launch emacs with agda-mode enabled, run `mymacs` in the newly launched shell;
 `mymacs` will also load your `~/.emacs` file if it exists. If you are using
