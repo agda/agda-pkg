@@ -114,7 +114,7 @@ to compile the loaded hello world file.
 
 Edit any of the nix expressions as needed. In particular:
 
-0. To add Agda dependencies via agda-pkg, edit `requirements.txt` 
+0. To add Agda dependencies via agda-pkg, edit `agda_requirements.txt`
 1. To add more Haskell or other system dependencies or other
   target-language dependencies, edit `deps.nix`.
 2. To add or alter the editor used, change the `myEmacs`
