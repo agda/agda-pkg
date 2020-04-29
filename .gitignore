@@ -24,6 +24,10 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+.agda
+*.agdai
+examples/hello/hello-world
+MAlonzo
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -59,3 +63,10 @@ venv.bak/
 *.fdb_latexmk
 *.fls
 *.log
+
+# Editor files
+*~
+.emacs
+.emacs_user_config
+
+# Agda temporariy files

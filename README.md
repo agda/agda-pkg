@@ -59,6 +59,8 @@ standard-library     | v1.3            		 | https://github.com/agda/agda-stdlib.
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Quick Start](#quick-start)
+	- [Using with Nix or NixOS](#using-with-nix-or-nixos)
+		- [Configuration](#configuration)
 - [Usage](#usage)
 	- [Initialisation of the package index](#initialisation-of-the-package-index)
 	- [Help command](#help-command)
@@ -95,6 +97,36 @@ To install this tool run the following command:
 
 Now, we can run the package manager using the command `agda-pkg` or even
 shorter just `apkg`.
+
+## Using with Nix or NixOS
+
+
+A `nix-shell` environment that loads `agda-pkg` as well as `agda` and `agda-mode` for emacs is available. To use,
+just run `nix-shell` from this repository. The files are also avaiable in a third-party
+[example repository](https://github.com/bbarker/LearningAgda) to give an idea of exactly which files need
+to be copied to your project.
+
+To launch emacs with agda-mode enabled, run `mymacs` in the newly launched shell;
+`mymacs` will also load your `~/.emacs` file if it exists. If you are using
+[spacemacs](https://www.spacemacs.org), you will need to edit `shell.nix`
+to use `~/.spacemacs` instead.
+
+**Examle**: run `mymacs  examples/hello/hello-world.agda` then type `C-c C-x C-c` in emacs
+to compile the loaded hello world file.
+
+### Configuration
+
+Edit any of the nix expressions as needed. In particular:
+
+0. To add Agda dependencies via agda-pkg, edit `agda_requirements.txt`
+1. To add more Haskell or other system dependencies or other
+  target-language dependencies, edit `deps.nix`.
+2. To add or alter the editor used, change the `myEmacs`
+  references in `shell.nix` or add similar derivations.
+3. Optionally, create `.emacs_user_config` in the repository root directory and
+  add any additional config, such as `(setq agda2-backend "GHC")` to use GHC by
+  default when compiling Agda files from emacs.
+ 
 
 # Usage
 
