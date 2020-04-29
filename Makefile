@@ -114,7 +114,7 @@ pip-package:
 
 .PHONY : deploy
 deploy :
-	@python deploy.py
+	@python3 deploy.py
 
 
 .PHONY: push

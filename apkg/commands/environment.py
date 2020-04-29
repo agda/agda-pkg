@@ -25,7 +25,7 @@ from ..config             import ( AGDA_DEFAULTS_PATH
                                    , PACKAGE_SOURCES_PATH
                                    , PKG_SUFFIX
                                    , LIB_SUFFIX
-                                   )
+                                 )
 from pathlib             import *
 from ..service.logging   import logger, clog
 
@@ -56,4 +56,3 @@ def environment():
   click.echo("PACKAGE_SOURCES_PATH: "+ PACKAGE_SOURCES_PATH.as_posix())
   click.echo("PKG_SUFFIX: "+ PKG_SUFFIX)
   click.echo("LIB_SUFFIX: "+ LIB_SUFFIX)
-

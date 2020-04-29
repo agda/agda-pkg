@@ -12,7 +12,7 @@ import click
 import logging
 import click_log
 
-from pony.orm             import db_session, select
+from pony.orm            import db_session, select
 
 from ..service.database  import db
 from ..service.database  import ( Library , LibraryVersion )

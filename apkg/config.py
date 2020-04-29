@@ -14,7 +14,10 @@ import os
 
 from pathlib import Path
 
+
 # -----------------------------------------------------------------------------
+
+basedir = os.path.dirname(os.path.realpath(__file__))
 
 # -- AGDA DIR:
 AGDA_DIR_PATH = Path().home().joinpath(".agda")
@@ -97,3 +100,5 @@ if not AGDA_DIR_PATH.exists():
   AGDA_DIR_PATH.mkdir()
   AGDA_DEFAULTS_PATH.touch()
   AGDA_LIBRARIES_PATH.touch()
+
+SUPPORT_FILES_PATH =(Path(basedir)/'support'/'nixos').resolve()

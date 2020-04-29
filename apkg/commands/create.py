@@ -16,12 +16,10 @@ import uuid
 
 
 from pathlib             import Path
-from distutils.dir_util  import copy_tree, remove_tree
+from distutils.dir_util  import remove_tree
 from jinja2              import Environment, FileSystemLoader
 
-from ..config            import ( AGDA_PKG_PATH, AGDA_DIR_PATH, AGDA_VERSION
-                                , LIB_SUFFIX, PKG_SUFFIX
-                                )
+from ..config            import ( AGDA_VERSION, LIB_SUFFIX, PKG_SUFFIX )
 from ..service.logging   import logger, clog
 
 
@@ -158,9 +156,3 @@ def create(yes):
       f.write(output)
 
     # pkgFile = env.get_template('library.agda-pkg')
-
-
-
-
-
-

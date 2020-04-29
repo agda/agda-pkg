@@ -1,2 +1,2 @@
-__version__ = "0.1.47"
-__message__ = "1. new command: environment. 2. --branch NAME for --github/--git installations."
+__version__ = "0.1.48"
+__message__ = "[ apkg nixos ] a new command to set up a nix-shell environment"

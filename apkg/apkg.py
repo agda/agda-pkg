@@ -18,6 +18,7 @@ from .commands.list         import list
 from .commands.info         import info
 from .commands.init         import init
 from .commands.install      import install
+from .commands.nixos        import nixos
 from .commands.uninstall    import uninstall
 from .commands.search       import search
 from .commands.update       import update
@@ -32,6 +33,7 @@ def cli():
   """A package manager for Agda."""
 
 cli.add_command(init)
+cli.add_command(nixos)
 cli.add_command(install)
 cli.add_command(uninstall)
 cli.add_command(freeze)

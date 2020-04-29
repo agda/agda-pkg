@@ -7,4 +7,10 @@ include apkg/commands/templates/gitignore.template
 include apkg/commands/templates/library.agda-lib
 include apkg/commands/templates/library.agda-pkg
 
+include apkg/support/nixos/hello-world.agda
+include apkg/support/nixos/agda_requirements.txt
+include apkg/support/nixos/shell.nix
+include apkg/support/nixos/deps.nix
+include apkg/support/nixos/emacs.nix
+
 global-exclude *.py[co] __pycache__ *.so *.pyd
