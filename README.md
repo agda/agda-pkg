@@ -8,36 +8,40 @@ Agda to locate libraries. For more information about how Agda package
 system works, please read the official documentation
 [here](https://agda.readthedocs.io/en/v2.6.0/tools/package-system.html).
 
-Common usages:
+## Quick Start
 
-A library from the package-index. See list above.
+To install `Agda-pkg` run the following command:
 
 ```bash
+$ pip3 install agda-pkg
+```
+
+To install a library from [agda/package-index](http://github.com/agda/package-index). See a list of some packages below.
+
+```bash
+$ apkg init
 $ apkg install standard-library
 ```
 
-A Github repository with a specific version release:
+To install a Github repository with a specific version release:
 
 ```bash
 $ apkg install --github agda/agda-stdlib --version v1.3
 ```
 
-A Github repository with a specific branch with a specific library name:
+To install a Github repository with a specific branch with a specific library name:
 
 ```bash
 $ apkg install --github plfa/plfa.github.io --branch dev --name plfa
 ```
 
-For your library: 
+To install your library: 
 
 ```bash
 $ apkg install --editable .
 ```
 
-
-After running `apkg init`, you will be able to install libraries from the index
-[agda/package-index](http://github.com/agda/package-index), below you'll see a list, possible outdated.
-
+## Indexed libraries
 
 **Library name**         | **Latest version** | **URL**
 -----|-----|-----
@@ -67,21 +71,6 @@ plfa                 | stable-web-2019.09        | https://github.com/plfa/plfa.
 routing-library      | thesis          		 | https://github.com/MatthewDaggitt/agda-routing.git
 standard-library     | v1.3            		 | https://github.com/agda/agda-stdlib.git
 
-# Quick Start
-
-To install `agda-pkg`, you must have installed `Python 3.6+` or a latter version
-on your machine. In addition, the python package manager `pip3 18.0+` (for python 3).
-
-We have tested `agda-pkg` with `Agda v2.5.4+`.
-
-To install this tool run the following command:
-
-```bash
-$ pip install agda-pkg
-```
-
-Now, we can run the package manager using the command `agda-pkg` or even
-shorter just `apkg`.
 
 ## Using with Nix or NixOS
 
@@ -144,8 +133,7 @@ Edit any of the `nix` expressions as needed. In particular:
   add any additional config, such as `(setq agda2-backend "GHC")` to use GHC by
   default when compiling Agda files from emacs.
 
-
-# Usage
+# Usage manual
 
 ## Initialisation of the package index
 
