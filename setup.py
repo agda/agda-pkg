@@ -44,7 +44,7 @@ setup(
   , zip_safe=False
   , include_package_data=True
   , package_dir={'apkg': 'apkg'}
-  , package_data={'apkg': ['commands/templates/*']}
+  , package_data={'apkg': ['commands/templates/*', 'support/nixos/*']}
   , platforms='any'
   , keywords=
     [ 'agda'

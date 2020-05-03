@@ -30,6 +30,10 @@ from ..service.logging   import logger, clog
 def nixos(): pass
 
 @nixos.command()
+@click.option('--yes'
+             , type=bool
+             , is_flag=True
+             , help='Yes for everything.')
 @clog.simple_verbosity_option(logger)
 def nixos():
   """Set up a NixOS environment for Agda"""

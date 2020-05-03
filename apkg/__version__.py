@@ -1,2 +1,2 @@
-__version__ = "0.1.48"
-__message__ = "[ apkg nixos ] a new command to set up a nix-shell environment"
+__version__ = "0.1.49"
+__message__ = "[ apkg nixos ] fixed package-data setup and --yes flag."
