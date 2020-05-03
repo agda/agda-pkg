@@ -76,16 +76,32 @@ standard-library     | v1.3            		 | https://github.com/agda/agda-stdlib.
 
 
 A `nix-shell` environment that loads `agda-pkg` as well as `agda` and
-`agda-mode` for emacs is available. To use this, `apkg` can put the necessary
-files in your project folder by running the following command:
+`agda-mode` for Emacs is available. To use this, `apkg` can put the necessary
+files in your project folder by running one of the following commands:
 
+```bash
+$ curl -L https://gist.github.com/jonaprieto/53e55263405ee48a831d700f27843931/download | tar -xvz --strip-components=1
 ```
+
+or if you already have installed agda-pkg:
+
+```bash
 $ apkg nixos
 ```
 
-Then, you will have new files for you to run the nix shell.
+Then, you will have the following files:
 
+```bash
+./hello-world.agda
+./agda_requirements.txt
+./shell.nix
+./deps.nix
+./emacs.nix
 ```
+
+From where you can run the nix shell.
+
+```bash
 $ nix-shell
 ```
 
@@ -94,7 +110,7 @@ shell; `mymacs` will also load your `~/.emacs` file if it exists. If you are
 using [Spacemacs](https://www.spacemacs.org), you will need to edit `shell.nix`
 to use `~/.spacemacs` instead.
 
-The files provided by `apkg` are also available in this repository
+The files provided by the commands above are also available in this repository
 (`apkg/support/nix`) and in a third-party [example
 repository](https://github.com/bbarker/LearningAgda) to give an idea of exactly
 which files need to be copied to your project.
@@ -111,16 +127,6 @@ main = run (putStrLn "Hello, World!")
 Run `mymacs hello-world.agda` then type `C-c C-x C-c` in emacs to compile the loaded hello world file.
 
 ### Configuration
-
-After running `apkg nixos`, you will see the following files:
-
-```
-./hello-world.agda
-./agda_requirements.txt
-./shell.nix
-./deps.nix
-./emacs.nix
-```
 
 Edit any of the `nix` expressions as needed. In particular:
 
