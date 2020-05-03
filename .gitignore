@@ -68,5 +68,5 @@ venv.bak/
 *~
 .emacs
 .emacs_user_config
-
+.vscode/
 # Agda temporariy files
