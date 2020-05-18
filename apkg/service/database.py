@@ -52,7 +52,6 @@ pw.writer_timeout        = 3
 
 db = Database()
 
-
 # Library is the general object to store the information about
 # an Agda library. Each library is associated with its different
 # versions. These versions are instance of the object LibraryVersion.
@@ -140,13 +139,12 @@ class LibraryVersion(db.Entity):
     sha          = Optional(str)
     description  = Optional(str, default="")
     license      = Optional(str)
-    include      = Optional(str, default="src/")
+    include      = Optional(str)
     depend       = Set('Dependency')
     testedWith   = Set('TestedWith')
     keywords     = Set('Keyword')
     installed    = Optional(bool, default=False)
     cached       = Optional(bool, default=False)
-
     fromIndex    = Optional(bool, default=False)
     fromUrl      = Optional(bool, default=False)
     fromGit      = Optional(bool, default=False)
@@ -167,13 +165,17 @@ class LibraryVersion(db.Entity):
                       , related_objects=True
                       , exclude=["id"]
                       )
+      
+      fileInfo = self.readInfoFromLibFile()
+      d.update(fileInfo)
+      
       del d["name"]
       d["library"] = self.library.name
       d["version"] = self.name
       d["default"] = self.library.default
       d["description"] = self.library.description
-      d["index_path"]  = self.indexPath
-      d["source_path"] = self.sourcePath
+      d["index_path"]  = self.indexPath.as_posix()
+      d["source_path"] = self.sourcePath.as_posix()
 
       return d
 
@@ -186,7 +188,8 @@ class LibraryVersion(db.Entity):
 
     @property
     def freezeName(self):
-      if self.name == "": return self.library.name
+      if self.name == "" : 
+        return self.library.name
       return self.libraryVersionName("==")
 
     def isCached(self):
@@ -197,7 +200,6 @@ class LibraryVersion(db.Entity):
 
     def isUserVersion(self):
       return (not self.isIndexed())
-
 
     @property
     def indexPath(self):
@@ -226,7 +228,6 @@ class LibraryVersion(db.Entity):
              if (self.isIndexed() and not self.installed and not(self.editable))
              else self.sourcePath.joinpath(self.library.name + LIB_SUFFIX))
 
-
     def getLibFilePath(self):
       if self.agdaPkgFilePath.exists():
         return self.agdaPkgFilePath
@@ -249,7 +250,6 @@ class LibraryVersion(db.Entity):
 
     def toPkgFormat(self):
       return yaml.dump(self.info, default_flow_style=False)
-
 
     def writeAgdaLibFile(self, path=None):
       if path is None: path = self.agdaLibFilePath()
@@ -283,11 +283,9 @@ class LibraryVersion(db.Entity):
           logger.error("Failed to remove " \
                       + self.sourcePath.as_posix())
 
-
     def uninstall(self, remove_cache=True):
 
       self.installed = False
-
       self.library.installed = False
       self.library.default = False
       try:
@@ -309,7 +307,6 @@ class LibraryVersion(db.Entity):
       self.cached = True
 
       self.library.install(defaults)
-
 
 @pw.register_model('word')
 class Keyword(db.Entity):

@@ -81,7 +81,7 @@ option = { 'branch'            : "master"
 # ----------------------------------------------------------------------------
 @db_session
 def installFromLocal():
-
+  
   global option
 
   if len(option["pathlib"]) == 0 or option["pathlib"] == ".":
@@ -98,36 +98,28 @@ def installFromLocal():
   agdaLibFiles = [ f for f in pwd.glob(option["name"] + LIB_SUFFIX) if f.is_file() ]
   agdaPkgFiles = [ f for f in pwd.glob(option["name"] + PKG_SUFFIX) if f.is_file() ]
 
-  if len(agdaLibFiles) == 0 and len(agdaPkgFiles) == 0:
+  if len(agdaLibFiles) + len(agdaPkgFiles) == 0:
     logger.error(" no libraries (" + LIB_SUFFIX + " or "\
                 + PKG_SUFFIX + ") files detected." )
     return None
-
-  libFile = Path("")
   
-  # -- TODO: offer the posibility to create a file agda-pkg!
+  libFile = Path("")
   if len(agdaPkgFiles) == 1:
     libFile = agdaPkgFiles[0]
   elif len(agdaLibFiles) == 1:
-    # -- TODO: offer the posibility to create a file agda-pkg!
     libFile = agdaLibFiles[0]
   else:
-    logger.error("None or many agda libraries files.")
-    logger.info("[!] Use --name to specify the library name.")
+    logger.error("[!] Use --name to specify the library name.")
     return None
 
   logger.info("Library file detected: " + libFile.name)
-
+  
   info = readLibFile(libFile)
 
   option["name"] = info.get("name", "")
 
   if len(option["name"]) == 0:
     option["name"] = option["pathlib"].name
-
-  # logger.info("Library name: " + name)
-
-  # -- Let's attach a version number
 
   versionName = option["version"]
 
@@ -164,7 +156,7 @@ def installFromLocal():
   library = Library.get(name=option["name"])
 
   if library is None:
-    library = Library(name=option["name"])
+    library = Library( name=option["name"] )
 
   versionLibrary = LibraryVersion.get(library=library, name=versionName)
 
@@ -196,10 +188,10 @@ def installFromLocal():
   else:
     versionLibrary = LibraryVersion( library=library
                                    , name=versionName
-                                   , cached=True
+                                   , cached=True                  
                                    , editable=option["editable"]
                                    )
-
+    
   if option["editable"]:
     versionLibrary.origin   = pwd.as_posix()
     versionLibrary.editable = True
@@ -267,7 +259,7 @@ def installFromLocal():
         else:
           logger.warning(depend + " is not in the index")
     
-    versionLibrary.install(not(option["no_defaults"]))
+    versionLibrary.install( not(option["no_defaults"]) )
 
     commit()
     return versionLibrary
@@ -299,7 +291,7 @@ def installFromGit():
 
   with TemporaryDirectory() as tmpdir:
 
-    print("Using temporal directory:", tmpdir)
+    click.echo("Using temporal directory:", tmpdir)
     try:
       
       if Path(tmpdir).exists():
@@ -396,7 +388,9 @@ def installFromGit():
       libVersion.library.url = option["url"]
       libVersion.library.default = not(option["no_defaults"])
 
-      if option["version"] != "": libVersion.sha = REPO.head.commit.hexsha
+      if option["version"] != "": 
+        libVersion.sha = REPO.head.commit.hexsha
+        
       commit()
       return libVersion
 
@@ -572,7 +566,6 @@ def install( ctx, libnames, src, version, no_defaults
       logger.error(" installation failed.")
       return
 
-
   if len(option["libnames"]) > 1 and option["version"] != "":
     return logger.error("--version option only works for one library.\n\
       Please consider to use nameLibrary@versionNumber.")
@@ -606,8 +599,6 @@ def install( ctx, libnames, src, version, no_defaults
     option["url"]     = option["libname"]
 
     vLibrary = None
-
-    # click.echo(option)
 
     try:  
 

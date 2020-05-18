@@ -93,7 +93,6 @@ def init(drop_tables):
         # click.echo(version.freezeName)
 
         info = version.readInfoFromLibFile()
-
         version.depend.clear()
         for depend in info.get("depend", []):
           if type(depend) == list:

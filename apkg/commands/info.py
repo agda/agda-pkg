@@ -48,7 +48,7 @@ def info(libname, version, field):
   library = Library.get(name = libname)
 
   if library is None:
-    logger.error(" The library does not exist. Try $ apkg search "+ libname)
+    logger.error(" The library is not visible for agda-pkg.")
     return
 
   libVersion = LibraryVersion.get(library = library, name = version)
@@ -60,11 +60,11 @@ def info(libname, version, field):
     libVersion = library.getLatestVersion()
 
   if libVersion is None:
-    logger.error("The version does not exist. Try $ apkg search "+ libname)
+    logger.error("The version does not exist. Try $ apkg search " + libname)
     return
 
   info = libVersion.info
-  if field != "":
+  if field != "" :
     if field in info.keys():
       click.echo(info[field])
       return

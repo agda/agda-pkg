@@ -38,18 +38,20 @@ def readLibLegacyFile(fname):
     # 'version' field
     try:
       versionName = content.index("version:")
-      version = content[versionName + 1]
+      version     = content[versionName + 1]
       info["version"] = version.strip()
     except Exception as e:
       info["version"] = ""
 
+    # check all the required fields exist in the file
+    # otherwise send an error
+    
     # 'include' field
     indexInclude = content.index("include:")
     i = indexInclude + 1
     while i < len(content) and \
       (not "--" in content[i]) and \
       (not ":"  in content[i]) :
-      pathinclude = content[i].strip()
       info["include"].append(content[i].strip())
       i += 1
     info["include"] = list(set(info["include"]))
