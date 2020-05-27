@@ -291,8 +291,8 @@ def installFromGit():
 
   with TemporaryDirectory() as tmpdir:
 
-    click.echo("Using temporal directory:", tmpdir)
     try:
+      click.echo("Using temporary directory: {}".format(tmpdir))
       
       if Path(tmpdir).exists():
         remove_tree(tmpdir)
