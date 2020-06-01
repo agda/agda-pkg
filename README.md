@@ -1,47 +1,55 @@
 [![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/agda/agda-pkg.svg?branch=master)](https://travis-ci.org/agda/agda-pkg)
 
 **Agda-pkg** is a tool to manage [Agda](http://github.com/agda/agda) libraries with extra features like
-installing libraries from different kind of sources. This tool does
-not modify `Agda` at all, it just manages systematically the directory
-`.agda` and the files: `.agda/defaults` and `.agda/libraries` used by
-Agda to locate libraries. For more information about how Agda package
+installing libraries from different kind of sources. 
+
+This tool does not modify `Agda` at all, it just manages systematically the directory
+`.agda` with `.agda/defaults` and `.agda/libraries` files used by
+Agda to locate the available libraries. For more information about how Agda package
 system works, please read the official documentation
 [here](https://agda.readthedocs.io/en/v2.6.0/tools/package-system.html).
 
 ## Quick Start
 
-To install `Agda-pkg` run the following command:
+The most common usages of agda-pkg are the following:
+
+- To install `Agda-pkg` just run the following command:
 
 ```bash
 $ pip3 install agda-pkg
 ```
 
-To install a library from [agda/package-index](http://github.com/agda/package-index). See a list of some packages below.
+- To install your library, go to the root directory of your source code and run: 
+
+```bash
+$ apkg install --editable .
+```
+
+- To install a library from [agda/package-index](http://github.com/agda/package-index).
 
 ```bash
 $ apkg init
 $ apkg install standard-library
 ```
 
-To install a Github repository with a specific version release:
+A list of the available packages is shown below.
+
+- To install a *Github repository* with a *specific version release*:
 
 ```bash
 $ apkg install --github agda/agda-stdlib --version v1.3
 ```
 
-To install a Github repository with a specific branch with a specific library name:
+- To install a library from a Github repository with a *specific branch* with a *specific library name*:
 
 ```bash
 $ apkg install --github plfa/plfa.github.io --branch dev --name plfa
 ```
 
-To install your library: 
-
-```bash
-$ apkg install --editable .
-```
 
 ## Indexed libraries
+
+
 
 **Library name**         | **Latest version** | **URL**
 -----|-----|-----
@@ -70,74 +78,6 @@ MtacAR               | 5417230         		 | https://github.com/L-TChen/MtacAR.gi
 plfa                 | stable-web-2019.09        | https://github.com/plfa/plfa.github.io.git
 routing-library      | thesis          		 | https://github.com/MatthewDaggitt/agda-routing.git
 standard-library     | v1.3            		 | https://github.com/agda/agda-stdlib.git
-
-
-## Using with Nix or NixOS
-
-
-A `nix-shell` environment that loads `agda-pkg` as well as `agda` and
-`agda-mode` for Emacs is available. To use this, `apkg` can put the necessary
-files in your project folder by running one of the following commands:
-
-```bash
-$ curl -L https://gist.github.com/jonaprieto/53e55263405ee48a831d700f27843931/download | tar -xvz --strip-components=1
-```
-
-or if you already have installed agda-pkg:
-
-```bash
-$ apkg nixos
-```
-
-Then, you will have the following files:
-
-```bash
-./hello-world.agda
-./agda_requirements.txt
-./shell.nix
-./deps.nix
-./emacs.nix
-```
-
-From where you can run the nix shell.
-
-```bash
-$ nix-shell
-```
-
-To launch Emacs with `agda-mode` enabled, run `mymacs` in the newly launched
-shell; `mymacs` will also load your `~/.emacs` file if it exists. If you are
-using [Spacemacs](https://www.spacemacs.org), you will need to edit `shell.nix`
-to use `~/.spacemacs` instead.
-
-The files provided by the commands above are also available in this repository
-(`apkg/support/nix`) and in a third-party [example
-repository](https://github.com/bbarker/LearningAgda) to give an idea of exactly
-which files need to be copied to your project.
-
-**Example**:
-
-```agda
-$ cat hello-world.agda
-module hello-world where
-open import IO
-main = run (putStrLn "Hello, World!")
-```
-
-Run `mymacs hello-world.agda` then type `C-c C-x C-c` in emacs to compile the loaded hello world file.
-
-### Configuration
-
-Edit any of the `nix` expressions as needed. In particular:
-
-0. To add Agda dependencies via `agda-pkg`, edit `agda_requirements.txt`
-1. To add more 4Haskell or other system dependencies or other
-  target-language dependencies, edit `deps.nix`.
-2. To add or alter the editor used, change the `myEmacs`
-  references in `shell.nix` or add similar derivations.
-3. Optionally, create `.emacs_user_config` in the repository root directory and
-  add any additional config, such as `(setq agda2-backend "GHC")` to use GHC by
-  default when compiling Agda files from emacs.
 
 # Usage manual
 
@@ -463,6 +403,73 @@ depend:
     - LIB3
     - LIB4
 ```
+
+
+## Using with Nix or NixOS
+
+A `nix-shell` environment that loads `agda-pkg` as well as `agda` and
+`agda-mode` for Emacs is available. To use this, `apkg` can put the necessary
+files in your project folder by running one of the following commands:
+
+```bash
+$ curl -L https://gist.github.com/jonaprieto/53e55263405ee48a831d700f27843931/download | tar -xvz --strip-components=1
+```
+
+or if you already have installed agda-pkg:
+
+```bash
+$ apkg nixos
+```
+
+Then, you will have the following files:
+
+```bash
+./hello-world.agda
+./agda_requirements.txt
+./shell.nix
+./deps.nix
+./emacs.nix
+```
+
+From where you can run the nix shell.
+
+```bash
+$ nix-shell
+```
+
+To launch Emacs with `agda-mode` enabled, run `mymacs` in the newly launched
+shell; `mymacs` will also load your `~/.emacs` file if it exists. If you are
+using [Spacemacs](https://www.spacemacs.org), you will need to edit `shell.nix`
+to use `~/.spacemacs` instead.
+
+The files provided by the commands above are also available in this repository
+(`apkg/support/nix`) and in a third-party [example
+repository](https://github.com/bbarker/LearningAgda) to give an idea of exactly
+which files need to be copied to your project.
+
+**Example**:
+
+```agda
+$ cat hello-world.agda
+module hello-world where
+open import IO
+main = run (putStrLn "Hello, World!")
+```
+
+Run `mymacs hello-world.agda` then type `C-c C-x C-c` in emacs to compile the loaded hello world file.
+
+### Configuration
+
+Edit any of the `nix` expressions as needed. In particular:
+
+0. To add Agda dependencies via `agda-pkg`, edit `agda_requirements.txt`
+1. To add more 4Haskell or other system dependencies or other
+  target-language dependencies, edit `deps.nix`.
+2. To add or alter the editor used, change the `myEmacs`
+  references in `shell.nix` or add similar derivations.
+3. Optionally, create `.emacs_user_config` in the repository root directory and
+  add any additional config, such as `(setq agda2-backend "GHC")` to use GHC by
+  default when compiling Agda files from emacs.
 
 # About
 

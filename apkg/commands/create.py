@@ -22,10 +22,9 @@ from jinja2              import Environment, FileSystemLoader
 from ..config            import ( AGDA_VERSION, LIB_SUFFIX, PKG_SUFFIX )
 from ..service.logging   import logger, clog
 
+# ----------------------------------------------------------------------------
 
 basedir = os.path.dirname(os.path.realpath(__file__))
-
-# ----------------------------------------------------------------------------
 
 # -- Command def.
 @click.group()
@@ -100,15 +99,14 @@ def create(yes):
     while click.confirm('Add another Agda version?'):
       testedWith.add( click.prompt('Agda version', type=str) )
 
-
   pwd = Path().cwd()
   libPath = pwd.joinpath(name)
   if libPath.exists():
-    if yes or click.confirm("Delete the directory ("+ name + ") to proceed?", abort=True):
+    if yes or click.confirm("Delete the directory (" + name + ")?", abort=True):
       remove_tree(libPath.as_posix())
     else:
-      newDirName = name+"-"+str(uuid.uuid1())
-      click.info("Saving on ({})".format(newDirName))
+      newDirName = name + "-" + str(uuid.uuid1())
+      click.echo("Saving on ({})".format(newDirName))
       libPath = pwd.joinpath(newDirName)
 
   templates = Path(basedir).joinpath('templates')

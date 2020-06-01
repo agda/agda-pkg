@@ -22,7 +22,7 @@ import re
 
 from distutils.dir_util  import copy_tree, remove_tree
 from pathlib             import Path
-from pony.orm            import *
+from pony.orm            import db_session, commit
 from tempfile            import TemporaryDirectory
 
 from ..config            import ( PACKAGE_SOURCES_PATH
@@ -42,12 +42,10 @@ from ..service.database  import ( Library
 
 from ..service.logging            import logger, clog
 from ..service.readLibFile        import readLibFile
-from ..service.writeAgdaDirFiles  import writeAgdaDirFiles
 from ..service.utils              import isURL, isGit, isIndexed, isLocal
 
 from .uninstall                   import uninstallLibrary
-
-# ----------------------------------------------------------------------------
+from .write_defaults              import write_defaults
 
 # ----------------------------------------------------------------------------
 # -- Install command variants
@@ -77,8 +75,8 @@ option = { 'branch'            : "master"
          , 'installing_depend' : False
          }
 
-
 # ----------------------------------------------------------------------------
+
 @db_session
 def installFromLocal():
   
@@ -327,13 +325,11 @@ def installFromGit():
         size_length = response.headers.get('content-length')
         size = 0
         if size_length is None:
-          for block in response.iter_content(1024):
+          for _ in response.iter_content(1024):
               size += 1024
         else:
           size = size_length
         size = int(size)
-
-      # --
 
       logger.info("Downloading " + option["url"]  \
             + " (%s)" % str(humanize.naturalsize(size, binary=True)))
@@ -357,7 +353,7 @@ def installFromGit():
 
             bar.update(self.total)
 
-        click.echo("branch: " + option["branch"])
+        click.echo("Git branch: " + option["branch"])
 
         REPO = git.Repo.clone_from( option["url"]
                                   , tmpdir
@@ -627,4 +623,4 @@ def install( ctx, libnames, src, version, no_defaults
     else:
       logger.info("Unsuccessfully installation ({}).".format(option["libname"]))
 
-  writeAgdaDirFiles()
+  ctx.invoke(write_defaults, yes = yes)

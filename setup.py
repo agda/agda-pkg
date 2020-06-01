@@ -35,7 +35,7 @@ setup(
   , python_requires='>=3.6.0'
   , url='https://github.com/agda/agda-pkg'
   , license='MIT'
-  , author='Jonathan Prieto-Cubides'
+  , author='Jonathan Prieto-Cubides and https://github.com/agda/agda-pkg/graphs/contributors'
   , author_email='jonathan.cubides@uib.no'
   , description='A package manager for Agda'
   , long_description='%s' % (read('README.md'))

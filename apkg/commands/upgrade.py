@@ -10,15 +10,11 @@
 
 import click
 
-from git       import *
-from pony.orm  import *
-
 from .init              import init
 from ..config           import REPO
 from ..service.logging  import logger, clog
 
 # ----------------------------------------------------------------------------
-
 
 @click.group()
 def upgrade(): pass

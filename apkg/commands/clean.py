@@ -33,7 +33,6 @@ def clean():
   """Remove the directories used by Agda-Pkg."""
 
   for dir in rmdirs:
-    namedir = dir.as_posix()
     try:
       shutil.rmtree(dir)
       logger.info(dir.as_posix() + " (deleted)")

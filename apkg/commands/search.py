@@ -10,8 +10,7 @@
 
 import click
 
-from pathlib     import *
-from pony.orm    import *
+from pony.orm    import db_session
 from ponywhoosh  import PonyWhoosh, search, full_search
 
 from ..config    import ( AGDA_DEFAULTS_PATH
@@ -44,7 +43,6 @@ from ..service.logging      import logger, clog
 
 @click.group()
 def search(): pass
-
 
 @search.command()
 @click.argument('term')

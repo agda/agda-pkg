@@ -11,7 +11,7 @@
 import click
 
 from pathlib   import Path
-from pony.orm  import *
+from pony.orm  import db_session, commit, select
 
 from ..config            import ( PACKAGE_SOURCES_PATH
                                 , INDEX_REPOSITORY_PATH

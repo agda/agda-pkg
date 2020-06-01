@@ -39,7 +39,7 @@ test:
 	&& echo "T.search +++++++++++++++++++++++++++++++++++++++++++++++++" \
 	&& apkg search standard  \
 	&& echo "T.install ++++++++++++++++++++++++++++++++++++++++++++++++" \
-	&& apkg install standard-library --version v1.1 \
+	&& apkg install standard-library --version v1.1 --yes \
 	&& echo "T.freeze +++++++++++++++++++++++++++++++++++++++++++++++++" \
 	&& apkg freeze
 

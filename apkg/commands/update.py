@@ -34,7 +34,7 @@ def update(ctx, libnames):
   """Update packages to latest indexed version."""
 
   logger.info("Updating.")
-  wasUpdated = True
+  wasUpdated = False
   if len(libnames) == 0:
     libraries = select(l.name for l in Library if l.installed)[:]
   else:
@@ -44,10 +44,15 @@ def update(ctx, libnames):
     library = Library.get(name = lname)
     installedVersion = library.getInstalledVersion()
     latestVersion    = library.getLatestVersion()
-    if installedVersion is not latestVersion :
-      ctx.invoke(uninstall, libname=lname)
-      ctx.invoke(install, libnames=[lname], version=latestVersion.name, yes=True)
-      wasUpdated = False
-
-  if not wasUpdated:
+    if installedVersion is not latestVersion:
+      try:
+        ctx.invoke(uninstall, libname=lname, yes=True)
+        ctx.invoke(install, libnames=[lname], version=latestVersion.name, yes=True)
+        wasUpdated = True
+      except Exception as e:
+        logger.error(e)
+          
+  if wasUpdated:
     logger.info("Libraries updated.")
+  else:
+    logger.info("Everything is up-to-date.")

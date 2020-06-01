@@ -12,7 +12,7 @@ import click
 import logging
 
 from pprint                 import pprint
-from pony.orm               import *
+from pony.orm               import db_session
 
 from ..service.readLibFile  import readLibFile
 from ..service.database     import db, pw

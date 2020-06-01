@@ -10,23 +10,22 @@
 
 import click
 from ..config             import ( AGDA_DEFAULTS_PATH
-                                   , AGDA_DIR_PATH
-                                   , AGDA_LIBRARIES_PATH
-                                   , AGDA_PKG_PATH
-                                   , AGDA_VERSION
-                                   , DATABASE_FILE_NAME
-                                   , DATABASE_FILE_PATH
-                                   , DATABASE_SEARCH_INDEXES_PATH
-                                   , GITHUB_USER
-                                   , INDEX_REPOSITORY_BRANCH
-                                   , INDEX_REPOSITORY_NAME
-                                   , INDEX_REPOSITORY_PATH
-                                   , INDEX_REPOSITORY_URL
-                                   , PACKAGE_SOURCES_PATH
-                                   , PKG_SUFFIX
-                                   , LIB_SUFFIX
+                                 , AGDA_DIR_PATH
+                                 , AGDA_LIBRARIES_PATH
+                                 , AGDA_PKG_PATH
+                                 , AGDA_VERSION
+                                 , DATABASE_FILE_NAME
+                                 , DATABASE_FILE_PATH
+                                 , DATABASE_SEARCH_INDEXES_PATH
+                                 , GITHUB_USER
+                                 , INDEX_REPOSITORY_BRANCH
+                                 , INDEX_REPOSITORY_NAME
+                                 , INDEX_REPOSITORY_PATH
+                                 , INDEX_REPOSITORY_URL
+                                 , PACKAGE_SOURCES_PATH
+                                 , PKG_SUFFIX
+                                 , LIB_SUFFIX
                                  )
-from pathlib             import *
 from ..service.logging   import logger, clog
 
 

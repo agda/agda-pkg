@@ -11,7 +11,7 @@
 import click
 
 from pathlib    import Path
-from pony.orm   import *
+from pony.orm   import db_session, commit
 
 from ..config   import ( AGDA_DEFAULTS_PATH
                        , AGDA_DIR_PATH
@@ -31,8 +31,8 @@ from ..config   import ( AGDA_DEFAULTS_PATH
                        , PKG_SUFFIX
                        )
 
+from .write_defaults              import write_defaults
 from ..service.readLibFile        import readLibFile
-from ..service.writeAgdaDirFiles  import writeAgdaDirFiles
 from ..service.database           import db, pw
 from ..service.database           import ( Library
                                          , LibraryVersion
@@ -53,32 +53,25 @@ def uninstall():
 @db_session
 def uninstallLibrary(libname, database=False, remove_cache=False):
   library = Library.get(name = libname)
-  logger.info("Uninstalling")
-
   if library is None \
     or (not library.installed and not (remove_cache)): 
-
-    logger.info("  Library not installed.")
-    logger.info("Nothing to uninstall.")
-    return
-
-
+    logger.info("This library is not installed.")
+    return False
+  
   try:
     if database:
       library.delete()
     else:
       if library.installed:
         library.uninstall(remove_cache)
-        logger.info("Successfully uninstallation ({}).".format(libname))
-
+        logger.info("Removed {} from the agda-pkg database.".format(libname))
     commit()
-    writeAgdaDirFiles()
-    return
+    return True
+  
   except Exception as e:
     logger.error(e)
-    logger.error(" Unsuccessfully uninstallation.")
-
-# --
+    logger.error(" Unsuccessfully call.")
+  return False
 
 @uninstall.command()
 @click.argument('libname')
@@ -86,19 +79,24 @@ def uninstallLibrary(libname, database=False, remove_cache=False):
              , type=bool
              , default=False
              , is_flag=True 
-             , help='Remove from the database the package')
+             , help='Remove a package from the agda-pkg database')
 @click.option('--remove-cache'
              , type=bool
              , default=False
              , is_flag=True 
-             , help='Remove all the files.')
+             , help='Remove all package files.')
 @clog.simple_verbosity_option(logger)
+@click.option('--yes'
+             , type=bool
+             , is_flag=True 
+             , help='Yes for everything.')
+@click.pass_context
 @click.confirmation_option(prompt='Proceed?')
 @db_session
-def uninstall(libname, database, remove_cache):
+def uninstall(ctx, libname, database, remove_cache,yes):
   """Uninstall a package."""
 
-  if libname == ".":
+  if libname == "." :
     pwd = Path().cwd()
 
     if not Path(pwd).exists():
@@ -135,4 +133,5 @@ def uninstall(libname, database, remove_cache):
     logger.error(" we could not know the name of the library to uninstall.")
     return
 
-  uninstallLibrary(libname, database, remove_cache)
+  if uninstallLibrary(libname, database, remove_cache):
+    ctx.invoke(write_defaults, yes = yes)
