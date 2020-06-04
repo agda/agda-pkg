@@ -1,4 +1,8 @@
-[![PyPI version](https://badge.fury.io/py/agda-pkg.svg)](https://badge.fury.io/py/agda-pkg) [![Build Status](https://travis-ci.org/agda/agda-pkg.svg?branch=master)](https://travis-ci.org/agda/agda-pkg)
+[![pypi](https://img.shields.io/pypi/v/agda-pkg.svg)](https://pypi.python.org/pypi/agda-pkg)
+[![versions](https://img.shields.io/pypi/pyversions/agda-pkg.svg)](https://github.com/agda/agda-pkg)
+[![Build Status](https://travis-ci.org/agda/agda-pkg.svg?branch=master)](https://travis-ci.org/agda/agda-pkg)
+[![downloads](https://img.shields.io/pypi/dm/agda-pkg.svg)](https://pypistats.org/packages/agda-pkg)
+
 
 **Agda-pkg** is a tool to manage [Agda](http://github.com/agda/agda) libraries with extra features like
 installing libraries from different kind of sources. 
