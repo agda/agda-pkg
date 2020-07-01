@@ -36,8 +36,6 @@ $ apkg init
 $ apkg install standard-library
 ```
 
-A list of the available packages is shown below.
-
 - To install a *Github repository* with a *specific version release*:
 
 ```bash
@@ -77,7 +75,6 @@ hott-theorems        | 1037d82         		 | https://github.com/HoTT/HoTT-Agda.gi
 HoTT-UF-Agda         | 9d0f38e         		 | https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes.git
 ial                  | v1.5.0          		 | https://github.com/cedille/ial.git
 lightweight-prelude  | b2d440a         		 | https://github.com/L-TChen/agda-lightweight-prelude.git
-mini-hott            | d9b4a7b         		 | https://github.com/jonaprieto/mini-hott.git
 MtacAR               | 5417230         		 | https://github.com/L-TChen/MtacAR.git
 plfa                 | stable-web-2019.09        | https://github.com/plfa/plfa.github.io.git
 routing-library      | thesis          		 | https://github.com/MatthewDaggitt/agda-routing.git
