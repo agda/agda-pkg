@@ -51,7 +51,7 @@ def search(term, field):
   """Search into the package index."""
 
   possibleFields = ["name", "url", "description", "word"]
-  
+
   results = \
     pw.search(
         term
@@ -76,9 +76,6 @@ def search(term, field):
 
         # click.echo(result)
         click.echo(result["entity"]["name"])
-      
-      # logger.info("="*len(result["entity"]["name"]))
-      # del result["entity"]["name"]
 
       for k, v in result["entity"].items():
         if v != None and k not in [ "name" , "default" ]:

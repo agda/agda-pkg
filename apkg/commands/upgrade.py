@@ -30,7 +30,7 @@ def upgrade(ctx):
       logger.info("%s to %s" % (pull_info.ref, pull_info.commit))
     ctx.invoke(init, drop_tables=False)
   except Exception as e:
-    logger.error(e)
-  
+    logger.warning(e)
+
 
 

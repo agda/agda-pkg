@@ -34,7 +34,7 @@ listFields = ["name", "version", "url"]
 @clog.simple_verbosity_option(logger)
 @click.option('--full'
              , type=bool
-             , is_flag=True 
+             , is_flag=True
              , help='Show name, version and description per package.'
              )
 @click.option('--field'
@@ -45,20 +45,18 @@ listFields = ["name", "version", "url"]
 def list(full, field):
   """List all installed packages."""
 
-  short = not full 
+  short = not full
 
   libraries = select(l for l in Library if l)[:]
   libraries = natsorted(libraries, key=lambda x : attrgetter('name')(x).lower())
 
   if len(libraries) == 0:
-    logger.info("[!] No libraries available to list.")  
+    logger.info("[!] No libraries available to list.")
     logger.info("    Consider run the following command:")
     logger.info("      $ apkg init")
-    return 
+    return
 
-
-
-  orderFields = [  
+  orderFields = [
                 #, "library"
                 #, "sha"
                   "description"
@@ -83,7 +81,7 @@ def list(full, field):
     logger.info("-"*105)
 
   for library in libraries:
-    v = library.getLatestVersion()    
+    v = library.getLatestVersion()
     if v is not None:
       if not short:
 
@@ -92,16 +90,16 @@ def list(full, field):
 
         info = v.info
 
-        for k in orderFields: 
+        for k in orderFields:
           val = info.get(k, None)
           if val is not None or val != "" or len(val) > 0:
             click.echo("{0}: {1}".format(k,val))
 
         vs = ','.join(str(ver) for ver in v.library.versions)
-       
+
         if len(vs) > 0:
           print("Versions:", vs)
-      
+
       else:
         if field in listFields:
           if field == "name":
@@ -111,8 +109,11 @@ def list(full, field):
           else:
             print(v.library.url)
         else:
-          print("{:<20.20} {:<15.20} {:.72}"
+          try:
+            print("{:<20.20} {:<15.20} {:.72}"
                 .format(v.library.name,v.name,v.library.url))
+          except Exception as _:
+            print(v.library)
 
       i += 1
       if not short and i < len(libraries):
