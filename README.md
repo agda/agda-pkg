@@ -34,6 +34,7 @@ $ apkg install --editable .
 ```bash
 $ apkg init
 $ apkg install standard-library
+$ apkg install plfa@dev-20.07
 ```
 
 - To install a *Github repository* with a *specific version release*:
@@ -76,7 +77,7 @@ HoTT-UF-Agda         | 9d0f38e         | https://github.com/martinescardo/HoTT-U
 ial                  | v1.5.0          | https://github.com/cedille/ial.git
 lightweight-prelude  | b2d440a         | https://github.com/L-TChen/agda-lightweight-prelude.git
 MtacAR               | 5417230         | https://github.com/L-TChen/MtacAR.git
-plfa                 | web-19.08       | https://github.com/agda/agda-stdlib.git
+plfa                 | dev-20.07       | https://github.com/plfa/plfa.github.io.git
 routing-library      | thesis          | https://github.com/MatthewDaggitt/agda-routing.git
 standard-library     | v1.4-rc1        | https://github.com/agda/agda-stdlib.git
 
