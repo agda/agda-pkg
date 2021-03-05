@@ -35,7 +35,7 @@ def nixos(): pass
              , is_flag=True
              , help='Yes for everything.')
 @clog.simple_verbosity_option(logger)
-def nixos():
+def nixos(yes):
   """Set up a NixOS environment for Agda"""
   MSG = "Agda-pkg will copy the following files to the current directory."
   click.echo(MSG)
