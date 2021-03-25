@@ -6,4 +6,4 @@ click-log==0.3.2
 humanize==0.5.1
 requests==2.23.0
 distlib==0.3.0
-PyYAML==5.3.1
+PyYAML==5.4
