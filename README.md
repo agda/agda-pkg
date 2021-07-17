@@ -414,7 +414,7 @@ A `nix-shell` environment that loads `agda-pkg` as well as `agda` and
 files in your project folder by running one of the following commands:
 
 ```bash
-$ curl -L https://gist.github.com/jonaprieto/53e55263405ee48a831d700f27843931/download | tar -xvz --strip-components=1
+$ curl -L https://gist.github.com/jonaprieto/53e55263405ee48a831d700f27843931/download | busybox unzip -j -
 ```
 
 or if you already have installed agda-pkg:
